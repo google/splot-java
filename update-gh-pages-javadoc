@@ -25,7 +25,7 @@ git clone .git "${TEMP_REPO}" -b "${BRANCH}" || die
 
 cd "${TEMP_REPO}" || die
 
-mvn javadoc:javadoc || die
+mvn javadoc:aggregate || die
 
 git checkout gh-pages
 
