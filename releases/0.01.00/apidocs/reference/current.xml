@@ -1,0 +1,7555 @@
+<api>
+<package name="com.google.iot.m2m.annotation"
+>
+<class name="Method"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+<field name="REQUIRED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="1"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="WANTS_GROUP_ID"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="2"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="Property"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+<field name="CHANGE"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="4"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONSTANT"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="193"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ENUM"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="384"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="GET"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="1"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="GET_REQUIRED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="8"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="NO_INCREMENT"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="256"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="NO_SAVE"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="64"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="NO_TRANSITION"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="128"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="READ_ONLY"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="69"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="READ_WRITE"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="7"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="REQUIRED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="24"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="RESET"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="32"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="SET"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="2"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="SET_REQUIRED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="16"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="WRITE_ONLY"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="66"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="Trait"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="java.lang.annotation.Annotation">
+</implements>
+</class>
+</package>
+<package name="com.google.iot.m2m.base"
+>
+<interface name="ChildListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onChildAdded"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="parent" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="onChildRemoved"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="parent" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</interface>
+<interface name="ConfigListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onConfigChanged"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="config" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+</interface>
+<class name="CorruptPersistentStateException"
+ extends="java.lang.Exception"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="CorruptPersistentStateException"
+ type="com.google.iot.m2m.base.CorruptPersistentStateException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="CorruptPersistentStateException"
+ type="com.google.iot.m2m.base.CorruptPersistentStateException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="CorruptPersistentStateException"
+ type="com.google.iot.m2m.base.CorruptPersistentStateException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="CorruptPersistentStateException"
+ type="com.google.iot.m2m.base.CorruptPersistentStateException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="DiscoveryBuilder"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="DiscoveryBuilder"
+ type="com.google.iot.m2m.base.DiscoveryBuilder"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="buildAndRun"
+ return="com.google.iot.m2m.base.DiscoveryQuery"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="includeHosted"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="includeHosted" type="boolean">
+</parameter>
+</method>
+<method name="mustBeGroup"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="mustHaveTrait"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+</method>
+<method name="mustHaveUid"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uid" type="java.lang.String">
+</parameter>
+</method>
+<method name="mustNotBeGroup"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setMaxResults"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="count" type="int">
+</parameter>
+</method>
+<method name="setTimeout"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="timeout" type="long">
+</parameter>
+<parameter name="units" type="java.util.concurrent.TimeUnit">
+</parameter>
+</method>
+</class>
+<class name="DiscoveryQuery"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="DiscoveryQuery"
+ type="com.google.iot.m2m.base.DiscoveryQuery"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="get"
+ return="java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="InterruptedException" type="java.lang.InterruptedException">
+</exception>
+<exception name="TechnologyException" type="com.google.iot.m2m.base.TechnologyException">
+</exception>
+</method>
+<method name="isDone"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="restart"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.DiscoveryQuery.Listener">
+</parameter>
+</method>
+<method name="stop"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="DiscoveryQuery.Listener"
+ extends="java.lang.Object"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="Listener"
+ type="com.google.iot.m2m.base.DiscoveryQuery.Listener"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="onDiscoveryQueryFoundFunctionalEndpoint"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="functionalEndpoint" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="onDiscoveryQueryIsDone"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="FunctionalEndpoint"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="addValueToProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T[]&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="applyProperties"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="properties" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="copyCachedConfig"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyCachedMetadata"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyCachedState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="delete"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.lang.Boolean&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchChildrenForTrait"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Collection&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortId" type="java.lang.String">
+</parameter>
+</method>
+<method name="fetchConfig"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchMetadata"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+</method>
+<method name="fetchState"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchSupportedPropertyKeys"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Set&lt;com.google.iot.m2m.base.PropertyKey&lt;?&gt;&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getCachedProperty"
+ return="T"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+</method>
+<method name="getChild"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortId" type="java.lang.String">
+</parameter>
+<parameter name="childId" type="java.lang.String">
+</parameter>
+</method>
+<method name="getIdForChild"
+ return="java.lang.String"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="getParentFunctionalEndpoint"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getTraitForChild"
+ return="java.lang.String"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="incrementProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="invokeMethod"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="methodKey" type="com.google.iot.m2m.base.MethodKey&lt;T&gt;">
+</parameter>
+</method>
+<method name="invokeMethod"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="methodKey" type="com.google.iot.m2m.base.MethodKey&lt;T&gt;">
+</parameter>
+<parameter name="arguments" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="invokeMethod"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="methodKey" type="com.google.iot.m2m.base.MethodKey&lt;T&gt;">
+</parameter>
+<parameter name="firstKey" type="com.google.iot.m2m.base.ParamKey&lt;?&gt;">
+</parameter>
+<parameter name="firstValueAndOtherKeyValuePairs" type="java.lang.Object...">
+</parameter>
+</method>
+<method name="isLocal"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="registerChildListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ChildListener">
+</parameter>
+</method>
+<method name="registerConfigListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ConfigListener">
+</parameter>
+</method>
+<method name="registerMetadataListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.MetadataListener">
+</parameter>
+</method>
+<method name="registerPropertyListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.PropertyListener&lt;T&gt;">
+</parameter>
+</method>
+<method name="registerStateListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.StateListener">
+</parameter>
+</method>
+<method name="removeValueFromProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T[]&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="setProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="toggleProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;java.lang.Boolean&gt;">
+</parameter>
+</method>
+<method name="unregisterAllListeners"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="unregisterChildListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ChildListener">
+</parameter>
+</method>
+<method name="unregisterConfigListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.ConfigListener">
+</parameter>
+</method>
+<method name="unregisterMetadataListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.MetadataListener">
+</parameter>
+</method>
+<method name="unregisterPropertyListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.PropertyListener&lt;T&gt;">
+</parameter>
+</method>
+<method name="unregisterStateListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.StateListener">
+</parameter>
+</method>
+</interface>
+<interface name="Group"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.FunctionalEndpoint">
+</implements>
+<method name="addMember"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.lang.Void&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="canAdministerGroup"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="canUseGroup"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchMembers"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getGroupId"
+ return="java.lang.String"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getTechnology"
+ return="com.google.iot.m2m.base.Technology"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="hasLocalMembers"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="isReliable"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="removeMember"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.lang.Void&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</interface>
+<class name="GroupNotAvailableException"
+ extends="com.google.iot.m2m.base.TechnologyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="GroupNotAvailableException"
+ type="com.google.iot.m2m.base.GroupNotAvailableException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="GroupNotAvailableException"
+ type="com.google.iot.m2m.base.GroupNotAvailableException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="GroupNotAvailableException"
+ type="com.google.iot.m2m.base.GroupNotAvailableException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="GroupNotAvailableException"
+ type="com.google.iot.m2m.base.GroupNotAvailableException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="GroupsNotSupportedException"
+ extends="com.google.iot.m2m.base.TechnologyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="GroupsNotSupportedException"
+ type="com.google.iot.m2m.base.GroupsNotSupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="GroupsNotSupportedException"
+ type="com.google.iot.m2m.base.GroupsNotSupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="GroupsNotSupportedException"
+ type="com.google.iot.m2m.base.GroupsNotSupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="GroupsNotSupportedException"
+ type="com.google.iot.m2m.base.GroupsNotSupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="InvalidMethodArgumentsException"
+ extends="com.google.iot.m2m.base.MethodException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="InvalidMethodArgumentsException"
+ type="com.google.iot.m2m.base.InvalidMethodArgumentsException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="InvalidMethodArgumentsException"
+ type="com.google.iot.m2m.base.InvalidMethodArgumentsException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="InvalidMethodArgumentsException"
+ type="com.google.iot.m2m.base.InvalidMethodArgumentsException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="InvalidMethodArgumentsException"
+ type="com.google.iot.m2m.base.InvalidMethodArgumentsException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="InvalidPropertyValueException"
+ extends="com.google.iot.m2m.base.PropertyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="InvalidPropertyValueException"
+ type="com.google.iot.m2m.base.InvalidPropertyValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="InvalidPropertyValueException"
+ type="com.google.iot.m2m.base.InvalidPropertyValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="InvalidPropertyValueException"
+ type="com.google.iot.m2m.base.InvalidPropertyValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="InvalidPropertyValueException"
+ type="com.google.iot.m2m.base.InvalidPropertyValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="InvalidValueException"
+ extends="java.lang.Exception"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="InvalidValueException"
+ type="com.google.iot.m2m.base.InvalidValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="InvalidValueException"
+ type="com.google.iot.m2m.base.InvalidValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="InvalidValueException"
+ type="com.google.iot.m2m.base.InvalidValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="InvalidValueException"
+ type="com.google.iot.m2m.base.InvalidValueException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<interface name="LocalTrait"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onCanSaveProperty"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;?&gt;">
+</parameter>
+</method>
+<method name="onCopyChildrenSet"
+ return="java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="onGetChild"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="childId" type="java.lang.String">
+</parameter>
+</method>
+<method name="onGetIdForChild"
+ return="java.lang.String"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</interface>
+<interface name="MetadataListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onMetadataChanged"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="metadata" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+</interface>
+<class name="MethodException"
+ extends="java.lang.Exception"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="MethodException"
+ type="com.google.iot.m2m.base.MethodException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="MethodException"
+ type="com.google.iot.m2m.base.MethodException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="MethodException"
+ type="com.google.iot.m2m.base.MethodException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="MethodException"
+ type="com.google.iot.m2m.base.MethodException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="MethodKey"
+ extends="com.google.iot.m2m.base.TypedKey"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="MethodKey"
+ type="com.google.iot.m2m.base.MethodKey"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="trait" type="java.lang.String">
+</parameter>
+<parameter name="shortName" type="java.lang.String">
+</parameter>
+<parameter name="type" type="java.lang.Class&lt;T&gt;">
+</parameter>
+</constructor>
+<method name="getName"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getType"
+ return="java.lang.Class&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<field name="SECTION_FUNC"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;f&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="MethodNotFoundException"
+ extends="com.google.iot.m2m.base.MethodException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="MethodNotFoundException"
+ type="com.google.iot.m2m.base.MethodNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="MethodNotFoundException"
+ type="com.google.iot.m2m.base.MethodNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="MethodNotFoundException"
+ type="com.google.iot.m2m.base.MethodNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="MethodNotFoundException"
+ type="com.google.iot.m2m.base.MethodNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="ParamKey"
+ extends="com.google.iot.m2m.base.TypedKey"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="ParamKey"
+ type="com.google.iot.m2m.base.ParamKey"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="name" type="java.lang.String">
+</parameter>
+<parameter name="type" type="java.lang.Class&lt;T&gt;">
+</parameter>
+</constructor>
+<method name="getName"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getType"
+ return="java.lang.Class&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<interface name="PersistentStateInterface"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="copyPersistentState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="initWithPersistentState"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentState" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="setPersistentStateListener"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.PersistentStateListener">
+</parameter>
+</method>
+</interface>
+<interface name="PersistentStateListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onSavePersistentState"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentStateInterface" type="com.google.iot.m2m.base.PersistentStateInterface">
+</parameter>
+</method>
+<method name="onSavePersistentStateBlocking"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentStateInterface" type="com.google.iot.m2m.base.PersistentStateInterface">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+</interface>
+<interface name="PersistentStateManager"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="flush"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="reset"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="reset"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="startManaging"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+<parameter name="objectInstance" type="com.google.iot.m2m.base.PersistentStateInterface">
+</parameter>
+</method>
+<method name="stopManaging"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+</interface>
+<class name="PropertyException"
+ extends="java.lang.Exception"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyException"
+ type="com.google.iot.m2m.base.PropertyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="PropertyException"
+ type="com.google.iot.m2m.base.PropertyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="PropertyException"
+ type="com.google.iot.m2m.base.PropertyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="PropertyException"
+ type="com.google.iot.m2m.base.PropertyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="PropertyKey"
+ extends="com.google.iot.m2m.base.TypedKey"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyKey"
+ type="com.google.iot.m2m.base.PropertyKey"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fullName" type="java.lang.String">
+</parameter>
+<parameter name="type" type="java.lang.Class&lt;T&gt;">
+</parameter>
+</constructor>
+<constructor name="PropertyKey"
+ type="com.google.iot.m2m.base.PropertyKey"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="section" type="java.lang.String">
+</parameter>
+<parameter name="trait" type="java.lang.String">
+</parameter>
+<parameter name="shortName" type="java.lang.String">
+</parameter>
+<parameter name="type" type="java.lang.Class&lt;T&gt;">
+</parameter>
+</constructor>
+<method name="getName"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getType"
+ return="java.lang.Class&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="isSectionConfig"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="name" type="java.lang.String">
+</parameter>
+</method>
+<method name="isSectionConfig"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="isSectionMetadata"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="name" type="java.lang.String">
+</parameter>
+</method>
+<method name="isSectionMetadata"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="isSectionState"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="name" type="java.lang.String">
+</parameter>
+</method>
+<method name="isSectionState"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<field name="SECTION_CONFIG"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;c&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="SECTION_METADATA"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;m&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="SECTION_STATE"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;s&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<interface name="PropertyListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onPropertyChanged"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+</interface>
+<class name="PropertyNotFoundException"
+ extends="com.google.iot.m2m.base.PropertyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyNotFoundException"
+ type="com.google.iot.m2m.base.PropertyNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="PropertyNotFoundException"
+ type="com.google.iot.m2m.base.PropertyNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="PropertyNotFoundException"
+ type="com.google.iot.m2m.base.PropertyNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="PropertyNotFoundException"
+ type="com.google.iot.m2m.base.PropertyNotFoundException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="PropertyOperationUnsupportedException"
+ extends="com.google.iot.m2m.base.PropertyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyOperationUnsupportedException"
+ type="com.google.iot.m2m.base.PropertyOperationUnsupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="PropertyOperationUnsupportedException"
+ type="com.google.iot.m2m.base.PropertyOperationUnsupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="PropertyOperationUnsupportedException"
+ type="com.google.iot.m2m.base.PropertyOperationUnsupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="PropertyOperationUnsupportedException"
+ type="com.google.iot.m2m.base.PropertyOperationUnsupportedException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="PropertyReadOnlyException"
+ extends="com.google.iot.m2m.base.PropertyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyReadOnlyException"
+ type="com.google.iot.m2m.base.PropertyReadOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="PropertyReadOnlyException"
+ type="com.google.iot.m2m.base.PropertyReadOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="PropertyReadOnlyException"
+ type="com.google.iot.m2m.base.PropertyReadOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="PropertyReadOnlyException"
+ type="com.google.iot.m2m.base.PropertyReadOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="PropertyWriteOnlyException"
+ extends="com.google.iot.m2m.base.PropertyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="PropertyWriteOnlyException"
+ type="com.google.iot.m2m.base.PropertyWriteOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="PropertyWriteOnlyException"
+ type="com.google.iot.m2m.base.PropertyWriteOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="PropertyWriteOnlyException"
+ type="com.google.iot.m2m.base.PropertyWriteOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="PropertyWriteOnlyException"
+ type="com.google.iot.m2m.base.PropertyWriteOnlyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<interface name="StateListener"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="onStateChanged"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<parameter name="state" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+</interface>
+<interface name="Technology"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="copyHostedFunctionalEndpointSet"
+ return="java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyHostedGroups"
+ return="java.util.Collection&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createDiscoveryQueryBuilder"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createNewGroup"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchOrCreateGroupWithId"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="groupId" type="java.lang.String">
+</parameter>
+</method>
+<method name="getFunctionalEndpointForNativeUri"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uri" type="java.net.URI">
+</parameter>
+</method>
+<method name="getNativeUriForFunctionalEndpoint"
+ return="java.net.URI"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="host"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<exception name="TechnologyCannotHostException" type="com.google.iot.m2m.base.TechnologyCannotHostException">
+</exception>
+<exception name="UnacceptableFunctionalEndpointException" type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException">
+</exception>
+</method>
+<method name="isAssociatedWith"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="isHosted"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="isNative"
+ return="boolean"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="lookupFunctionalEndpointForUri"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uri" type="java.net.URI">
+</parameter>
+</method>
+<method name="prepareToHost"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+<exception name="TechnologyCannotHostException" type="com.google.iot.m2m.base.TechnologyCannotHostException">
+</exception>
+</method>
+<method name="unhost"
+ return="void"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</interface>
+<class name="TechnologyCannotHostException"
+ extends="com.google.iot.m2m.base.TechnologyRuntimeException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="TechnologyCannotHostException"
+ type="com.google.iot.m2m.base.TechnologyCannotHostException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="TechnologyCannotHostException"
+ type="com.google.iot.m2m.base.TechnologyCannotHostException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="TechnologyCannotHostException"
+ type="com.google.iot.m2m.base.TechnologyCannotHostException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="TechnologyCannotHostException"
+ type="com.google.iot.m2m.base.TechnologyCannotHostException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="TechnologyException"
+ extends="java.lang.Exception"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="TechnologyException"
+ type="com.google.iot.m2m.base.TechnologyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="TechnologyException"
+ type="com.google.iot.m2m.base.TechnologyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="TechnologyException"
+ type="com.google.iot.m2m.base.TechnologyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="TechnologyException"
+ type="com.google.iot.m2m.base.TechnologyException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="TechnologyRuntimeException"
+ extends="java.lang.RuntimeException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="TechnologyRuntimeException"
+ type="com.google.iot.m2m.base.TechnologyRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="TechnologyRuntimeException"
+ type="com.google.iot.m2m.base.TechnologyRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="TechnologyRuntimeException"
+ type="com.google.iot.m2m.base.TechnologyRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="TechnologyRuntimeException"
+ type="com.google.iot.m2m.base.TechnologyRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="TypedKey"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="cast"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="obj" type="java.lang.Object">
+</parameter>
+</method>
+<method name="coerce"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="java.lang.Object">
+</parameter>
+<exception name="InvalidValueException" type="com.google.iot.m2m.base.InvalidValueException">
+</exception>
+</method>
+<method name="coerceFromMap"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+<exception name="InvalidValueException" type="com.google.iot.m2m.base.InvalidValueException">
+</exception>
+</method>
+<method name="coerceFromMapNoThrow"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+</method>
+<method name="getFromMap"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+<exception name="InvalidValueException" type="com.google.iot.m2m.base.InvalidValueException">
+</exception>
+</method>
+<method name="getFromMapNoThrow"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+</method>
+<method name="getName"
+ return="java.lang.String"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getType"
+ return="java.lang.Class&lt;T&gt;"
+ abstract="true"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="isInMap"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+</method>
+<method name="putInMap"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="removeFromMap"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="map" type="java.util.Map&lt;java.lang.String, ?&gt;">
+</parameter>
+</method>
+<method name="toString"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+<class name="UnacceptableFunctionalEndpointException"
+ extends="com.google.iot.m2m.base.TechnologyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="UnacceptableFunctionalEndpointException"
+ type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="UnacceptableFunctionalEndpointException"
+ type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="UnacceptableFunctionalEndpointException"
+ type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="UnacceptableFunctionalEndpointException"
+ type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+</package>
+<package name="com.google.iot.m2m.local"
+>
+<class name="LocalFunctionalEndpoint"
+ extends="java.lang.Object"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.FunctionalEndpoint">
+</implements>
+<implements name="com.google.iot.m2m.base.PersistentStateInterface">
+</implements>
+<constructor name="LocalFunctionalEndpoint"
+ type="com.google.iot.m2m.local.LocalFunctionalEndpoint"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</constructor>
+<method name="addValueToProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T[]&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="applyProperties"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="properties" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="copyCachedConfig"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyCachedMetadata"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyCachedState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyPersistentState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="delete"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.lang.Boolean&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchChildrenForTrait"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Collection&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortId" type="java.lang.String">
+</parameter>
+</method>
+<method name="fetchConfig"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchMetadata"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+</method>
+<method name="fetchState"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchSupportedPropertyKeys"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;java.util.Set&lt;com.google.iot.m2m.base.PropertyKey&lt;?&gt;&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getCachedProperty"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+</method>
+<method name="getChild"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortId" type="java.lang.String">
+</parameter>
+<parameter name="childId" type="java.lang.String">
+</parameter>
+</method>
+<method name="getIdForChild"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="getParentFunctionalEndpoint"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getPropertyTargetValue"
+ return="T"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<exception name="PropertyException" type="com.google.iot.m2m.base.PropertyException">
+</exception>
+<exception name="TechnologyException" type="com.google.iot.m2m.base.TechnologyException">
+</exception>
+</method>
+<method name="getSupportedPropertyKeys"
+ return="java.util.Set&lt;com.google.iot.m2m.base.PropertyKey&lt;?&gt;&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getTraitForChild"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="child" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="incrementProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="amount" type="T">
+</parameter>
+</method>
+<method name="initWithPersistentState"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentState" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="invokeMethod"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;T&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.MethodKey&lt;T&gt;">
+</parameter>
+<parameter name="arguments" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="isLocal"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="registerChildListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ChildListener">
+</parameter>
+</method>
+<method name="registerConfigListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ConfigListener">
+</parameter>
+</method>
+<method name="registerMetadataListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.MetadataListener">
+</parameter>
+</method>
+<method name="registerPropertyListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.PropertyListener&lt;T&gt;">
+</parameter>
+</method>
+<method name="registerStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.StateListener">
+</parameter>
+</method>
+<method name="registerTrait"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="trait" type="com.google.iot.m2m.base.LocalTrait">
+</parameter>
+</method>
+<method name="removeValueFromProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T[]&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="setPersistentStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.PersistentStateListener">
+</parameter>
+</method>
+<method name="setProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="value" type="T">
+</parameter>
+</method>
+<method name="toggleProperty"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;?&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;java.lang.Boolean&gt;">
+</parameter>
+</method>
+<method name="unregisterAllListeners"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="unregisterChildListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.ChildListener">
+</parameter>
+</method>
+<method name="unregisterConfigListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.ConfigListener">
+</parameter>
+</method>
+<method name="unregisterMetadataListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.MetadataListener">
+</parameter>
+</method>
+<method name="unregisterPropertyListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;T&gt;">
+</parameter>
+<parameter name="listener" type="com.google.iot.m2m.base.PropertyListener&lt;T&gt;">
+</parameter>
+</method>
+<method name="unregisterStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.StateListener">
+</parameter>
+</method>
+</class>
+<class name="LocalSceneFunctionalEndpoint"
+ extends="com.google.iot.m2m.local.LocalFunctionalEndpoint"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="LocalSceneFunctionalEndpoint"
+ type="com.google.iot.m2m.local.LocalSceneFunctionalEndpoint"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</constructor>
+<method name="getSceneIds"
+ return="java.util.Set&lt;java.lang.String&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="removeSceneId"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="sceneId" type="java.lang.String">
+</parameter>
+</method>
+<method name="saveCurrentStateToSceneId"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="sceneId" type="java.lang.String">
+</parameter>
+</method>
+</class>
+<class name="LocalTechnology"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.PersistentStateInterface">
+</implements>
+<implements name="com.google.iot.m2m.base.Technology">
+</implements>
+<constructor name="LocalTechnology"
+ type="com.google.iot.m2m.local.LocalTechnology"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="executor" type="java.util.concurrent.Executor">
+</parameter>
+</constructor>
+<constructor name="LocalTechnology"
+ type="com.google.iot.m2m.local.LocalTechnology"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="copyHostedFunctionalEndpointSet"
+ return="java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyHostedGroups"
+ return="java.util.Collection&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyPersistentState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createDiscoveryQueryBuilder"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createNewGroup"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchOrCreateGroupWithId"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="groupId" type="java.lang.String">
+</parameter>
+</method>
+<method name="findOrCreateGroupWithId"
+ return="com.google.iot.m2m.base.Group"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="groupId" type="java.lang.String">
+</parameter>
+</method>
+<method name="getFunctionalEndpointForNativeUri"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uri" type="java.net.URI">
+</parameter>
+</method>
+<method name="getNativeUriForFunctionalEndpoint"
+ return="java.net.URI"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="host"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<exception name="UnacceptableFunctionalEndpointException" type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException">
+</exception>
+</method>
+<method name="initWithPersistentState"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentState" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="isHosted"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="isNative"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="prepareToHost"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setPersistentStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.PersistentStateListener">
+</parameter>
+</method>
+<method name="unhost"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</class>
+<class name="LocalTransitioningFunctionalEndpoint"
+ extends="com.google.iot.m2m.local.LocalSceneFunctionalEndpoint"
+ abstract="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="LocalTransitioningFunctionalEndpoint"
+ type="com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</constructor>
+<method name="calculateIntermediateValue"
+ return="java.lang.Object"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="key" type="java.lang.String">
+</parameter>
+<parameter name="percent" type="float">
+</parameter>
+<parameter name="begin" type="java.lang.Object">
+</parameter>
+<parameter name="end" type="java.lang.Object">
+</parameter>
+</method>
+<method name="getDefaultTransitionDuration"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</method>
+<method name="getExecutor"
+ return="java.util.concurrent.ScheduledExecutorService"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+</method>
+<method name="getPercentDone"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getRemainingDuration"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="pauseTransition"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="resumeTransition"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="shouldTransitionProperty"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="protected"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;?&gt;">
+</parameter>
+</method>
+<method name="stopTransition"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+</class>
+</package>
+<package name="com.google.iot.m2m.trait"
+>
+<class name="AmbientEnvironmentTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_HUMIDITY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_LIGHT_LEVEL"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_PRESSURE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_TEMPERATURE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;aenv&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;AmbientEnvironment&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:ambient-environment:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="AmbientEnvironmentTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalAmbientEnvironmentTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.AmbientEnvironmentTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="AutomationPairingTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_DESTINATION"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_FORWARD_TRANSFORM"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_PULL"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_PUSH"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_REVERSE_TRANSFORM"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_SOURCE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_COUNT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_LAST"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;pair&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;AutomationPairing&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:pairing:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="AutomationPairingTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalAutomationPairingTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.AutomationPairingTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="AutomationRuleTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_ACTION_BODY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_ACTION_CONTENT_FORMAT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_ACTION_METHOD"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_ACTION_PATH"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_CONDITIONS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_DELETE"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;DELETE&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_GET"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;GET&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_POST"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;POST&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_PUT"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;PUT&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_COUNT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_LAST"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;rule&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;AutomationRule&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:rule:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="AutomationRuleTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalAutomationRuleTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.AutomationRuleTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="BaseTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_HIDDEN"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MANUFACTURER"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MODEL"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_NAME"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_PERMANENT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_PRODUCT_NAME"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_SERIAL"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_SW_VERSION"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_PROFILES"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_UID"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_TRAP"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;base&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Base&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:base:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="BaseTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalBaseTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.BaseTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="onGetHidden"
+ return="java.lang.Boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="onGetName"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="onGetNameDefault"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="onGetUid"
+ return="java.lang.String"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="onSetHidden"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="java.lang.Boolean">
+</parameter>
+<exception name="InvalidPropertyValueException" type="com.google.iot.m2m.base.InvalidPropertyValueException">
+</exception>
+<exception name="PropertyReadOnlyException" type="com.google.iot.m2m.base.PropertyReadOnlyException">
+</exception>
+</method>
+<method name="onSetName"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="value" type="java.lang.String">
+</parameter>
+<exception name="InvalidPropertyValueException" type="com.google.iot.m2m.base.InvalidPropertyValueException">
+</exception>
+<exception name="PropertyReadOnlyException" type="com.google.iot.m2m.base.PropertyReadOnlyException">
+</exception>
+</method>
+<method name="onSetUid"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uid" type="java.lang.String">
+</parameter>
+<exception name="InvalidPropertyValueException" type="com.google.iot.m2m.base.InvalidPropertyValueException">
+</exception>
+<exception name="PropertyReadOnlyException" type="com.google.iot.m2m.base.PropertyReadOnlyException">
+</exception>
+</method>
+</class>
+<class name="BatteryTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CHARGE_STATE_CHARGED"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;charged&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CHARGE_STATE_CHARGING"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;charging&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CHARGE_STATE_DISCHARGING"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;discharging&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CHARGE_STATE_DISCONNECTED"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;disconnected&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CHARGE_STATE_LOW"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;low&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CHARGE_STATE_TROUBLE"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;trouble&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_CELL_COUNT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_ENERGY_CAPACITY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_NOMINAL_BATTERY_VOLTAGE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_NOMINAL_CELL_VOLTAGE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_RECHARGEABLE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CAPACITY_REMAINING"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CELL_VOLTAGE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CHARGE_CYCLES"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CHARGE_REMAINING"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CHARGE_STATE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_ENERGY_REMAINING"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_NEEDS_SERVICE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;batt&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Battery&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:battery:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="BatteryTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalBatteryTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.BatteryTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="EnabledDisabledTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VALUE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;enab&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;EnabledDisabled&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:enabled-disabled:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="EnabledDisabledTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalEnabledDisabledTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.EnabledDisabledTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="EnergyTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_MAX_AMPS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_MAX_VOLTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_MAX_VOLT_AMPS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_MAX_WATTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_MIN_VOLTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MAX_DRAW_AMPS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MAX_DRAW_WATTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_AMPS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_ENERGY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_POWER_FACTOR"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VOLTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VOLT_AMPS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_WATTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;enrg&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Energy&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:energy:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="EnergyTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalEnergyTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.EnergyTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="GroupTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_LOCAL_MEMBERS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_REMOTE_MEMBERS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_GROUP_ID"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;grup&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Group&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:group:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="GroupTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalGroupTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.GroupTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="KeychainItemTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_IDENTITY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_RECYCLABLE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_CERTIFICATE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_HARDWARE_BACKED"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_HASH_SHA256"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_OURS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_PERMANENT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_SECRET_KEY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_SECRET_SHARE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_SECRET_SHARE_VER"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TYPE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;kcit&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;KeychainItem&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:keychain-item:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="KeychainItemTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalKeychainItemTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.KeychainItemTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="KeychainTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_CREATE"
+ type="com.google.iot.m2m.base.MethodKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_CERTIFICATE"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_IDENTITY"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_OURS"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_RECYCLABLE"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_SECRET_KEY"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_TYPE"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;keyc&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Keychain&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="true"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:keychain:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="KeychainTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalKeychainTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.KeychainTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="LevelTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VALUE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;levl&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Level&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:level:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="LevelTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalLevelTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.LevelTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="LightTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="kelvinFromMireds"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="x" type="float">
+</parameter>
+</method>
+<method name="miredsFromKelvin"
+ return="float"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="x" type="float">
+</parameter>
+</method>
+<field name="EFFECT_CANDLE"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;candle&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="EFFECT_COLORCYCLE"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;colorcycle&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="FUNCTION_DECORATIVE"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="2"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="FUNCTION_FUNCTIONAL"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="1"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="FUNCTION_INFORMATIVE"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="3"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="FUNCTION_UNSPECIFIED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="0"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_EFFECTS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_FUNCTION"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MAX_LUMENS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MAX_MIREDS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MIN_DIM"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_MIN_MIREDS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_NATIVE_MIREDS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_ORIENTATION"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_PRIMARIES"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="MODE_CIE_LCH"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;LCh&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="MODE_CIE_XY"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;xy&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="MODE_COLOR_TEMP"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;ct&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="MODE_SRGB"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;sRGB&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ORIENTATION_DOWNLIGHT"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="2"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ORIENTATION_OMNIDIRECTIONAL"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="1"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ORIENTATION_SIDELIGHT"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="4"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ORIENTATION_UNSPECIFIED"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="0"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="ORIENTATION_UPLIGHT"
+ type="int"
+ transient="false"
+ volatile="false"
+ value="3"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CHROMA_XY"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CIE_CS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CIE_HD"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_CIE_LS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_EFFECT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_MIREDS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_MODE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_SRGB"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_WHITEPOINT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;lght&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Light&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:light:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="LightTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalLightTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.LightTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="onCanSaveProperty"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="key" type="com.google.iot.m2m.base.PropertyKey&lt;?&gt;">
+</parameter>
+</method>
+</class>
+<class name="OnOffTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_DURATION_OFF"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_DURATION_ON"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_IS_LIGHT"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="CONF_SCENE_ID_ON"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VALUE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;onof&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;OnOff&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:onoff:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="OnOffTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalOnOffTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.OnOffTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="PresenceTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VALUE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;pres&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Presence&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:presence:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="PresenceTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalPresenceTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.PresenceTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="SceneTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="CONF_SCENE_ID_POWER_ON"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="METHOD_SAVE"
+ type="com.google.iot.m2m.base.MethodKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_GROUP_ID"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="PARAM_SCENE_ID"
+ type="com.google.iot.m2m.base.ParamKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_GROUP_ID"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_SCENE_ID"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;scen&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Scene&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="true"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:scene:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="SceneTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalSceneTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.SceneTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="TextDisplayTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_MAX_CHARACTERS"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_VALUE"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;text&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;TextDisplay&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:text-display:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="TextDisplayTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalTextDisplayTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.TextDisplayTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+<class name="TransitionTrait"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<field name="META_TRAIT_URI"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_DURATION"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="STAT_SPEED"
+ type="com.google.iot.m2m.base.PropertyKey"
+ transient="false"
+ volatile="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_ID"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tran&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_NAME"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;Transition&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_SUPPORTS_CHILDREN"
+ type="boolean"
+ transient="false"
+ volatile="false"
+ value="false"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+<field name="TRAIT_URI"
+ type="java.lang.String"
+ transient="false"
+ volatile="false"
+ value="&quot;tag:google.com,2018:m2m:traits:transition:v1:v0#r0&quot;"
+ static="true"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</field>
+</class>
+<class name="TransitionTrait.AbstractLocalTrait"
+ extends="com.google.iot.m2m.trait.LocalTransitionTrait"
+ abstract="true"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="AbstractLocalTrait"
+ type="com.google.iot.m2m.trait.TransitionTrait.AbstractLocalTrait"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+</package>
+<package name="com.google.iot.m2m.util"
+>
+<class name="FilePersistentStateManager"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.PersistentStateManager">
+</implements>
+<method name="close"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="create"
+ return="com.google.iot.m2m.util.FilePersistentStateManager"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="file" type="java.io.File">
+</parameter>
+<exception name="CorruptPersistentStateException" type="com.google.iot.m2m.base.CorruptPersistentStateException">
+</exception>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="createAndResetIfCorrupt"
+ return="com.google.iot.m2m.util.FilePersistentStateManager"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="true"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="file" type="java.io.File">
+</parameter>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="flush"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="reset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="reset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="startManaging"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+<parameter name="objectInstance" type="com.google.iot.m2m.base.PersistentStateInterface">
+</parameter>
+</method>
+<method name="stopManaging"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+</class>
+<class name="NestedPersistentStateManager"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.PersistentStateInterface">
+</implements>
+<implements name="com.google.iot.m2m.base.PersistentStateManager">
+</implements>
+<constructor name="NestedPersistentStateManager"
+ type="com.google.iot.m2m.util.NestedPersistentStateManager"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<method name="close"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyPersistentState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="flush"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="initWithPersistentState"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentState" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="refresh"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="reset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+<method name="reset"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setPersistentStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.PersistentStateListener">
+</parameter>
+</method>
+<method name="startManaging"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+<parameter name="objectInstance" type="com.google.iot.m2m.base.PersistentStateInterface">
+</parameter>
+</method>
+<method name="stopManaging"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="true"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="objectName" type="java.lang.String">
+</parameter>
+</method>
+</class>
+</package>
+<package name="com.google.iot.smcp"
+>
+<class name="SmcpDiscoveryBuilder"
+ extends="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<method name="buildAndRun"
+ return="com.google.iot.m2m.base.DiscoveryQuery"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="includeHosted"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="includeHosted" type="boolean">
+</parameter>
+</method>
+<method name="mustBeGroup"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="mustHaveTrait"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="traitShortName" type="java.lang.String">
+</parameter>
+</method>
+<method name="mustHaveUid"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uid" type="java.lang.String">
+</parameter>
+</method>
+<method name="mustNotBeGroup"
+ return="com.google.iot.m2m.base.DiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="setBaseUri"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="baseUri" type="java.net.URI">
+</parameter>
+</method>
+<method name="setLocalEndpoint"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="localEndpoint" type="com.google.iot.coap.LocalEndpoint">
+</parameter>
+</method>
+<method name="setMaxResults"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="count" type="int">
+</parameter>
+</method>
+<method name="setTimeout"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="timeout" type="long">
+</parameter>
+<parameter name="units" type="java.util.concurrent.TimeUnit">
+</parameter>
+</method>
+</class>
+<class name="SmcpException"
+ extends="com.google.iot.m2m.base.TechnologyException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="SmcpException"
+ type="com.google.iot.smcp.SmcpException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="SmcpException"
+ type="com.google.iot.smcp.SmcpException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="SmcpException"
+ type="com.google.iot.smcp.SmcpException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="SmcpException"
+ type="com.google.iot.smcp.SmcpException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="SmcpRemoteException"
+ extends="com.google.iot.smcp.SmcpException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="SmcpRemoteException"
+ type="com.google.iot.smcp.SmcpRemoteException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="SmcpRemoteException"
+ type="com.google.iot.smcp.SmcpRemoteException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="SmcpRemoteException"
+ type="com.google.iot.smcp.SmcpRemoteException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="SmcpRemoteException"
+ type="com.google.iot.smcp.SmcpRemoteException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="SmcpRuntimeException"
+ extends="com.google.iot.m2m.base.TechnologyRuntimeException"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="SmcpRuntimeException"
+ type="com.google.iot.smcp.SmcpRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+<constructor name="SmcpRuntimeException"
+ type="com.google.iot.smcp.SmcpRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+</constructor>
+<constructor name="SmcpRuntimeException"
+ type="com.google.iot.smcp.SmcpRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="reason" type="java.lang.String">
+</parameter>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+<constructor name="SmcpRuntimeException"
+ type="com.google.iot.smcp.SmcpRuntimeException"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="t" type="java.lang.Throwable">
+</parameter>
+</constructor>
+</class>
+<class name="SmcpTechnology"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="true"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<implements name="com.google.iot.m2m.base.PersistentStateInterface">
+</implements>
+<implements name="com.google.iot.m2m.base.Technology">
+</implements>
+<constructor name="SmcpTechnology"
+ type="com.google.iot.smcp.SmcpTechnology"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="localEndpointManager" type="com.google.iot.coap.LocalEndpointManager">
+</parameter>
+</constructor>
+<method name="copyHostedFunctionalEndpointSet"
+ return="java.util.Set&lt;com.google.iot.m2m.base.FunctionalEndpoint&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="copyPersistentState"
+ return="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createDiscoveryQueryBuilder"
+ return="com.google.iot.smcp.SmcpDiscoveryBuilder"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="createNewGroup"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="fetchOrCreateGroupWithId"
+ return="com.google.common.util.concurrent.ListenableFuture&lt;com.google.iot.m2m.base.Group&gt;"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="groupId" type="java.lang.String">
+</parameter>
+</method>
+<method name="getFunctionalEndpointForNativeUri"
+ return="com.google.iot.m2m.base.FunctionalEndpoint"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="uri" type="java.net.URI">
+</parameter>
+</method>
+<method name="getLocalEndpointManager"
+ return="com.google.iot.coap.LocalEndpointManager"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="getNativeUriForFunctionalEndpoint"
+ return="java.net.URI"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="getServer"
+ return="com.google.iot.coap.Server"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</method>
+<method name="host"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+<exception name="UnacceptableFunctionalEndpointException" type="com.google.iot.m2m.base.UnacceptableFunctionalEndpointException">
+</exception>
+</method>
+<method name="initWithPersistentState"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="persistentState" type="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+</parameter>
+</method>
+<method name="isHosted"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="isNative"
+ return="boolean"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+<method name="prepareToHost"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<exception name="IOException" type="java.io.IOException">
+</exception>
+</method>
+<method name="setPersistentStateListener"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="listener" type="com.google.iot.m2m.base.PersistentStateListener">
+</parameter>
+</method>
+<method name="unhost"
+ return="void"
+ abstract="false"
+ native="false"
+ synchronized="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<parameter name="fe" type="com.google.iot.m2m.base.FunctionalEndpoint">
+</parameter>
+</method>
+</class>
+</package>
+</api>

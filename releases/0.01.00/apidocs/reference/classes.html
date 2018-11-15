@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for Splot for Java." />
+
+<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+<title>
+
+  Class Index
+
+
+| Splot for Java
+
+</title>
+<link href="./../assets/doclava-developer-docs.css" rel="stylesheet" type="text/css" />
+<link href="./../assets/customizations.css" rel="stylesheet" type="text/css" />
+<script src="./../assets/search_autocomplete.js" type="text/javascript"></script>
+<script src="./../assets/jquery-resizable.min.js" type="text/javascript"></script>
+<script src="./../assets/doclava-developer-docs.js" type="text/javascript"></script>
+<script src="./../assets/prettify.js" type="text/javascript"></script>
+<script type="text/javascript">
+  setToRoot("./", "./../assets/");
+</script>
+<script src="./../assets/doclava-developer-reference.js" type="text/javascript"></script>
+<script src="./../assets/navtree_data.js" type="text/javascript"></script>
+<script src="./../assets/customizations.js" type="text/javascript"></script>
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+<div id="header">
+    <div id="headerLeft">
+    
+      <span id="masthead-title">Splot for Java</span>
+    
+    </div>
+    <div id="headerRight">
+      
+  <div id="search" >
+      <div id="searchForm">
+          <form accept-charset="utf-8" class="gsc-search-box" 
+                onsubmit="return submit_search()">
+            <table class="gsc-search-box" cellpadding="0" cellspacing="0"><tbody>
+                <tr>
+                  <td class="gsc-input">
+                    <input id="search_autocomplete" class="gsc-input" type="text" size="33" autocomplete="off"
+                      title="search developer docs" name="q"
+                      value="search developer docs"
+                      onFocus="search_focus_changed(this, true)"
+                      onBlur="search_focus_changed(this, false)"
+                      onkeydown="return search_changed(event, true, './')"
+                      onkeyup="return search_changed(event, false, './')" />
+                  <div id="search_filtered_div" class="no-display">
+                      <table id="search_filtered" cellspacing=0>
+                      </table>
+                  </div>
+                  </td>
+                  <td class="gsc-search-button">
+                    <input type="submit" value="Search" title="search" id="search-button" class="gsc-search-button" />
+                  </td>
+                  <td class="gsc-clear-button">
+                    <div title="clear results" class="gsc-clear-button">&nbsp;</div>
+                  </td>
+                </tr></tbody>
+              </table>
+          </form>
+      </div><!-- searchForm -->
+  </div><!-- search -->
+      
+    </div>
+</div><!-- header -->
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="./packages.html"  >Package Index</a> | 
+                <a href="./classes.html" class="selected">Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="./com/google/iot/m2m/base/package-summary.html">com.google.iot.m2m.base</a></li>
+    <li class="api apilevel-">
+  <a href="./com/google/iot/m2m/local/package-summary.html">com.google.iot.m2m.local</a></li>
+    <li class="api apilevel-">
+  <a href="./com/google/iot/m2m/trait/package-summary.html">com.google.iot.m2m.trait</a></li>
+    <li class="api apilevel-">
+  <a href="./com/google/iot/m2m/util/package-summary.html">com.google.iot.m2m.util</a></li>
+    <li class="api apilevel-">
+  <a href="./com/google/iot/smcp/package-summary.html">com.google.iot.smcp</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+              <script>
+                /*addLoadEvent(maxPackageHeight);*/
+              </script>
+              <p style="padding:10px">Select a package to view its members</p><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="./packages.html"  >Package Index</a> | 
+            <a href="./classes.html" class="selected">Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("./");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="jd-header">
+<h1>Class Index</h1>
+</div>
+
+<div id="jd-content">
+
+<div class="jd-letterlist">
+    <a href="#letter_A">A</a>
+    <a href="#letter_B">B</a>
+    <a href="#letter_C">C</a>
+    <a href="#letter_D">D</a>
+    <a href="#letter_E">E</a>
+    <a href="#letter_F">F</a>
+    <a href="#letter_G">G</a>
+    <a href="#letter_I">I</a>
+    <a href="#letter_K">K</a>
+    <a href="#letter_L">L</a>
+    <a href="#letter_M">M</a>
+    <a href="#letter_N">N</a>
+    <a href="#letter_O">O</a>
+    <a href="#letter_P">P</a>
+    <a href="#letter_S">S</a>
+    <a href="#letter_T">T</a>
+    <a href="#letter_U">U</a>
+</div>
+
+
+
+<h2 id="letter_A">A</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AmbientEnvironmentTrait.html">AmbientEnvironmentTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait for temperature, pressure, humidity, etc.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AmbientEnvironmentTrait.AbstractLocalTrait.html">AmbientEnvironmentTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AutomationPairingTrait.html">AutomationPairingTrait</a></td>
+            <td class="jd-descrcol" width="100%">Experimental trait representing an automation pairing.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AutomationPairingTrait.AbstractLocalTrait.html">AutomationPairingTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AutomationRuleTrait.html">AutomationRuleTrait</a></td>
+            <td class="jd-descrcol" width="100%">Experimental trait representing an automation rule.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/AutomationRuleTrait.AbstractLocalTrait.html">AutomationRuleTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_B">B</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/BaseTrait.html">BaseTrait</a></td>
+            <td class="jd-descrcol" width="100%">The base trait is the one trait which is required on all Functional Endpoints.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/BaseTrait.AbstractLocalTrait.html">BaseTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class used to implement @{link BaseTrait} behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/BatteryTrait.html">BatteryTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Battery trait is used on Functional Endpoints which are backed by a battery.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/BatteryTrait.AbstractLocalTrait.html">BatteryTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_C">C</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/ChildListener.html">ChildListener</a></td>
+            <td class="jd-descrcol" width="100%">Interface for handling changes to a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>'s children.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/ConfigListener.html">ConfigListener</a></td>
+            <td class="jd-descrcol" width="100%">Interface for handling changes to a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>'s config properties.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/CorruptPersistentStateException.html">CorruptPersistentStateException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception for when the underlying persistent state data is corrupted.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_D">D</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/DiscoveryBuilder.html">DiscoveryBuilder</a></td>
+            <td class="jd-descrcol" width="100%">Builder class for constructing a new <code><a href="./com/google/iot/m2m/base/DiscoveryQuery.html">DiscoveryQuery</a></code> object.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/DiscoveryQuery.html">DiscoveryQuery</a></td>
+            <td class="jd-descrcol" width="100%">An abstract class representing a specific functional endpoint discovery query.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/DiscoveryQuery.Listener.html">DiscoveryQuery.Listener</a></td>
+            <td class="jd-descrcol" width="100%">Callback class for handling functional endpoints immediately as they are discovered and being
+ notified of the completion of a <code><a href="./com/google/iot/m2m/base/DiscoveryQuery.html">DiscoveryQuery</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_E">E</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/EnabledDisabledTrait.html">EnabledDisabledTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait for monitoring or controlling something that can be enabled or disabled.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/EnabledDisabledTrait.AbstractLocalTrait.html">EnabledDisabledTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/EnergyTrait.html">EnergyTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Energy trait contains properties that relate to the energy consumption of a device.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/EnergyTrait.AbstractLocalTrait.html">EnergyTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_F">F</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/util/FilePersistentStateManager.html">FilePersistentStateManager</a></td>
+            <td class="jd-descrcol" width="100%">A persistent state manager that uses a File object to store data.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></td>
+            <td class="jd-descrcol" width="100%">Interface for a <i>Functional Endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_G">G</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/Group.html">Group</a></td>
+            <td class="jd-descrcol" width="100%">Interface for managing a group.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/GroupNotAvailableException.html">GroupNotAvailableException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception which is thrown if one of the group-management methods of <code><a href="./com/google/iot/m2m/base/Group.html">Group</a></code> are
+ called after the group has been deleted or otherwise no longer available.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/GroupsNotSupportedException.html">GroupsNotSupportedException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception indicating that this <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> does not support groups.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/GroupTrait.html">GroupTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait used by group functional endpoints.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/GroupTrait.AbstractLocalTrait.html">GroupTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_I">I</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/InvalidMethodArgumentsException.html">InvalidMethodArgumentsException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception thrown when the arguments to a Splot method are invalid.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/InvalidPropertyValueException.html">InvalidPropertyValueException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception thrown after an attempt to set a property to an invalid value.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/InvalidValueException.html">InvalidValueException</a></td>
+            <td class="jd-descrcol" width="100%">A checked exception specific to <code><a href="./com/google/iot/m2m/base/TypedKey.html">TypedKey</a></code> that indicates that a cast or coercion has
+ failed.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_K">K</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/KeychainItemTrait.html">KeychainItemTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait for managing an item in a cryptographic keychain.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/KeychainItemTrait.AbstractLocalTrait.html">KeychainItemTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/KeychainTrait.html">KeychainTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait for managing a cryptographic keychain.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/KeychainTrait.AbstractLocalTrait.html">KeychainTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_L">L</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/LevelTrait.html">LevelTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Level trait describes an FE that can have its level adjusted, such as the brightness of a
+ light, or the amount that a window should be opened.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/LevelTrait.AbstractLocalTrait.html">LevelTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/LightTrait.html">LightTrait</a></td>
+            <td class="jd-descrcol" width="100%">Trait for describing and controlling various characteristics of a variety of illuminaries.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/LightTrait.AbstractLocalTrait.html">LightTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/local/LocalFunctionalEndpoint.html">LocalFunctionalEndpoint</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for more easily implementing local <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>s.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/local/LocalSceneFunctionalEndpoint.html">LocalSceneFunctionalEndpoint</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for more easily implementing local <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>s that support
+ scenes.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/local/LocalTechnology.html">LocalTechnology</a></td>
+            <td class="jd-descrcol" width="100%">A <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> class that allows for dumb, non-multicast-optimized groups and (eventually)
+ automation pairings/rules.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/LocalTrait.html">LocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Interface which is implemented by helper classes (like <code><a href="./com/google/iot/m2m/trait/BaseTrait.AbstractLocalTrait.html">BaseTrait.AbstractLocalTrait</a></code>) which are generated exclusively by the
+ trait annotation processor.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/local/LocalTransitioningFunctionalEndpoint.html">LocalTransitioningFunctionalEndpoint</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for more easily implementing local <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>s that support smooth
+ transitions between property values, as well as scenes.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_M">M</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/MetadataListener.html">MetadataListener</a></td>
+            <td class="jd-descrcol" width="100%">Interface for handling changes to a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>'s metadata properties.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/annotation/Method.html">Method</a></td>
+            <td class="jd-descrcol" width="100%">Annotation describing the characteristics of a <i>method</i> in a trait.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/MethodException.html">MethodException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception indicating problems and errors related to invoking methods.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/MethodKey.html">MethodKey</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">A generic class for identifying and facilitating return-type-safety for methods.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/MethodNotFoundException.html">MethodNotFoundException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception that indicates that a given method could not be found on this <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_N">N</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/util/NestedPersistentStateManager.html">NestedPersistentStateManager</a></td>
+            <td class="jd-descrcol" width="100%">A nested persistent state manager that aggregates the persistent state of several objects under a
+ single persistent state interface which can itself be managed by another PersistentStateManager.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_O">O</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/OnOffTrait.html">OnOffTrait</a></td>
+            <td class="jd-descrcol" width="100%">The OnOff trait describes a FE that can be turned on or off, such as a light bulb or a power
+ controller.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/OnOffTrait.AbstractLocalTrait.html">OnOffTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_P">P</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/ParamKey.html">ParamKey</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">A generic class for identifying and facilitating return-type-safety for method parameters.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PersistentStateInterface.html">PersistentStateInterface</a></td>
+            <td class="jd-descrcol" width="100%">Interface for enabling the persistent storage of information related to an object.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PersistentStateListener.html">PersistentStateListener</a></td>
+            <td class="jd-descrcol" width="100%">Interface used to receive updates from a <code><a href="./com/google/iot/m2m/base/PersistentStateInterface.html">PersistentStateInterface</a></code> regarding the need to
+ refresh the data stored in non-volatile memory.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PersistentStateManager.html">PersistentStateManager</a></td>
+            <td class="jd-descrcol" width="100%">A persistent state manager handles the retrieval and updating of the persistent state of objects
+ which implement <code><a href="./com/google/iot/m2m/base/PersistentStateInterface.html">PersistentStateInterface</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/PresenceTrait.html">PresenceTrait</a></td>
+            <td class="jd-descrcol" width="100%">Presence detection trait.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/PresenceTrait.AbstractLocalTrait.html">PresenceTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/annotation/Property.html">Property</a></td>
+            <td class="jd-descrcol" width="100%">Annotation describing the characteristics of a <i>property</i> in a trait.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyException.html">PropertyException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception indicating problems and errors related to the changing or fetching of
+ properties on <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>s.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyKey.html">PropertyKey</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">A generic class for facilitating type-safety on individual properties while remaining convenient
+ to use.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyListener.html">PropertyListener</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">Interface for receiving asynchronous notifications for changes to individual properties on a
+ <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyNotFoundException.html">PropertyNotFoundException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception that indicates that a given property could not be found on this <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyOperationUnsupportedException.html">PropertyOperationUnsupportedException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception that indicates that the operation being performed is not available for the
+ given property on this <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyReadOnlyException.html">PropertyReadOnlyException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception that indicates that a given property can only be read, not written.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/PropertyWriteOnlyException.html">PropertyWriteOnlyException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception that indicates that a given property can only be written, not read.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_S">S</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/SceneTrait.html">SceneTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Scene trait describes a FE that supports scenes: named collections of state properties that
+ can be easily recalled.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/SceneTrait.AbstractLocalTrait.html">SceneTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/smcp/SmcpDiscoveryBuilder.html">SmcpDiscoveryBuilder</a></td>
+            <td class="jd-descrcol" width="100%">SMCP-specific subclass of <code><a href="./com/google/iot/m2m/base/DiscoveryBuilder.html">DiscoveryBuilder</a></code> which adds some CoAP-specific methods.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/smcp/SmcpException.html">SmcpException</a></td>
+            <td class="jd-descrcol" width="100%">Checked <code><a href="./com/google/iot/m2m/base/TechnologyException.html">TechnologyException</a></code> specifically for SMCP issues.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/smcp/SmcpRemoteException.html">SmcpRemoteException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception for problems that likely originate with other devices.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/smcp/SmcpRuntimeException.html">SmcpRuntimeException</a></td>
+            <td class="jd-descrcol" width="100%">Unhecked <code><a href="./com/google/iot/m2m/base/TechnologyRuntimeException.html">TechnologyRuntimeException</a></code> specifically for SMCP issues.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/smcp/SmcpTechnology.html">SmcpTechnology</a></td>
+            <td class="jd-descrcol" width="100%">M2M Technology class for the Simple Monitoring and Control Protocol (SMCP).&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/StateListener.html">StateListener</a></td>
+            <td class="jd-descrcol" width="100%">Interface for notifications of changes to a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code>'s state properties.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_T">T</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></td>
+            <td class="jd-descrcol" width="100%">Interface for discovering, interacting with, and hosting <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoints</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/TechnologyCannotHostException.html">TechnologyCannotHostException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception thrown when a given <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> instance rejects a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code> argument because it is somehow unacceptable.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/TechnologyException.html">TechnologyException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception thrown by <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> instances (and their native <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code> instances) indicating a technology-specific error has occurred.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/TechnologyRuntimeException.html">TechnologyRuntimeException</a></td>
+            <td class="jd-descrcol" width="100%">Unchecked exception thrown by <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> instances (and their native <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code> instances) indicating a serious technology-specific runtime error has
+ occurred.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/TextDisplayTrait.html">TextDisplayTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Text Display trait offers the ability for an FE to display short strings of text.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/TextDisplayTrait.AbstractLocalTrait.html">TextDisplayTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/annotation/Trait.html">Trait</a></td>
+            <td class="jd-descrcol" width="100%">Annotation used to identify trait definition classes, such as <code><a href="./com/google/iot/m2m/trait/BaseTrait.html">BaseTrait</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/TransitionTrait.html">TransitionTrait</a></td>
+            <td class="jd-descrcol" width="100%">The Transition trait describes a FE that supports smooth transitions for some of its state
+ properties.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/trait/TransitionTrait.AbstractLocalTrait.html">TransitionTrait.AbstractLocalTrait</a></td>
+            <td class="jd-descrcol" width="100%">Abstract class for implementing trait behavior on a local functional endpoint.&nbsp;</td>
+        </tr>
+    
+    
+        <tr class=" api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/TypedKey.html">TypedKey</a>&lt;T&gt;</td>
+            <td class="jd-descrcol" width="100%">Contains the shared implementation of <code><a href="./com/google/iot/m2m/base/PropertyKey.html">PropertyKey</a></code>, <code><a href="./com/google/iot/m2m/base/MethodKey.html">MethodKey</a></code>, and <code><a href="./com/google/iot/m2m/base/ParamKey.html">ParamKey</a></code>.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<h2 id="letter_U">U</h2>
+<table class="jd-sumtable">
+    
+    
+        <tr class="alt-color api apilevel-" >
+            <td class="jd-linkcol"><a href="./com/google/iot/m2m/base/UnacceptableFunctionalEndpointException.html">UnacceptableFunctionalEndpointException</a></td>
+            <td class="jd-descrcol" width="100%">Checked exception thrown when a given <code><a href="./com/google/iot/m2m/base/Technology.html">Technology</a></code> instance rejects a <code><a href="./com/google/iot/m2m/base/FunctionalEndpoint.html">FunctionalEndpoint</a></code> argument because it is somehow unacceptable.&nbsp;</td>
+        </tr>
+    
+    
+</table>
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- end doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>
