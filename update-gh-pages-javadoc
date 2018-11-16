@@ -19,6 +19,8 @@ echo TAG=${TAG}
 
 TEMP_REPO=`pwd`/temp
 
+set -x
+
 rm -fr "${TEMP_REPO}" || die
 
 git clone .git "${TEMP_REPO}" -b "${BRANCH}" || die
