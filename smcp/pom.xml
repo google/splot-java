@@ -2,7 +2,11 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.iot.m2m</groupId>
+  <parent>
+    <groupId>com.google.iot.m2m</groupId>
+    <artifactId>splot-parent</artifactId>
+    <version>0.01.00</version>
+  </parent>
   <artifactId>smcp</artifactId>
   <version>0.01.00</version>
   <name>Simple Monitoring and Control Protocol Library</name>
@@ -37,6 +41,11 @@
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.2.0</version>
+    </dependency>
     <dependency>
       <groupId>com.google.iot.cbor</groupId>
       <artifactId>cbor</artifactId>
