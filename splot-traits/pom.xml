@@ -5,10 +5,10 @@
   <parent>
     <groupId>com.google.iot.m2m</groupId>
     <artifactId>splot-parent</artifactId>
-    <version>0.01.00</version>
+    <version>HEAD-SNAPSHOT</version>
   </parent>
   <artifactId>splot-traits</artifactId>
-  <version>0.01.00</version>
+  <version>HEAD-SNAPSHOT</version>
   <name>Splot Standard Trait Library</name>
   <build>
     <plugins>
@@ -44,13 +44,13 @@
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-base</artifactId>
-      <version>0.01.00</version>
+      <version>HEAD-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-processor</artifactId>
-      <version>0.01.00</version>
+      <version>HEAD-SNAPSHOT</version>
       <optional>true</optional>
     </dependency>
     <dependency>
