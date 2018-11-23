@@ -74,21 +74,12 @@ locally and do not rely on cloud infrastructure.
 *   [CborTree](https://github.com/google/cbortree)
 *   [CoapBlaster](https://github.com/google/coapblaster)
 
-## Building and Installing ##
-
-This project uses Maven for building. Once Maven is installed, you
-should be able to build and install the project by doing the
-following:
-
-    mvn verify
-    mvn install
-
-Note that the master branch of this project depends on
-[CborTree](https://github.com/google/cbortree/) and
-[CoapBlaster](https://github.com/google/coapblaster/), so you may need
-to download, build, and install those projects first.
-
 ### Adding to Projects ###
+
+In general, you do not need to build and install this project
+in order to use it: by simply adding the appropriate dependencies
+to your project's `build.gradle` or `pom.xml` file, the appropriate
+jar files should be automatically downloaded.
 
 Gradle:
 
@@ -125,6 +116,24 @@ Maven:
       <version>0.01.00</version>
       <scope>compile</scope>
     </dependency>
+
+## Building and Installing ##
+
+This project uses Maven for building. Once Maven is installed, you
+should be able to build and install the project by doing the
+following:
+
+    mvn verify
+    mvn install
+
+When building the project yourself, the version field for the
+built artifacts will be `HEAD-SNAPSHOT`.
+
+Note that the master branch of this project depends on
+[CborTree](https://github.com/google/cbortree/) and
+[CoapBlaster](https://github.com/google/coapblaster/), so you may need
+to download, build, and install those projects first.
+
 
 ## License ##
 
