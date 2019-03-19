@@ -47,8 +47,8 @@ class SmcpGroupTest extends SmcpTestBase {
             LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
-            psm.startManaging("bulb1", bulb1);
-            psm.startManaging("bulb2", bulb2);
+            psm.startManaging("bulbHosted", bulb1);
+            psm.startManaging("bulbLocal", bulb2);
             psm.startManaging("bulb3", bulb3);
 
             technology.host(bulb1);
@@ -83,8 +83,8 @@ class SmcpGroupTest extends SmcpTestBase {
             LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
-            psm.startManaging("bulb1", bulb1);
-            psm.startManaging("bulb2", bulb2);
+            psm.startManaging("bulbHosted", bulb1);
+            psm.startManaging("bulbLocal", bulb2);
             psm.startManaging("bulb3", bulb3);
 
             technology.host(bulb1);

@@ -18,8 +18,13 @@ package com.google.iot.smcp;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.google.iot.coap.Coap;
+import com.google.iot.coap.LocalEndpoint;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.*;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -46,11 +51,21 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             techHosting.prepareToHost();
             techHosting.host(localFe);
 
+            LocalEndpoint localHostingEndpoint = techHosting.getLocalEndpointManager().getLocalEndpointForScheme(Coap.SCHEME_UDP);
+            String host = "localhost";
+            int port = -1;
+            SocketAddress localSocketAddress = localHostingEndpoint.getLocalSocketAddress();
+            if (localSocketAddress instanceof InetSocketAddress) {
+                port = ((InetSocketAddress)localSocketAddress).getPort();
+            }
+
+            techHosting.getServer().addLocalEndpoint(localHostingEndpoint);
             techHosting.getServer().start();
 
-            FunctionalEndpoint remoteFe =
-                    techBacking.getFunctionalEndpointForNativeUri(
-                            URI.create("coap://localhost/1/"));
+            FunctionalEndpoint remoteFe = techBacking.getFunctionalEndpointForNativeUri(new URI(
+                    Coap.SCHEME_UDP, null, host, port,
+                    "/1/", null, null
+            ));
 
             assertNotNull(remoteFe);
 

@@ -83,14 +83,14 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     /**
      * The timestamp marking the start of the transition, in nanoseconds.
      *
-     * @see System#nanoTime()
+     * @see #nanoTime()
      */
     private long mTimestampBegin = 0;
 
     /**
      * The timestamp marking the end of the transition, in nanoseconds.
      *
-     * @see System#nanoTime()
+     * @see #nanoTime()
      */
     private long mTimestampEnd = 0;
 
@@ -119,6 +119,14 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     @Override
     protected ScheduledExecutorService getExecutor() {
         return Utils.getDefaultExecutor();
+    }
+
+    /**
+     * Method that simply returns {@link System#nanoTime()}. Intended to be overridden for
+     * unit tests.
+     */
+    protected long nanoTime() {
+        return System.nanoTime();
     }
 
     protected LocalTransitioningFunctionalEndpoint() {
@@ -224,7 +232,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
             }
         }
 
-        mTimestampBegin = System.nanoTime();
+        mTimestampBegin = nanoTime();
         mTimestampEnd =
                 mTimestampBegin
                         + (long) (duration * TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
@@ -305,7 +313,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     public final float getRemainingDuration() {
         final float remaining =
                 (float)
-                        ((mTimestampEnd - System.nanoTime())
+                        ((mTimestampEnd - nanoTime())
                                 / (double) TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
         if (remaining < 0) {
             return 0;
@@ -318,7 +326,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
      * is no transition currently in progress.
      */
     public final synchronized float getPercentDone() {
-        final long now = System.nanoTime();
+        final long now = nanoTime();
         float percent = (float) (now - mTimestampBegin) / (float) (mTimestampEnd - mTimestampBegin);
         if (now > mTimestampEnd) {
             percent = 1.0f;
@@ -453,7 +461,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     }
 
     private synchronized void updateCurrentTransitionValues() {
-        final long now = System.nanoTime();
+        final long now = nanoTime();
         float percent = (float) (now - mTimestampBegin) / (float) (mTimestampEnd - mTimestampBegin);
 
         if (now > mTimestampEnd) {

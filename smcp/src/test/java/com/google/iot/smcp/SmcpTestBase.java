@@ -18,14 +18,11 @@ package com.google.iot.smcp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.local.LocalSceneFunctionalEndpoint;
 import com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint;
 import com.google.iot.m2m.trait.*;
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.AfterEach;
@@ -33,12 +30,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 
 @SuppressWarnings("ConstantConditions")
-class SmcpTestBase {
+class SmcpTestBase extends FakeExecutorTestBase {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(SmcpTestBase.class.getCanonicalName());
 
-    ListeningScheduledExecutorService mExecutor = null;
-    volatile Throwable mThrowable = null;
     LocalEndpointManager mContextA = null;
     LocalEndpointManager mContextB = null;
 
@@ -48,71 +43,25 @@ class SmcpTestBase {
 
     boolean mDidDump = false;
 
-    public void rethrow() {
-        if (mExecutor != null) {
-            try {
-                mExecutor.shutdown();
-                if (!mExecutor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
-                    if (DEBUG) {
-                        LOGGER.warning(
-                                "Call to awaitTermination() is taking a long time"
-                                        + " to finish, trying shutdownNow()");
-                    }
-                    mExecutor.shutdownNow();
-                    if (mThrowable != null) {
-                        mThrowable.printStackTrace();
-                    }
-                    assertTrue(
-                            mExecutor.awaitTermination(1, TimeUnit.SECONDS),
-                            "Call to awaitTermination() failed waiting for jobs to finish");
-                }
-            } catch (Exception x) {
-                if (mThrowable == null) {
-                    mThrowable = x;
-                } else {
-                    LOGGER.info("Got exception while flushing queue: " + x);
-                    x.printStackTrace();
-                }
-            }
-            mExecutor = null;
-        }
-        if (mThrowable != null) {
-            Throwable x = mThrowable;
-            mThrowable = null;
-            dumpLogs();
-            LOGGER.info("Rethrowing throwable: " + x);
-            if (x instanceof Error) throw (Error) x;
-            if (x instanceof RuntimeException) throw (RuntimeException) x;
-            throw new RuntimeException(x);
-        }
-    }
-
     public void dumpLogs() {
-        /* We only dump logs here if DEBUG isn't set: because otherwise we are
-         * dumping logs continuously.
-         */
-        if (!DEBUG && !mDidDump) System.err.println(mInterceptorFactory.toString());
+        if (!mDidDump) {
+            if (DEBUG) {
+                LOGGER.warning("Failure Detected Here");
+            } else {
+                /* We only dump logs here if DEBUG isn't set: because otherwise we are
+                 * dumping logs continuously.
+                 */
+                System.err.println(mInterceptorFactory.toString());
+            }
+
+        }
         mDidDump = true;
     }
 
     @BeforeEach
-    public void before() {
-        if (DEBUG) LOGGER.info(" *** BEFORE");
-        mThrowable = null;
+    public void before() throws Exception {
+        super.before();
         mDidDump = false;
-        mExecutor =
-                MoreExecutors.listeningDecorator(
-                        new ScheduledThreadPoolExecutor(4) {
-                            @Override
-                            protected void afterExecute(Runnable r, @Nullable Throwable t) {
-                                super.afterExecute(r, t);
-
-                                if (t != null) {
-                                    LOGGER.warning("Caught throwable: " + t);
-                                    mThrowable = t;
-                                }
-                            }
-                        });
 
         mContextA = new LocalEndpointManager(mExecutor);
         mContextB = new LocalEndpointManager(mExecutor);
@@ -130,8 +79,13 @@ class SmcpTestBase {
                 };
 
         mInterceptorFactory = new LoggingInterceptorFactory();
+
         if (DEBUG) {
             mInterceptorFactory.setPrintStream(System.err);
+        }
+
+        if (mOriginalExecutor instanceof FakeScheduledExecutorService) {
+            mInterceptorFactory.setNanoTimeGetter(((FakeScheduledExecutorService)mOriginalExecutor)::nanoTime);
         }
 
         mContextA.setDefaultBehaviorContext(behaviorContext);
@@ -150,11 +104,9 @@ class SmcpTestBase {
         if (DEBUG) LOGGER.info(" *** AFTER");
         mContextA.close();
         mContextB.close();
-        rethrow();
-    }
-
-    void tick(int durationInMs) throws InterruptedException {
-        Thread.sleep(durationInMs);
+        mContextA = null;
+        mContextB = null;
+        super.after();
     }
 
     static class MyLightBulbImpl {
@@ -257,6 +209,11 @@ class SmcpTestBase {
         @Override
         protected ListeningScheduledExecutorService getExecutor() {
             return mExecutor;
+        }
+
+        @Override
+        protected long nanoTime() {
+            return SmcpTestBase.this.nanoTime();
         }
     }
 

@@ -61,6 +61,8 @@ class SmcpDiscoveryQueryTest extends SmcpTestBase {
                             .setTimeout(100, TimeUnit.MILLISECONDS)
                             .buildAndRun();
 
+            tick(1);
+
             Set<FunctionalEndpoint> results = query.get();
 
             assertFalse(results.isEmpty());
