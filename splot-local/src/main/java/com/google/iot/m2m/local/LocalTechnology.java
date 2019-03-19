@@ -25,6 +25,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.Logger;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -41,14 +44,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see Group
  */
 public final class LocalTechnology implements Technology, PersistentStateInterface {
+    private static final boolean DEBUG = false;
+    private static final Logger LOGGER = Logger.getLogger(LocalTechnology.class.getCanonicalName());
+
     private static final String GROUP_PREFIX = "group-";
+    public static final int MAX_CHILD_DEPTH = 5;
 
     private final Executor mExecutor;
     private final NestedPersistentStateManager mNestedPersistentStateManager =
             new NestedPersistentStateManager();
 
-    private final HashSet<FunctionalEndpoint> mHosted = new HashSet<>();
+    private final Map<FunctionalEndpoint, String> mHostedPathLookup = new WeakHashMap<>();
     private final Map<String, WeakReference<LocalGroup>> mGroups = new WeakHashMap<>();
+
+    private final WeakHashMap<ResourceLink<?>, URI> mResourceLinkUriLookup = new WeakHashMap<>();
 
     public LocalTechnology(Executor executor) {
         mExecutor = executor;
@@ -72,14 +81,14 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
     @Override
     public Set<FunctionalEndpoint> copyHostedFunctionalEndpointSet() {
-        return new HashSet<>(mHosted);
+        return new HashSet<>(mHostedPathLookup.keySet());
     }
 
     @Override
     public Collection<Group> copyHostedGroups() {
         Collection<Group> ret = new LinkedList<>();
-        synchronized (mHosted) {
-            mHosted.forEach(
+        synchronized (mHostedPathLookup) {
+            mHostedPathLookup.keySet().forEach(
                     g -> {
                         if ((g instanceof Group) && isNative(g)) {
                             ret.add((Group) g);
@@ -94,17 +103,24 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
     @Override
     public void host(FunctionalEndpoint fe) throws UnacceptableFunctionalEndpointException {
-        synchronized (mHosted) {
+        synchronized (mHostedPathLookup) {
             if (!isHosted(fe)) {
                 if (fe instanceof LocalGroup && ((LocalGroup) fe).getTechnology() == this) {
                     LocalGroup group = (LocalGroup) fe;
                     final String groupId = group.getGroupId();
                     mNestedPersistentStateManager.startManaging(GROUP_PREFIX + groupId, group);
-                    mHosted.add(fe);
+                    mHostedPathLookup.put(fe, "g/" + groupId);
 
                 } else {
                     if (!isAssociatedWith(fe)) {
-                        mHosted.add(fe);
+                        int index;
+                        for (index = 1; index < 10000; index++) {
+                            if (!mHostedPathLookup.containsValue(Integer.toString(index))) {
+                                break;
+                            }
+                        }
+                        mHostedPathLookup.put(fe, Integer.toString(index));
+
                         fe.fetchMetadata();
 
                         synchronized (mGroups) {
@@ -127,7 +143,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
     @Override
     public void unhost(FunctionalEndpoint fe) {
-        synchronized (mHosted) {
+        synchronized (mHostedPathLookup) {
             if (!isHosted(fe)) {
                 return;
             }
@@ -148,18 +164,18 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 }
             }
 
-            mHosted.remove(fe);
+            mHostedPathLookup.remove(fe);
         }
     }
 
     @Override
     public boolean isHosted(FunctionalEndpoint fe) {
-        synchronized (mHosted) {
+        synchronized (mHostedPathLookup) {
             FunctionalEndpoint parent;
             int parentLimit = 4;
 
             do {
-                if (mHosted.contains(fe)) {
+                if (mHostedPathLookup.keySet().contains(fe)) {
                     return true;
                 }
 
@@ -172,7 +188,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 }
             } while (parentLimit-- != 0);
 
-            return mHosted.contains(fe);
+            return mHostedPathLookup.keySet().contains(fe);
         }
     }
 
@@ -198,31 +214,232 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
         return ((fe instanceof Group) && ((Group) fe).getTechnology() == this);
     }
 
-    @Nullable
-    @Override
-    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) {
-        if (!"local".equals(uri.getScheme())) {
-            return null;
+    private class FEParser {
+        String[] mComponents = null;
+        int mComponentIndex = 0;
+        FunctionalEndpoint mFe = null;
+
+        FEParser(URI uri) throws UnknownResourceException {
+            if (uri.getScheme() != null) {
+                throw new UnknownResourceException("Unsupported scheme \"" + uri.getScheme() + "\"");
+            }
+
+            String path = uri.getRawPath();
+
+            if (path == null || path.isEmpty()) {
+                throw new UnknownResourceException("Empty path");
+            }
+
+            if (path.charAt(0) != '/') {
+                throw new UnknownResourceException("Path must be absolute (start with '/')");
+            }
+
+            mComponents = path.substring(1).split("/",0);
+
+            if (mComponents.length == 0) {
+                throw new UnknownResourceException("Empty path");
+            }
+
+            path = mComponents[0];
+
+            if ("g".equals(path)) {
+                if (mComponents.length == 1) {
+                    throw new UnknownResourceException("Missing group name");
+                }
+                path = path + "/" + mComponents[1];
+                mComponentIndex = 1;
+            }
+
+            synchronized (mHostedPathLookup) {
+                for (Map.Entry<FunctionalEndpoint,String> entry : mHostedPathLookup.entrySet()) {
+                    if (path.equals(entry.getValue())) {
+                        mFe = entry.getKey();
+                    }
+                }
+            }
+
+            if (mFe == null) {
+                if (DEBUG) LOGGER.info("FE lookup miss, looking for \"" + path + "\" in " + mHostedPathLookup.values());
+                throw new UnknownResourceException("Unable to find FE for " + uri);
+            }
+
+            // Find the child
+            while ((remainingComponents() > 3) && MethodKey.SECTION_FUNC.equals(getRelativeComponent(1))) {
+                String traitName = getRelativeComponent(2);
+                String childId = getRelativeComponent(3);
+
+                mFe = mFe.getChild(traitName, childId);
+
+                if (mFe == null) {
+                    if (DEBUG) LOGGER.info("FE child lookup miss for \"" + path + "\"");
+                    throw new UnknownResourceException("Unable to find child FE for " + uri);
+                }
+
+                mComponentIndex += 3;
+            }
         }
 
-        return getHostedFunctionalEndpointForUid(uri.getRawAuthority());
+        String getRelativeComponent(int i) {
+            return mComponents[mComponentIndex + i];
+        }
+
+        int remainingComponents() {
+            return mComponents.length - mComponentIndex;
+        }
     }
 
-    @Nullable
+    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+        final FEParser parser = new FEParser(uri);
+
+        if (parser.remainingComponents() == 4) {
+            final String section = parser.getRelativeComponent(1);
+            final String trait = parser.getRelativeComponent(2);
+            final String name = parser.getRelativeComponent(3);
+
+            if (uri.getQuery() == null) {
+                PropertyKey<Object> key = new PropertyKey<>(section,trait,name,Object.class);
+                ResourceLink<Object> ret = PropertyResourceLink.create(parser.mFe, key);
+                mResourceLinkUriLookup.put(ret, uri);
+                return ret;
+            }
+
+            String[] queryComponents = uri.getQuery().split("&");
+
+            if (queryComponents.length != 1) {
+                // More than one query component isn't supported.
+                throw new UnknownResourceException("More than one query component isn't supported.");
+            }
+
+            ResourceLink<Object> ret;
+
+            switch(queryComponents[0]) {
+                case "inc": {
+                    PropertyKey<Double> key = new PropertyKey<>(section, trait, name,
+                            Double.class);
+                    ret = ResourceLink.stripType(
+                            PropertyResourceLink.createIncrement(parser.mFe, key), Double.class);
+                    break;
+                }
+
+                case "tog": {
+                    PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name,
+                            Boolean.class);
+                    ret = ResourceLink.stripType(
+                            PropertyResourceLink.createToggle(parser.mFe, key), Boolean.class);
+                    break;
+                }
+
+                case "ins": {
+                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
+                            Object[].class);
+                    ret = PropertyResourceLink.createInsert(parser.mFe, key);
+                    break;
+                }
+
+                case "rem": {
+                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
+                            Object[].class);
+                    ret = PropertyResourceLink.createRemove(parser.mFe, key);
+                    break;
+                }
+
+                default:
+                    // Other operations aren't supported.
+                    throw new UnknownResourceException("query component \"" + queryComponents[0] + "\" isn't supported.");
+            }
+
+            mResourceLinkUriLookup.put(ret, uri);
+            return ret;
+
+        }
+
+        // Resource link tracking a trait in a section
+        if (parser.remainingComponents() == 3) {
+            // We don't support resource links for traits yet.
+            return null;
+        }
+
+        // Resource link tracking a section
+        if (parser.remainingComponents() == 2) {
+            final String section = parser.getRelativeComponent(1);
+
+            @SuppressWarnings("unchecked")
+            ResourceLink<Object> ret = ResourceLink.stripType(
+                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section),
+                    Map.class);
+
+            mResourceLinkUriLookup.put(ret, uri);
+
+            return ret;
+        }
+
+        return null;
+    }
+
     @Override
-    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) {
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey) throws UnassociatedResourceException {
+        return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+    }
+
+    @Override
+    public URI getNativeUriForSection(FunctionalEndpoint fe, String section) throws UnassociatedResourceException {
+        return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+    }
+
+    @Override
+    public URI getNativeUriForResourceLink(ResourceLink<Object> rl) throws UnassociatedResourceException {
+        URI ret = mResourceLinkUriLookup.get(rl);
+        if (ret == null) {
+            throw new UnassociatedResourceException("Unable to lookup URI for " + rl);
+        }
+        return ret;
+    }
+
+    @Override
+    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException {
+        return new FEParser(uri).mFe;
+    }
+
+    @Override
+    @NonNull
+    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException {
         if (!isAssociatedWith(fe)) {
-            return null;
+            throw new UnassociatedResourceException("Unable to lookup URI for " + fe);
         }
 
-        String uid = fe.getCachedProperty(BaseTrait.META_UID);
+        String path = "/";
+        int remaining_depth = MAX_CHILD_DEPTH;
 
-        if (uid == null) {
-            return null;
+        FunctionalEndpoint parent = fe.getParentFunctionalEndpoint();
+
+        while (parent != null) {
+            String trait = parent.getTraitForChild(fe);
+            String childId = parent.getIdForChild(fe);
+            path = "/f/" + trait + "/" + childId + path;
+            fe = parent;
+            parent = fe.getParentFunctionalEndpoint();
+
+            if (--remaining_depth == 0) {
+                throw new UnassociatedResourceException("Unable to lookup URI for " + fe);
+            }
         }
+
+        String hostedPath;
+
+        synchronized (mHostedPathLookup) {
+            hostedPath = mHostedPathLookup.get(fe);
+        }
+
+        if (hostedPath == null) {
+            throw new UnassociatedResourceException("Unable to lookup URI for " + fe);
+        }
+
+        if (DEBUG)
+            LOGGER.info("LocalTechnology: getNativeUriForFunctionalEndpoint(" + fe
+                    + ") = " + hostedPath + path);
 
         try {
-            return new URI("local", uid, "/", null, null);
+            return new URI(null, null, "/" + hostedPath + path, null, null);
 
         } catch (URISyntaxException e) {
             // Shouldn't happen.
@@ -232,8 +449,8 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
     @Nullable
     FunctionalEndpoint getHostedFunctionalEndpointForUid(String uid) {
-        synchronized (mHosted) {
-            for (FunctionalEndpoint fe : mHosted) {
+        synchronized (mHostedPathLookup) {
+            for (FunctionalEndpoint fe : mHostedPathLookup.keySet()) {
                 if (uid.equals(fe.getCachedProperty(BaseTrait.META_UID))) {
                     return fe;
                 }

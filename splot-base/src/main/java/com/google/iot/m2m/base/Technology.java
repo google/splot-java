@@ -237,8 +237,7 @@ public interface Technology {
      * @param uri The URI of the functional endpoint
      * @return null if the URI is not recognized, otherwise returns the functional endpoint
      */
-    @Nullable
-    FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri);
+    FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException;
 
     /**
      * Returns the functional endpoint for the given URI.
@@ -247,12 +246,14 @@ public interface Technology {
      * #getFunctionalEndpointForNativeUri}.
      *
      * @param uri The URI of the functional endpoint
-     * @return ListenableFuture that returns null if the URI is not recognized or if the FE could
-     *     not be found, otherwise returns the functional endpoint
+     * @return ListenableFuture that returns the functional endpoint
      */
-    @Nullable
     default ListenableFuture<FunctionalEndpoint> lookupFunctionalEndpointForUri(URI uri) {
-        return Futures.immediateFuture(getFunctionalEndpointForNativeUri(uri));
+        try {
+            return Futures.immediateFuture(getFunctionalEndpointForNativeUri(uri));
+        } catch (UnknownResourceException x) {
+            return Futures.immediateFailedFuture(x);
+        }
     }
 
     /**
@@ -264,11 +265,11 @@ public interface Technology {
      * (technology specific).
      *
      * @param fe The functional endpoint to obtain the URI of.
-     * @return The URI for the given functional endpoint, or null if the functional endpoint is not
-     *     associated with this technology
+     * @return The URI for the given functional endpoint
+     * @throws UnassociatedResourceException if the functional endpoint isn't associated with this
+     *                                  technology
      */
-    @Nullable
-    URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe);
+    URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException;
 
     /** Returns a new instance of a builder object for constructing DiscoveryTask objects. */
     DiscoveryBuilder createDiscoveryQueryBuilder();
@@ -313,4 +314,12 @@ public interface Technology {
     default Collection<Group> copyHostedGroups() {
         return new LinkedList<>();
     }
+
+    ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException;
+
+    URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey) throws UnassociatedResourceException;
+
+    URI getNativeUriForSection(FunctionalEndpoint fe, String section) throws UnassociatedResourceException;
+
+    URI getNativeUriForResourceLink(ResourceLink<Object> rl) throws UnassociatedResourceException;
 }
