@@ -19,6 +19,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
+import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
 import java.net.URI;
 import java.util.Map;
@@ -80,10 +81,10 @@ public final class AutomationRuleTrait {
      * <p>Each criteria is defined as a map keyed by strings. The string keys are the following:
      *
      * <ul>
-     *   <li><code>p</code>: URL or absolute path to the resource being evaluated
-     *   <li><code>c</code>: RPN condition to evaluate.
-     *   <li><code>s</code>: True if this condition should be skipped.
-     *   <li><code>d</code>: Human-readable description of the criteria
+     *   <li><code>p</code> ({@link #PARAM_COND_PATH}): URL or absolute path to the resource being evaluated
+     *   <li><code>c</code> ({@link #PARAM_COND_EXPR}): RPN condition to evaluate.
+     *   <li><code>s</code> ({@link #PARAM_COND_SKIP}): True if this condition should be skipped.
+     *   <li><code>d</code> ({@link #PARAM_COND_DESC}): Human-readable description of the criteria
      * </ul>
      *
      * If a <code>path</code> is present, then this value is observed. When the observed path
@@ -200,4 +201,28 @@ public final class AutomationRuleTrait {
     public static final PropertyKey<Integer> CONF_ACTION_CONTENT_FORMAT =
             new PropertyKey<>(
                     PropertyKey.SECTION_CONFIG, TRAIT_ID, "cfmt", java.lang.Integer.class);
+
+    /**
+     * Path for condition. Optional.
+     * @see #CONF_CONDITIONS
+     */
+    public static final ParamKey<URI> PARAM_COND_PATH = new ParamKey<>("p", URI.class);
+
+    /**
+     * Expression for evaluating if the condition is satisfied.
+     * @see #CONF_CONDITIONS
+     */
+    public static final ParamKey<String> PARAM_COND_EXPR = new ParamKey<>("c", String.class);
+
+    /**
+     * Flag indicating if this condition should be skipped. If absent, it is assumed to be false.
+     * @see #CONF_CONDITIONS
+     */
+    public static final ParamKey<Boolean> PARAM_COND_SKIP = new ParamKey<>("s", Boolean.class);
+
+    /**
+     * Human readable description of the rule. Optional.
+     * @see #CONF_CONDITIONS
+     */
+    public static final ParamKey<String> PARAM_COND_DESC = new ParamKey<>("c", String.class);
 }
