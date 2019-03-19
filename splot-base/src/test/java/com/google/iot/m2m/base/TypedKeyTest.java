@@ -19,6 +19,8 @@ package com.google.iot.m2m.base;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
+
+import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +52,16 @@ class TypedKeyTest {
     void coerceStringInteger() throws Exception {
         assertEquals("1", TypedKey.coerce(1, String.class));
         assertThrows(InvalidValueException.class, () -> TypedKey.coerce("1", Integer.class));
+    }
+
+    @Test
+    void coerceStringUri() throws Exception {
+        assertEquals("http://google.com/", TypedKey.coerce(URI.create("http://google.com/"), String.class));
+        assertEquals(URI.create("http://google.com/"), TypedKey.coerce("http://google.com/", URI.class));
+        assertEquals(URI.create("http://google.com/"), TypeConverter.URI.coerce("http://google.com/"));
+        assertEquals(URI.create("http://google.com/"), TypeConverter.URI.coerce(URI.create("http://google.com/")));
+        assertEquals("http://google.com/", TypeConverter.STRING.coerce(URI.create("http://google.com/")));
+        assertEquals(URI.create("/1/2/3?inc"), TypeConverter.URI.coerce("/1/2/3?inc"));
     }
 
     @Test
