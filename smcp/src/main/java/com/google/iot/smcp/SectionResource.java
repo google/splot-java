@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.iot.cbor.*;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.*;
+import com.google.iot.m2m.local.SectionResourceLink;
 import com.google.iot.m2m.trait.TransitionTrait;
 import java.net.URI;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
     private final FunctionalEndpoint mFe;
     private final String mSection;
+    private final ResourceLink<Map<String,Map<String,Object>>> mResourceLink;
     private final Executor mExecutor;
     private int mMaxAge = 30;
 
@@ -51,43 +53,27 @@ class SectionResource extends Resource<InboundRequestHandler> {
         mFe = fe;
         mSection = section;
         mExecutor = executor;
+        mResourceLink = SectionResourceLink.createForSection(fe, section);
 
         final Observable observable = getObservable();
 
+        mResourceLink.registerListener(mExecutor,
+                new ResourceLink.Listener<Map<String,Map<String,Object>>>() {
+                    @Override
+                    public void onResourceLinkChanged(
+                            ResourceLink<Map<String, Map<String, Object>>> rl,
+                            @Nullable Map<String, Map<String, Object>> value) {
+                        observable.trigger();
+                    }
+        });
+
         if (PropertyKey.SECTION_STATE.equals(mSection)) {
-            mFe.registerStateListener(
-                    mExecutor,
-                    new StateListener() {
-                        @Override
-                        public void onStateChanged(
-                                FunctionalEndpoint fe, Map<String, Object> state) {
-                            observable.trigger();
-                        }
-                    });
             mMaxAge = 30;
 
         } else if (PropertyKey.SECTION_METADATA.equals(mSection)) {
-            mFe.registerMetadataListener(
-                    mExecutor,
-                    new MetadataListener() {
-                        @Override
-                        public void onMetadataChanged(
-                                FunctionalEndpoint fe, Map<String, Object> meta) {
-                            observable.trigger();
-                        }
-                    });
             mMaxAge = 60 * 10;
 
         } else if (PropertyKey.SECTION_CONFIG.equals(mSection)) {
-            mFe.registerConfigListener(
-                    mExecutor,
-                    new ConfigListener() {
-                        @Override
-                        public void onConfigChanged(
-                                FunctionalEndpoint fe, Map<String, Object> conf) {
-                            observable.trigger();
-                        }
-                    });
             mMaxAge = 60 * 60;
         }
     }
@@ -160,12 +146,25 @@ class SectionResource extends Resource<InboundRequestHandler> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private Map<String, Map<String, Object>> castToMapOfMaps(Map<String, ?> payload) throws IllegalArgumentException {
+        for (Map.Entry<String, ?> entry : payload.entrySet()) {
+            String k = entry.getKey();
+            Object v = entry.getValue();
+            if (!(v instanceof Map)) {
+                throw new IllegalArgumentException("Unexpected type for trait " + k);
+            }
+        }
+
+        return (Map<String, Map<String, Object>>)payload;
+    }
+
     private void onSpecificPostRequest(InboundRequest inboundRequest) {
         Message request = inboundRequest.getMessage();
 
         if (DEBUG) LOGGER.info("onSpecificPostRequest " + request);
 
-        Map<String, Object> content;
+        Map<String, Map<String, Object>> content;
 
         try {
             Integer contentFormat = request.getOptionSet().getContentFormat();
@@ -178,12 +177,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
                 inboundRequest.sendSimpleResponse(Code.RESPONSE_BAD_REQUEST, "No payload");
             }
 
-            Map<String, Object> uncollapsedContent;
+            Map<String, Object> payload;
 
             switch (contentFormat) {
                 case ContentFormat.APPLICATION_CBOR:
                     CborMap cborPayload = CborMap.createFromCborByteArray(request.getPayload());
-                    uncollapsedContent = cborPayload.toNormalMap();
+                    payload = cborPayload.toNormalMap();
                     break;
 
                 case ContentFormat.APPLICATION_JSON:
@@ -192,7 +191,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
                     // JSONObject.toMap() is unavailable on Android, so we use
                     // CBOR instead to create the map:
-                    uncollapsedContent = CborMap.createFromJSONObject(jsonPayload).toNormalMap();
+                    payload = CborMap.createFromJSONObject(jsonPayload).toNormalMap();
                     break;
 
                 default:
@@ -200,17 +199,11 @@ class SectionResource extends Resource<InboundRequestHandler> {
                     return;
             }
 
-            content = Utils.collapseSectionToOneLevelMap(uncollapsedContent, mSection);
+            content = castToMapOfMaps(payload);
 
-        } catch (CborConversionException | CborParseException | JSONException x) {
+        } catch (CborConversionException | CborParseException | JSONException | IllegalArgumentException x) {
             if (DEBUG) LOGGER.warning("Parsing exception: " + x);
             inboundRequest.sendSimpleResponse(Code.RESPONSE_BAD_REQUEST, x.toString());
-            return;
-
-        } catch (SmcpException x) {
-            LOGGER.warning("SMCP exception: " + x);
-            x.printStackTrace();
-            inboundRequest.sendSimpleResponse(Code.RESPONSE_INTERNAL_SERVER_ERROR, x.toString());
             return;
 
         } catch (RuntimeException x) {
@@ -224,7 +217,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
         inboundRequest.responsePending();
 
-        ListenableFuture<?> future = mFe.applyProperties(content);
+        ListenableFuture<?> future = mResourceLink.invoke(content);
         future.addListener(new EmptyResponseHandler(inboundRequest, future), mExecutor);
     }
 
@@ -232,15 +225,9 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
         if (DEBUG) LOGGER.info("onSpecificGetRequest " + inboundRequest.getMessage());
 
-        final ListenableFuture<Map<String, Object>> future;
+        final ListenableFuture<Map<String, Map<String, Object>>> future;
 
-        if (PropertyKey.SECTION_CONFIG.equals(mSection)) {
-            future = mFe.fetchConfig();
-        } else if (PropertyKey.SECTION_METADATA.equals(mSection)) {
-            future = mFe.fetchMetadata();
-        } else {
-            future = mFe.fetchState();
-        }
+        future = mResourceLink.fetchValue();
 
         inboundRequest.responsePending();
 
@@ -254,10 +241,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
                         final CborMap value;
 
                         try {
-                            final Map<String, Object> collapsed = future.get();
-                            final Map<String, Map<String, Object>> uncollapsed =
-                                    Utils.uncollapseSectionFromOneLevelMap(collapsed, mSection);
-                            value = CborMap.createFromJavaObject(uncollapsed);
+                            value = CborMap.createFromJavaObject(future.get());
                             MutableMessage response = request.createResponse(Code.RESPONSE_CONTENT);
                             int accept = -1;
                             if (optionSet.hasAccept()) {
@@ -379,9 +363,6 @@ class SectionResource extends Resource<InboundRequestHandler> {
                             inboundRequest.sendSimpleResponse(
                                     Code.RESPONSE_INTERNAL_SERVER_ERROR, x.toString());
 
-                        } catch (SmcpException x) {
-                            inboundRequest.sendSimpleResponse(
-                                    Code.RESPONSE_INTERNAL_SERVER_ERROR, x.toString());
                         }
                     }
                 },
