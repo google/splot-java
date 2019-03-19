@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.iot.coap.Client;
 import com.google.iot.coap.Coap;
+import com.google.iot.coap.UnsupportedSchemeException;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.LocalFunctionalEndpoint;
 import com.google.iot.m2m.trait.BaseTrait;
@@ -47,13 +48,19 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
      */
     final Group mLocalGroup;
 
+    private static Client createClient(SmcpTechnology technology, String groupId) {
+        try {
+            return new Client(
+                    technology.mLocalEndpointManager,
+                    Coap.SCHEME_UDP + "://" + Coap.ALL_NODES_MCAST_HOSTNAME + "/g/" + groupId);
+        } catch (UnsupportedSchemeException e) {
+            // Should not happen.
+            throw new AssertionError(e);
+        }
+    }
     SmcpGroup(SmcpTechnology technology, String groupId) {
         // TODO: Use group-specific multicast addresses.
-        super(
-                new Client(
-                        technology.mLocalEndpointManager,
-                        Coap.SCHEME_UDP + "://" + Coap.ALL_NODES_MCAST_HOSTNAME + "/g/" + groupId),
-                technology);
+        super(createClient(technology, groupId), technology);
 
         mGroupId = groupId;
         mLocalGroup = mTechnology.mLocalTechnology.findOrCreateGroupWithId(groupId);

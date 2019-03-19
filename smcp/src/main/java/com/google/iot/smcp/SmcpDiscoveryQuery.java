@@ -151,11 +151,19 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
                     anchorUri = baseUri;
                 }
 
-                if (DEBUG) LOGGER.info("Found " + anchorUri.resolve(entry.getKey()));
+                final URI resolvedUri = anchorUri.resolve(entry.getKey());
 
-                FunctionalEndpoint fe =
-                        mTechnology.getFunctionalEndpointForNativeUri(
-                                anchorUri.resolve(entry.getKey()));
+                if (DEBUG) LOGGER.info("Found " + resolvedUri);
+
+                final FunctionalEndpoint fe;
+
+                try {
+                    fe = mTechnology.getFunctionalEndpointForNativeUri(resolvedUri);
+
+                } catch (UnknownResourceException e) {
+                    LOGGER.warning("Skipping " + resolvedUri + " : " + e);
+                    continue;
+                }
 
                 if (fe instanceof SmcpFunctionalEndpoint) {
                     SmcpFunctionalEndpoint sfe = ((SmcpFunctionalEndpoint) fe);
@@ -169,20 +177,18 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
                     }
                 }
 
-                if (fe != null) {
-                    synchronized (mFunctionalEndpoints) {
-                        mFunctionalEndpoints.add(fe);
+                synchronized (mFunctionalEndpoints) {
+                    mFunctionalEndpoints.add(fe);
 
-                        if (mListener != null) {
-                            final Listener listener = mListener;
-                            mListenerExecutor.execute(
-                                    () -> listener.onDiscoveryQueryFoundFunctionalEndpoint(fe));
-                        }
-                        if (mMaxResults > 0 && mFunctionalEndpoints.size() >= mMaxResults) {
-                            if (DEBUG) LOGGER.warning("Got maximum result count " + mMaxResults);
-                            stop();
-                            break;
-                        }
+                    if (mListener != null) {
+                        final Listener listener = mListener;
+                        mListenerExecutor.execute(
+                                () -> listener.onDiscoveryQueryFoundFunctionalEndpoint(fe));
+                    }
+                    if (mMaxResults > 0 && mFunctionalEndpoints.size() >= mMaxResults) {
+                        if (DEBUG) LOGGER.warning("Got maximum result count " + mMaxResults);
+                        stop();
+                        break;
                     }
                 }
             }

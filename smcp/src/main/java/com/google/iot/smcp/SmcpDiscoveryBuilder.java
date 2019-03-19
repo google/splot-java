@@ -18,6 +18,9 @@ package com.google.iot.smcp;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.DiscoveryBuilder;
 import com.google.iot.m2m.base.DiscoveryQuery;
+import com.google.iot.m2m.base.TechnologyRuntimeException;
+import com.google.iot.m2m.base.UnknownResourceException;
+
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,7 +70,11 @@ public class SmcpDiscoveryBuilder extends DiscoveryBuilder {
         return this;
     }
 
-    public SmcpDiscoveryBuilder setBaseUri(URI baseUri) {
+    public SmcpDiscoveryBuilder setBaseUri(URI baseUri) throws UnknownResourceException {
+        if (baseUri.getScheme() != null
+                && !mTechnology.getLocalEndpointManager().supportsScheme(baseUri.getScheme())) {
+            throw new UnknownResourceException("Unsupported URI scheme for " + baseUri);
+        }
         mBaseUri = baseUri;
         return this;
     }
@@ -169,9 +176,15 @@ public class SmcpDiscoveryBuilder extends DiscoveryBuilder {
             }
         }
 
-        client = new Client(mTechnology.getLocalEndpointManager(), baseUri, mLocalEndpoint, null);
+        try {
+            client = new Client(mTechnology.getLocalEndpointManager(), baseUri, mLocalEndpoint, null);
 
-        client.changeUri(URI.create(Smcp.DISCOVERY_QUERY_URI));
+        } catch (UnsupportedSchemeException e) {
+            // This shouldn't happen.
+            throw new TechnologyRuntimeException(e);
+        }
+
+        client.changePath(Smcp.DISCOVERY_QUERY_URI);
 
         return buildAndRunInternal(client);
     }

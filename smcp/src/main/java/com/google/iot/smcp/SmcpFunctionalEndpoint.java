@@ -1091,7 +1091,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     private Set<FunctionalEndpoint> getChildrenFromResponse(URI baseUri, Message response)
-            throws SmcpRemoteException {
+            throws TechnologyException {
         if (response.getCode() != Code.RESPONSE_CONTENT) {
             throw new SmcpRemoteException(response.toString());
         }
@@ -1245,7 +1245,13 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         String childPath = MethodKey.SECTION_FUNC + "/" + traitShortId + "/" + childId + "/";
 
         FunctionalEndpoint ret =
-                mTechnology.getFunctionalEndpointForNativeUri(mClient.getUri().resolve(childPath));
+                null;
+        try {
+            ret = mTechnology.getFunctionalEndpointForNativeUri(mClient.getUri().resolve(childPath));
+        } catch (UnknownResourceException e) {
+            // Should not happen.
+            throw new SmcpRuntimeException(e);
+        }
 
         if (ret instanceof SmcpFunctionalEndpoint) {
             ((SmcpFunctionalEndpoint) ret).mParent = this;

@@ -59,7 +59,6 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
     private final Map<FunctionalEndpoint, HostedFunctionalEndpointAdapter> mHostedAdapterLookup =
             new HashMap<>();
-    private final Map<FunctionalEndpoint, String> mHostedPathLookup = new WeakHashMap<>();
 
     private final NestedPersistentStateManager mNestedPersistentStateManager =
             new NestedPersistentStateManager();
@@ -72,6 +71,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     private final Resource<InboundRequestHandler> mRootResource = new Resource<>();
 
     private final GroupsResource mGroupsResource = new GroupsResource(this);
+
+    private final Map<URI, WeakReference<ResourceLink<Object>>> mResourceLinkCache
+            = new WeakHashMap<>();
 
     /** Gets the CoAP {@link Server} object used to host functional endpoints. */
     public Server getServer() {
@@ -197,10 +199,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                         };
 
                 mHostedAdapterLookup.put(fe, adapter);
+                mLocalTechnology.host(group.mLocalGroup);
                 mGroupsResource.addChild(groupId, adapter);
-
-                mHostedPathLookup.put(fe, "g/" + groupId);
-                mWellKnownCoreResource.addResource("/g/" + groupId, adapter);
+                mWellKnownCoreResource.addResource("g/" + groupId, adapter);
 
                 try {
                     mNestedPersistentStateManager.flush();
@@ -211,21 +212,38 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
             } else if (!isAssociatedWith(fe)) {
                 mLocalTechnology.host(fe);
 
-                HostedFunctionalEndpointAdapter adapter =
-                        new HostedFunctionalEndpointAdapter(this, fe);
-                int index;
-                for (index = 1; index < 10000; index++) {
-                    if (!mHostedPathLookup.containsValue(Integer.toString(index))) {
-                        break;
+                try {
+                    HostedFunctionalEndpointAdapter adapter =
+                            new HostedFunctionalEndpointAdapter(this, fe);
+                    mHostedAdapterLookup.put(fe, adapter);
+
+                    URI uri = mLocalTechnology.getNativeUriForFunctionalEndpoint(fe);
+
+                    String path = uri.getRawPath();
+
+                    if (path == null) {
+                        throw new TechnologyRuntimeException("Unable to host, path is invalid");
                     }
+
+                    while (path.startsWith("/")) {
+                        path = path.substring(1);
+                    }
+
+                    while (path.endsWith("/")) {
+                        path = path.substring(0, path.length()-1);
+                    }
+
+                    mRootResource.addChild(path, adapter);
+
+                    mWellKnownCoreResource.addResource(uri.toASCIIString(), adapter);
+
+                    if (DEBUG) LOGGER.info("Hosting " + fe + " at " + uri + " (" + path + ")");
+                } catch (RuntimeException x) {
+                    mLocalTechnology.unhost(fe);
+                    throw x;
                 }
 
-                String path = Integer.toString(index);
-                mHostedAdapterLookup.put(fe, adapter);
-                mHostedPathLookup.put(fe, path);
-                mRootResource.addChild(path, adapter);
-                mWellKnownCoreResource.addResource("/" + path, adapter);
-
+                // Go ahead and fetch to cache.
                 fe.fetchMetadata();
             }
         }
@@ -243,7 +261,6 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
             mLocalTechnology.unhost(fe);
 
             mHostedAdapterLookup.remove(fe);
-            mHostedPathLookup.remove(fe);
             mRootResource.removeChild(adapter);
             mWellKnownCoreResource.removeResource(adapter);
 
@@ -329,47 +346,13 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) {
+    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException {
         if (uri.getQuery() != null) {
             // No query parts are allowed in the functional endpoint URI.
             return null;
 
         } else if (uri.getScheme() == null) {
-            String uriString = uri.getRawPath();
-
-            for (Map.Entry<FunctionalEndpoint, String> entry : mHostedPathLookup.entrySet()) {
-                String prefix = "/" + entry.getValue() + "/";
-                if (uriString.startsWith(prefix)) {
-                    if (uriString.equals(prefix)) {
-                        // This is the URI for this functional endpoint.
-                        return entry.getKey();
-                    }
-
-                    // This is a child. Look up it.
-                    uriString = uriString.substring(prefix.length());
-                    String[] parts = uriString.split("/", -1);
-                    int i = 0;
-                    FunctionalEndpoint ret = entry.getKey();
-
-                    while (ret != null && (i < parts.length - 2)) {
-                        if (!parts[i++].equals("f")) {
-                            // Bad child path.
-                            return null;
-                        }
-                        String traitShortName = parts[i++];
-                        String childId = parts[i++];
-
-                        ret = ret.getChild(traitShortName, childId);
-                    }
-
-                    if (i == parts.length || ((i == parts.length - 1) && parts[i].isEmpty())) {
-                        return ret;
-                    }
-
-                    return null;
-                }
-            }
-            return null;
+            return mLocalTechnology.getFunctionalEndpointForNativeUri(uri);
         } else {
             FunctionalEndpoint ret = null;
             synchronized (mNativeFunctionalEndpoints) {
@@ -380,7 +363,11 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 }
 
                 if (ret == null) {
-                    ret = new SmcpFunctionalEndpoint(new Client(mLocalEndpointManager, uri), this);
+                    try {
+                        ret = new SmcpFunctionalEndpoint(new Client(mLocalEndpointManager, uri), this);
+                    } catch (UnsupportedSchemeException e) {
+                        throw new UnknownResourceException(e);
+                    }
                     mNativeFunctionalEndpoints.put(
                             uri, new WeakReference<>((SmcpFunctionalEndpoint) ret));
                 }
@@ -390,32 +377,68 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) {
+    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException {
         if (isNative(fe)) {
             return ((SmcpFunctionalEndpoint) fe).getUri();
         }
 
-        FunctionalEndpoint parentFe = fe.getParentFunctionalEndpoint();
+        return mLocalTechnology.getNativeUriForFunctionalEndpoint(fe);
+    }
 
-        if (parentFe != null) {
-            URI parentUri = getNativeUriForFunctionalEndpoint(parentFe);
-            if (parentUri != null) {
-                return parentUri.resolve(
-                        MethodKey.SECTION_FUNC
-                                + "/"
-                                + parentFe.getTraitForChild(fe)
-                                + "/"
-                                + parentFe.getIdForChild(fe)
-                                + "/");
+    @Override
+    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+        ResourceLink<Object> ret = null;
+
+        if (uri.getScheme() == null) {
+            ret = mLocalTechnology.getResourceLinkForNativeUri(uri);
+
+        } else {
+            WeakReference<ResourceLink<Object>> ref = mResourceLinkCache.get(uri);
+
+            if (ref != null) {
+                ret = ref.get();
             }
-        } else if (isHosted(fe)) {
-            InboundRequestHandler rh = mHostedAdapterLookup.get(fe);
-            if (rh != null) {
-                return URI.create("/" + mRootResource.getNameForChild(rh) + "/");
+
+            if (ret == null && mLocalEndpointManager.supportsScheme(uri.getScheme())) {
+                Client client = null;
+                try {
+                    client = new Client(mLocalEndpointManager, uri);
+                } catch (UnsupportedSchemeException e) {
+                    throw new UnknownResourceException(e);
+                }
+                ret = new SmcpResourceLink<>(client, Object.class);
+                ref = new WeakReference<>(ret);
+                mResourceLinkCache.put(uri, ref);
             }
         }
 
-        return null;
+        if (ret == null) {
+            throw new UnknownResourceException("Unsupported URI: " + uri);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey) throws UnassociatedResourceException {
+        return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+    }
+
+    @Override
+    public URI getNativeUriForSection(FunctionalEndpoint fe, String section) throws UnassociatedResourceException {
+        return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+    }
+
+    @Override
+    public URI getNativeUriForResourceLink(ResourceLink<Object> rl) {
+        URI ret;
+        if (rl instanceof SmcpResourceLink) {
+            SmcpResourceLink<Object> srl = (SmcpResourceLink<Object>)rl;
+            ret = srl.getUri();
+        } else {
+            ret = mLocalTechnology.getNativeUriForResourceLink(rl);
+        }
+        return ret;
     }
 
     @Override

@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.iot.coap</groupId>
       <artifactId>coap</artifactId>
-      <version>0.01.00</version>
+      <version>HEAD-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
