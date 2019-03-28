@@ -69,7 +69,7 @@ public abstract class TypedKey<T> {
         if (ret == null || getType().isInstance(ret)) {
             return (T) ret;
         }
-        throw new InvalidValueException();
+        throw new InvalidValueException("Expected " + getType() + ", got " + ret.getClass());
     }
 
     /**
