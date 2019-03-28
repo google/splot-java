@@ -21,6 +21,8 @@ import com.google.iot.m2m.base.CorruptPersistentStateException;
 import com.google.iot.m2m.base.PersistentStateInterface;
 import com.google.iot.m2m.base.PersistentStateListener;
 import com.google.iot.m2m.base.PersistentStateManager;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,7 @@ import java.util.logging.Logger;
  */
 public final class FilePersistentStateManager implements PersistentStateManager {
     private static final boolean DEBUG = false;
+    private static final int ASYNC_SAVE_DELAY_MS = 250;
     private static final Logger LOGGER =
             Logger.getLogger(FilePersistentStateManager.class.getCanonicalName());
 
@@ -125,7 +128,17 @@ public final class FilePersistentStateManager implements PersistentStateManager 
         mTempFile = new File(mFile.getParentFile(), mFile.getName() + ".temp");
         mOldFile = new File(mFile.getParentFile(), mFile.getName() + ".old");
 
-        mExecutor = new ScheduledThreadPoolExecutor(1);
+        mExecutor = new ScheduledThreadPoolExecutor(1) {
+            @Override
+            protected void afterExecute(Runnable r, @Nullable Throwable t) {
+                super.afterExecute(r, t);
+
+                if (t != null) {
+                    Thread.getDefaultUncaughtExceptionHandler()
+                            .uncaughtException(Thread.currentThread(), t);
+                }
+            }
+        };
     }
 
     private void loadInitialData() throws IOException, CorruptPersistentStateException {
@@ -275,7 +288,7 @@ public final class FilePersistentStateManager implements PersistentStateManager 
                             LOGGER.log(Level.SEVERE, "Unable to write state", x);
                         }
                     },
-                    250,
+                    ASYNC_SAVE_DELAY_MS,
                     TimeUnit.MILLISECONDS);
         }
     }
@@ -297,7 +310,8 @@ public final class FilePersistentStateManager implements PersistentStateManager 
 
             try {
                 if (obj instanceof CborMap) {
-                    Map<String, Object> map = ((CborMap) obj).toNormalMap();
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> map = ((CborMap) obj).toJavaObject(Map.class);
                     objectInstance.initWithPersistentState(map);
                 } else {
                     objectInstance.initWithPersistentState(ImmutableMap.of());
