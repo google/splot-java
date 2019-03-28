@@ -316,10 +316,10 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
             switch(queryComponents[0]) {
                 case PROP_METHOD_INCREMENT: {
-                    PropertyKey<Double> key = new PropertyKey<>(section, trait, name,
-                            Double.class);
+                    PropertyKey<Number> key = new PropertyKey<>(section, trait, name,
+                            Number.class);
                     ret = ResourceLink.stripType(
-                            PropertyResourceLink.createIncrement(parser.mFe, key), Double.class);
+                            PropertyResourceLink.createIncrement(parser.mFe, key), Number.class);
                     break;
                 }
 
