@@ -643,6 +643,14 @@ public abstract class LocalFunctionalEndpoint
         final Set<PropertyListenerEntry> keySet =
                 mPropertyListenerMap.computeIfAbsent(key, k -> new HashSet<>());
         keySet.add(entry);
+        executor.execute(()->{
+            try {
+                listener.onPropertyChanged(this, key, getCurrentPropertyValue(key));
+            } catch (PropertyException|TechnologyException ignored) {
+                // We eat these exceptions since they simply indicate that
+                // the property couldn't be directly accessed at this time.
+            }
+        });
     }
 
     @Override
@@ -731,6 +739,7 @@ public abstract class LocalFunctionalEndpoint
     public final synchronized void registerStateListener(
             Executor executor, StateListener listener) {
         mStateListenerMap.put(listener, executor);
+        executor.execute(()->listener.onStateChanged(this, copyCachedState()));
     }
 
     @Override
@@ -742,6 +751,7 @@ public abstract class LocalFunctionalEndpoint
     public final synchronized void registerConfigListener(
             Executor executor, ConfigListener listener) {
         mConfigListenerMap.put(listener, executor);
+        executor.execute(()->listener.onConfigChanged(this, copyCachedConfig()));
     }
 
     @Override
@@ -753,6 +763,7 @@ public abstract class LocalFunctionalEndpoint
     public final synchronized void registerMetadataListener(
             Executor executor, MetadataListener listener) {
         mMetadataListenerMap.put(listener, executor);
+        executor.execute(()->listener.onMetadataChanged(this, copyCachedMetadata()));
     }
 
     @Override
