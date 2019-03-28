@@ -36,6 +36,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.google.iot.m2m.base.Splot.*;
+
 /* TODO: Lambdas cause compilation problems in Android for this file. Figure out why. */
 
 @SuppressWarnings("Convert2Lambda")
@@ -67,13 +69,13 @@ class SectionResource extends Resource<InboundRequestHandler> {
                     }
         });
 
-        if (PropertyKey.SECTION_STATE.equals(mSection)) {
+        if (Splot.SECTION_STATE.equals(mSection)) {
             mMaxAge = 30;
 
-        } else if (PropertyKey.SECTION_METADATA.equals(mSection)) {
+        } else if (Splot.SECTION_METADATA.equals(mSection)) {
             mMaxAge = 60 * 10;
 
-        } else if (PropertyKey.SECTION_CONFIG.equals(mSection)) {
+        } else if (Splot.SECTION_CONFIG.equals(mSection)) {
             mMaxAge = 60 * 60;
         }
     }
@@ -459,11 +461,11 @@ class SectionResource extends Resource<InboundRequestHandler> {
         ListenableFuture<?> future;
         Float duration = null;
         Map<String, String> queryMap = request.getOptionSet().getUriQueriesAsMap();
-        String queryDuration = queryMap.get("d");
+        String queryDuration = queryMap.get(PARAM_DURATION);
 
         if (queryDuration != null) {
             try {
-                duration = Float.valueOf(queryMap.get("d"));
+                duration = Float.valueOf(queryMap.get(PARAM_DURATION));
             } catch (NumberFormatException x) {
                 inboundRequest.sendSimpleResponse(
                         Code.RESPONSE_BAD_REQUEST, "Unable to parse query duration");
@@ -481,7 +483,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
             future = mFe.applyProperties(props);
 
-        } else if ("inc".equals(query.get(0))) {
+        } else if (PROP_METHOD_INCREMENT.equals(query.get(0))) {
             PropertyKey<Number> key =
                     new PropertyKey<>(section + "/" + trait + "/" + prop, Number.class);
             if (content == null) {
@@ -494,12 +496,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
                 return;
             }
 
-        } else if ("tog".equals(query.get(0))) {
+        } else if (PROP_METHOD_TOGGLE.equals(query.get(0))) {
             PropertyKey<Boolean> key =
                     new PropertyKey<>(section + "/" + trait + "/" + prop, Boolean.class);
             future = mFe.toggleProperty(key);
 
-        } else if ("add".equals(query.get(0))) {
+        } else if (PROP_METHOD_INSERT.equals(query.get(0))) {
             PropertyKey<Object[]> key =
                     new PropertyKey<>(section + "/" + trait + "/" + prop, Object[].class);
             if (content == null) {
@@ -509,7 +511,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
             }
             future = mFe.addValueToProperty(key, content);
 
-        } else if ("rem".equals(query.get(0))) {
+        } else if (PROP_METHOD_REMOVE.equals(query.get(0))) {
             PropertyKey<Object[]> key =
                     new PropertyKey<>(section + "/" + trait + "/" + prop, Object[].class);
             if (content == null) {

@@ -20,10 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Method;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
-import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.MethodKey;
-import com.google.iot.m2m.base.ParamKey;
-import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.*;
 
 /**
  * Trait for managing a cryptographic keychain.
@@ -56,7 +53,7 @@ public final class KeychainTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Method for creating a keychain item.

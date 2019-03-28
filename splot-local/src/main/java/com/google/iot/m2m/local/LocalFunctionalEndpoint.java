@@ -546,7 +546,7 @@ public abstract class LocalFunctionalEndpoint
     static Map<String, Object> extractAndRemoveState(Map<String, Object> map) {
         Map<String, Object> ret = new HashMap<>();
         for (String key : new ArrayList<>(map.keySet())) {
-            if (key.startsWith(PropertyKey.SECTION_STATE + "/")) {
+            if (key.startsWith(Splot.SECTION_STATE + "/")) {
                 ret.put(key, map.get(key));
                 map.remove(key);
             }
@@ -556,7 +556,7 @@ public abstract class LocalFunctionalEndpoint
 
     static boolean hasStateProperties(Map<String, Object> map) {
         for (String key : map.keySet()) {
-            if (key.startsWith(PropertyKey.SECTION_STATE + "/")) {
+            if (key.startsWith(Splot.SECTION_STATE + "/")) {
                 return true;
             }
         }

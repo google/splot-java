@@ -16,8 +16,8 @@
 package com.google.iot.m2m.trait;
 
 import static com.google.iot.m2m.annotation.Property.*;
-import static com.google.iot.m2m.base.PropertyKey.SECTION_METADATA;
-import static com.google.iot.m2m.base.PropertyKey.SECTION_STATE;
+import static com.google.iot.m2m.base.Splot.SECTION_METADATA;
+import static com.google.iot.m2m.base.Splot.SECTION_STATE;
 
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;

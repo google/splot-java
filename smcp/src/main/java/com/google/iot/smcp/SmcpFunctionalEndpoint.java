@@ -31,6 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static com.google.iot.m2m.base.Splot.*;
+
 class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
@@ -143,22 +145,22 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Override
     public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value) {
-        return doPost(key.getName() + "?inc", value);
+        return doPost(key.getName() + "?" + PROP_METHOD_INCREMENT, value);
     }
 
     @Override
     public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
-        return doPost(key.getName() + "?add", value);
+        return doPost(key.getName() + "?" + PROP_METHOD_INSERT, value);
     }
 
     @Override
     public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
-        return doPost(key.getName() + "?rem", value);
+        return doPost(key.getName() + "?" + PROP_METHOD_REMOVE, value);
     }
 
     @Override
     public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
-        return doPost(key.getName() + "?tog", null);
+        return doPost(key.getName() + "?" + PROP_METHOD_TOGGLE, null);
     }
 
     @Override
@@ -265,13 +267,13 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     }
 
                     switch (section) {
-                        case PropertyKey.SECTION_STATE:
+                        case Splot.SECTION_STATE:
                             receivedUpdateForState(collapsed);
                             break;
-                        case PropertyKey.SECTION_METADATA:
+                        case Splot.SECTION_METADATA:
                             receivedUpdateForMetadata(collapsed);
                             break;
-                        case PropertyKey.SECTION_CONFIG:
+                        case Splot.SECTION_CONFIG:
                             receivedUpdateForConfig(collapsed);
                             break;
                     }
@@ -287,17 +289,17 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Override
     public ListenableFuture<Map<String, Object>> fetchState() {
-        return fetchSection(PropertyKey.SECTION_STATE);
+        return fetchSection(Splot.SECTION_STATE);
     }
 
     @Override
     public ListenableFuture<Map<String, Object>> fetchConfig() {
-        return fetchSection(PropertyKey.SECTION_CONFIG);
+        return fetchSection(Splot.SECTION_CONFIG);
     }
 
     @Override
     public ListenableFuture<Map<String, Object>> fetchMetadata() {
-        return fetchSection(PropertyKey.SECTION_METADATA);
+        return fetchSection(Splot.SECTION_METADATA);
     }
 
     <T> void updateCachedPropertyValue(PropertyKey<T> key, @Nullable T value) {
@@ -390,17 +392,17 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     private String getSectionFromKeyString(String key) {
-        if (key.startsWith(PropertyKey.SECTION_STATE + "/")) {
-            return PropertyKey.SECTION_STATE;
+        if (key.startsWith(Splot.SECTION_STATE + "/")) {
+            return Splot.SECTION_STATE;
         }
-        if (key.startsWith(PropertyKey.SECTION_METADATA + "/")) {
-            return PropertyKey.SECTION_METADATA;
+        if (key.startsWith(Splot.SECTION_METADATA + "/")) {
+            return Splot.SECTION_METADATA;
         }
-        if (key.startsWith(PropertyKey.SECTION_CONFIG + "/")) {
-            return PropertyKey.SECTION_CONFIG;
+        if (key.startsWith(Splot.SECTION_CONFIG + "/")) {
+            return Splot.SECTION_CONFIG;
         }
-        if (key.startsWith(MethodKey.SECTION_FUNC + "/")) {
-            return MethodKey.SECTION_FUNC;
+        if (key.startsWith(Splot.SECTION_FUNC + "/")) {
+            return Splot.SECTION_FUNC;
         }
         return null;
     }
@@ -533,7 +535,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 k -> {
                     Transaction ret =
                             mClient.newRequestBuilder()
-                                    .changePath(MethodKey.SECTION_FUNC + "/" + traitShortName + "/")
+                                    .changePath(Splot.SECTION_FUNC + "/" + traitShortName + "/")
                                     .addOption(Option.OBSERVE)
                                     .setOmitUriHostPortOptions(true)
                                     .addOption(Option.ACCEPT, ContentFormat.APPLICATION_LINK_FORMAT)
@@ -758,7 +760,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
                 mStateObserver =
                         mClient.newRequestBuilder()
-                                .changePath(PropertyKey.SECTION_STATE + "/")
+                                .changePath(Splot.SECTION_STATE + "/")
                                 .addOption(Option.OBSERVE)
                                 .setOmitUriHostPortOptions(true)
                                 .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
@@ -778,7 +780,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                     collapsed =
                                             Utils.collapseSectionToOneLevelMap(
                                                     Utils.getMapFromPayload(response),
-                                                    PropertyKey.SECTION_STATE);
+                                                    Splot.SECTION_STATE);
                                     receivedUpdateForState(collapsed);
 
                                 } catch (ResponseException | SmcpException e) {
@@ -823,7 +825,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
                 mConfigObserver =
                         mClient.newRequestBuilder()
-                                .changePath(PropertyKey.SECTION_CONFIG + "/")
+                                .changePath(Splot.SECTION_CONFIG + "/")
                                 .addOption(Option.OBSERVE)
                                 .setOmitUriHostPortOptions(true)
                                 .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
@@ -843,7 +845,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                     collapsed =
                                             Utils.collapseSectionToOneLevelMap(
                                                     Utils.getMapFromPayload(response),
-                                                    PropertyKey.SECTION_CONFIG);
+                                                    Splot.SECTION_CONFIG);
                                     receivedUpdateForConfig(collapsed);
                                 } catch (ResponseException | SmcpException e) {
                                     LOGGER.warning(
@@ -887,7 +889,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
                 mMetadataObserver =
                         mClient.newRequestBuilder()
-                                .changePath(PropertyKey.SECTION_METADATA + "/")
+                                .changePath(Splot.SECTION_METADATA + "/")
                                 .addOption(Option.OBSERVE)
                                 .setOmitUriHostPortOptions(true)
                                 .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
@@ -907,7 +909,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                     collapsed =
                                             Utils.collapseSectionToOneLevelMap(
                                                     Utils.getMapFromPayload(response),
-                                                    PropertyKey.SECTION_METADATA);
+                                                    Splot.SECTION_METADATA);
                                     receivedUpdateForMetadata(collapsed);
                                 } catch (ResponseException | SmcpException e) {
                                     LOGGER.warning(
@@ -1149,7 +1151,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         final Transaction transaction =
                 mClient.newRequestBuilder()
                         .setCode(Code.METHOD_GET)
-                        .changePath(MethodKey.SECTION_FUNC + "/" + traitShortId + "/")
+                        .changePath(Splot.SECTION_FUNC + "/" + traitShortId + "/")
                         .addOption(Option.ACCEPT, ContentFormat.APPLICATION_LINK_FORMAT)
                         .setOmitUriHostPortOptions(true)
                         .send();
@@ -1242,7 +1244,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     @Nullable
     @Override
     public FunctionalEndpoint getChild(String traitShortId, String childId) {
-        String childPath = MethodKey.SECTION_FUNC + "/" + traitShortId + "/" + childId + "/";
+        String childPath = Splot.SECTION_FUNC + "/" + traitShortId + "/" + childId + "/";
 
         FunctionalEndpoint ret =
                 null;

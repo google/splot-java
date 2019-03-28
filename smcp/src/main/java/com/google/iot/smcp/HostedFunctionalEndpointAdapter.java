@@ -18,7 +18,7 @@ package com.google.iot.smcp;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.trait.BaseTrait;
 import java.net.URI;
 import java.util.LinkedHashSet;
@@ -50,14 +50,14 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
         mExecutor = mTechnology.getExecutor();
 
         addChild(
-                PropertyKey.SECTION_STATE,
-                new SectionResource(mFe, PropertyKey.SECTION_STATE, mExecutor));
+                Splot.SECTION_STATE,
+                new SectionResource(mFe, Splot.SECTION_STATE, mExecutor));
         addChild(
-                PropertyKey.SECTION_CONFIG,
-                new SectionResource(mFe, PropertyKey.SECTION_CONFIG, mExecutor));
+                Splot.SECTION_CONFIG,
+                new SectionResource(mFe, Splot.SECTION_CONFIG, mExecutor));
         addChild(
-                PropertyKey.SECTION_METADATA,
-                new SectionResource(mFe, PropertyKey.SECTION_METADATA, mExecutor));
+                Splot.SECTION_METADATA,
+                new SectionResource(mFe, Splot.SECTION_METADATA, mExecutor));
 
         addChild("f", new FuncResource(mTechnology, mFe));
     }

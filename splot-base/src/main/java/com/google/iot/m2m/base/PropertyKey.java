@@ -24,14 +24,6 @@ import com.google.common.base.Preconditions;
  * @see com.google.iot.m2m.annotation.Method
  */
 public final class PropertyKey<T> extends TypedKey<T> {
-    /** "Directory" name for state section. */
-    public static final String SECTION_STATE = "s";
-
-    /** "Directory" name for config section. */
-    public static final String SECTION_CONFIG = "c";
-
-    /** "Directory" name for metadata section. */
-    public static final String SECTION_METADATA = "m";
 
     /**
      * Method for determining if the given property name is in the state section.
@@ -41,7 +33,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionState()
      */
     public static boolean isSectionState(String name) {
-        return name.startsWith(SECTION_STATE + "/");
+        return name.startsWith(Splot.SECTION_STATE + "/");
     }
 
     /**
@@ -52,7 +44,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionConfig()
      */
     public static boolean isSectionConfig(String name) {
-        return name.startsWith(SECTION_CONFIG + "/");
+        return name.startsWith(Splot.SECTION_CONFIG + "/");
     }
 
     /**
@@ -63,7 +55,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionMetadata()
      */
     public static boolean isSectionMetadata(String name) {
-        return name.startsWith(SECTION_METADATA + "/");
+        return name.startsWith(Splot.SECTION_METADATA + "/");
     }
 
     private final String mName;
@@ -89,7 +81,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * Preferred constructor for PropertyKey objects.
      *
      * @param section the short name of the section this property is in. Can be one of {@link
-     *     #SECTION_STATE}, {@link #SECTION_CONFIG}, or {@link #SECTION_METADATA}.
+     *     Splot#SECTION_STATE}, {@link Splot#SECTION_CONFIG}, or {@link Splot#SECTION_METADATA}.
      * @param trait the short name of the trait that owns this property
      * @param shortName the short name of the property
      * @param type the class for the value that will be associated with this property.
@@ -103,8 +95,8 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * &lt;SECTION&gt;/&lt;TRAIT-ID&gt;/&lt;PROP-ID&gt;</code>.
      *
      * <ul>
-     *   <li>{@code SECTION}: either {@link #SECTION_STATE}, {@link #SECTION_CONFIG}, or {@link
-     *       #SECTION_METADATA}
+     *   <li>{@code SECTION}: either {@link Splot#SECTION_STATE}, {@link Splot#SECTION_CONFIG}, or {@link
+     *       Splot#SECTION_METADATA}
      *   <li>{@code TRAIT-ID}: the short identifier of the trait that this property belongs to
      *   <li>{@code PROP-ID}: the short identifier of the property
      * </ul>

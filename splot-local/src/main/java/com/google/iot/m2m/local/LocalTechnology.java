@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static com.google.iot.m2m.base.Splot.*;
+
 /**
  * A {@link Technology} class that allows for dumb, non-multicast-optimized groups and (eventually)
  * automation pairings/rules.
@@ -242,7 +244,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
             path = mComponents[0];
 
-            if ("g".equals(path)) {
+            if (Splot.GROUP_RESOURCE.equals(path)) {
                 if (mComponents.length == 1) {
                     throw new UnknownResourceException("Missing group name");
                 }
@@ -264,7 +266,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
             }
 
             // Find the child
-            while ((remainingComponents() > 3) && MethodKey.SECTION_FUNC.equals(getRelativeComponent(1))) {
+            while ((remainingComponents() > 3) && Splot.SECTION_FUNC.equals(getRelativeComponent(1))) {
                 String traitName = getRelativeComponent(2);
                 String childId = getRelativeComponent(3);
 
@@ -313,7 +315,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
             ResourceLink<Object> ret;
 
             switch(queryComponents[0]) {
-                case "inc": {
+                case PROP_METHOD_INCREMENT: {
                     PropertyKey<Double> key = new PropertyKey<>(section, trait, name,
                             Double.class);
                     ret = ResourceLink.stripType(
@@ -321,7 +323,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                     break;
                 }
 
-                case "tog": {
+                case PROP_METHOD_TOGGLE: {
                     PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name,
                             Boolean.class);
                     ret = ResourceLink.stripType(
@@ -329,14 +331,14 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                     break;
                 }
 
-                case "ins": {
+                case PROP_METHOD_INSERT: {
                     PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
                             Object[].class);
                     ret = PropertyResourceLink.createInsert(parser.mFe, key);
                     break;
                 }
 
-                case "rem": {
+                case PROP_METHOD_REMOVE: {
                     PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
                             Object[].class);
                     ret = PropertyResourceLink.createRemove(parser.mFe, key);
@@ -537,7 +539,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                         String traitUri =
                                 fe.getCachedProperty(
                                         new PropertyKey<>(
-                                                PropertyKey.SECTION_METADATA
+                                                Splot.SECTION_METADATA
                                                         + "/"
                                                         + trait
                                                         + "/turi",

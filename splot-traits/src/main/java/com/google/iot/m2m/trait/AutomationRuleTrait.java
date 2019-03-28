@@ -21,6 +21,8 @@ import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
+
 import java.net.URI;
 import java.util.Map;
 
@@ -55,7 +57,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * The number of times this rule has "fired". This count may be reset by writing zero. Writing
@@ -64,7 +66,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_ONLY | RESET)
     public static final PropertyKey<Integer> STAT_COUNT =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "c", java.lang.Integer.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "c", java.lang.Integer.class);
 
     /**
      * The number of seconds ago that this rule last fired. This value is not cacheable. Observing
@@ -72,7 +74,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> STAT_LAST =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "last", java.lang.Integer.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "last", java.lang.Integer.class);
 
     /**
      * Criteria table for determining when the action should fire. All of the given criteria must be
@@ -129,12 +131,12 @@ public final class AutomationRuleTrait {
     @Property(READ_WRITE | REQUIRED)
     @SuppressWarnings("unchecked")
     public static final PropertyKey<Map<String, Object>[]> CONF_CONDITIONS =
-            new PropertyKey(PropertyKey.SECTION_CONFIG, TRAIT_ID, "cond", java.util.Map[].class);
+            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "cond", java.util.Map[].class);
 
     /** The absolute path or URI for the action. */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<URI> CONF_ACTION_PATH =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "path", URI.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "path", URI.class);
 
     /**
      * The method (GET/POST/PUT/DELETE) used for the action.
@@ -148,7 +150,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<String> CONF_ACTION_METHOD =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "meth", java.lang.String.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "meth", java.lang.String.class);
 
     /**
      * {@code GET} RESTful method.
@@ -187,7 +189,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Object> CONF_ACTION_BODY =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "body", java.lang.Object.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "body", java.lang.Object.class);
 
     /**
      * The <a href="https://tools.ietf.org/html/rfc7252#section-12.3">CoAP content-format</a> to use
@@ -200,7 +202,7 @@ public final class AutomationRuleTrait {
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Integer> CONF_ACTION_CONTENT_FORMAT =
             new PropertyKey<>(
-                    PropertyKey.SECTION_CONFIG, TRAIT_ID, "cfmt", java.lang.Integer.class);
+                    Splot.SECTION_CONFIG, TRAIT_ID, "cfmt", java.lang.Integer.class);
 
     /**
      * Path for condition. Optional.

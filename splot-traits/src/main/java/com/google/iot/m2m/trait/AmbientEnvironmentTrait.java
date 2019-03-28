@@ -20,6 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
 
 /**
  * Trait for temperature, pressure, humidity, etc. This would typically be used by environmental
@@ -52,25 +53,25 @@ public final class AmbientEnvironmentTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /** Ambient air pressure <em>(Units TBD)</em>. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_PRESSURE =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "pres", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "pres", java.lang.Float.class);
 
     /** Ambient temperature in °C. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_TEMPERATURE =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "temp", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "temp", java.lang.Float.class);
 
     /** Relative humidity as a value between 0.0 (0%) and 1.0 (100%). */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_HUMIDITY =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "humi", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "humi", java.lang.Float.class);
 
     /** Ambient light level <em>(Units TBD)</em>. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_LIGHT_LEVEL =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "llvl", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "llvl", java.lang.Float.class);
 }

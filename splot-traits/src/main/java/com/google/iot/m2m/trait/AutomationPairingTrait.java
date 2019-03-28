@@ -20,6 +20,8 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
+
 import java.net.URI;
 
 /**
@@ -53,7 +55,7 @@ public final class AutomationPairingTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * The number of times this pairing has "fired". This count may be reset by writing zero.
@@ -62,7 +64,7 @@ public final class AutomationPairingTrait {
      */
     @Property(READ_ONLY | RESET)
     public static final PropertyKey<Integer> STAT_COUNT =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "c", java.lang.Integer.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "c", java.lang.Integer.class);
 
     /**
      * The number of seconds ago that this pairing last fired. This value is not cacheable.
@@ -70,7 +72,7 @@ public final class AutomationPairingTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> STAT_LAST =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "last", java.lang.Integer.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "last", java.lang.Integer.class);
 
     /**
      * Source resource path. Local resources (absolute paths without authority) are always
@@ -79,7 +81,7 @@ public final class AutomationPairingTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<URI> CONF_SOURCE =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "src", URI.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "src", URI.class);
 
     /**
      * Destination resource path. Local resources (absolute paths without authority) are always
@@ -88,7 +90,7 @@ public final class AutomationPairingTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<URI> CONF_DESTINATION =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "dst", URI.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "dst", URI.class);
 
     /**
      * Push flag. If true, this pairing will monitor changes to the source resource and apply them
@@ -97,7 +99,7 @@ public final class AutomationPairingTrait {
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<Boolean> CONF_PUSH =
             new PropertyKey<>(
-                    PropertyKey.SECTION_CONFIG, TRAIT_ID, "push", java.lang.Boolean.class);
+                    Splot.SECTION_CONFIG, TRAIT_ID, "push", java.lang.Boolean.class);
 
     /**
      * Pull flag. If true, this pairing will monitor changes to the destination resource and apply
@@ -106,7 +108,7 @@ public final class AutomationPairingTrait {
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<Boolean> CONF_PULL =
             new PropertyKey<>(
-                    PropertyKey.SECTION_CONFIG, TRAIT_ID, "pull", java.lang.Boolean.class);
+                    Splot.SECTION_CONFIG, TRAIT_ID, "pull", java.lang.Boolean.class);
 
     /**
      * Forward value transform. This string contains a simple RPN expression for modifying the
@@ -118,7 +120,7 @@ public final class AutomationPairingTrait {
      */
     @Property
     public static final PropertyKey<String> CONF_FORWARD_TRANSFORM =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "xfwd", java.lang.String.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "xfwd", java.lang.String.class);
 
     /**
      * Reverse value transform. This string contains a simple RPN expression for modifying the
@@ -130,5 +132,5 @@ public final class AutomationPairingTrait {
      */
     @Property
     public static final PropertyKey<String> CONF_REVERSE_TRANSFORM =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "xrev", java.lang.String.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "xrev", java.lang.String.class);
 }

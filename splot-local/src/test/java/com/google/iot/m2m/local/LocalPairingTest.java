@@ -16,7 +16,7 @@
 package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
 import com.google.iot.m2m.trait.*;
 import org.junit.jupiter.api.AfterEach;
@@ -182,11 +182,11 @@ class LocalPairingTest extends TestBase {
     void setupStatePairing() throws Exception {
         URI source = technology.getNativeUriForFunctionalEndpoint(bulb1);
         assertNotNull(source);
-        source = source.resolve(PropertyKey.SECTION_STATE);
+        source = source.resolve(Splot.SECTION_STATE);
 
         URI destination = technology.getNativeUriForFunctionalEndpoint(bulb2);
         assertNotNull(destination);
-        destination = destination.resolve(PropertyKey.SECTION_STATE);
+        destination = destination.resolve(Splot.SECTION_STATE);
 
         if (DEBUG) {
             LOGGER.info("source = " + source);

@@ -20,6 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
 
 /**
  * The Energy trait contains properties that relate to the energy consumption of a device. A FE
@@ -52,7 +53,7 @@ public final class EnergyTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Instantaneous power draw, measured in watts. Unlike the property volt-amps, this property
@@ -60,17 +61,17 @@ public final class EnergyTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_WATTS =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "watt", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "watt", java.lang.Float.class);
 
     /** Instantaneous electric current, measured in amps. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_AMPS =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "amps", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "amps", java.lang.Float.class);
 
     /** Instantaneous electric potential, measured in volts. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_VOLTS =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "volt", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "volt", java.lang.Float.class);
 
     /**
      * Apparent instantaneous power draw, measured in volt-amps. Note that this is literally the
@@ -79,12 +80,12 @@ public final class EnergyTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_VOLT_AMPS =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "voam", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "voam", java.lang.Float.class);
 
     /** The power factor measured by this FE. Only meaningful when measuring AC. Unitless. */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_POWER_FACTOR =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "pwft", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "pwft", java.lang.Float.class);
 
     /**
      * The accumulated power (energy) used over time by the FE, measured in watt-hours. If this
@@ -93,7 +94,7 @@ public final class EnergyTrait {
      */
     @Property(READ_ONLY | RESET)
     public static final PropertyKey<Long> STAT_ENERGY =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "enrg", java.lang.Long.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "enrg", java.lang.Long.class);
 
     /**
      * The maximum power that the load is allowed to draw before the FE automatically turns off the
@@ -103,7 +104,7 @@ public final class EnergyTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_MAX_WATTS =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "mxwt", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "mxwt", java.lang.Float.class);
 
     /**
      * The maximum apparent power (volt-amps) that the load is allowed to draw before the FE
@@ -114,7 +115,7 @@ public final class EnergyTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_MAX_VOLT_AMPS =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "mxva", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "mxva", java.lang.Float.class);
 
     /**
      * The voltage above which the load will be automatically turned off by the FE. Set to null to
@@ -124,7 +125,7 @@ public final class EnergyTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_MAX_VOLTS =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "mxvo", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "mxvo", java.lang.Float.class);
 
     /**
      * The voltage below which the load will be automatically turned off by the FE. Set to null to
@@ -134,7 +135,7 @@ public final class EnergyTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_MIN_VOLTS =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "mnvo", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "mnvo", java.lang.Float.class);
 
     /**
      * The maximum number of amps that the load is allowed to draw before the FE automatically turns
@@ -144,17 +145,17 @@ public final class EnergyTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_MAX_AMPS =
-            new PropertyKey<>(PropertyKey.SECTION_CONFIG, TRAIT_ID, "mxam", java.lang.Float.class);
+            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "mxam", java.lang.Float.class);
 
     /** The maximum number of watts that the FE is capable of drawing. */
     @Property
     public static final PropertyKey<Float> META_MAX_DRAW_WATTS =
             new PropertyKey<>(
-                    PropertyKey.SECTION_METADATA, TRAIT_ID, "mxwt", java.lang.Float.class);
+                    Splot.SECTION_METADATA, TRAIT_ID, "mxwt", java.lang.Float.class);
 
     /** The maximum number of amps that the FE is capable of drawing. */
     @Property
     public static final PropertyKey<Float> META_MAX_DRAW_AMPS =
             new PropertyKey<>(
-                    PropertyKey.SECTION_METADATA, TRAIT_ID, "mxam", java.lang.Float.class);
+                    Splot.SECTION_METADATA, TRAIT_ID, "mxam", java.lang.Float.class);
 }

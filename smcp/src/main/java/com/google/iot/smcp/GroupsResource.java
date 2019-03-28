@@ -16,10 +16,8 @@
 package com.google.iot.smcp;
 
 import com.google.iot.coap.*;
-import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.Group;
-import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
+import com.google.iot.m2m.base.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -90,10 +88,10 @@ class GroupsResource extends Resource<HostedFunctionalEndpointAdapter> {
         } else if ("add".equals(query.get(0))) {
 
             if (content != null) {
-                if (content.containsKey(PropertyKey.SECTION_STATE)) {
+                if (content.containsKey(Splot.SECTION_STATE)) {
                     inboundRequest.sendSimpleResponse(
                             Code.RESPONSE_BAD_REQUEST,
-                            "illegal section \"" + PropertyKey.SECTION_STATE + "\"");
+                            "illegal section \"" + Splot.SECTION_STATE + "\"");
                     return;
                 }
 

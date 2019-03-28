@@ -16,7 +16,6 @@
 package com.google.iot.smcp;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import com.google.iot.coap.Client;
 import com.google.iot.coap.Code;
@@ -69,14 +68,14 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
         URI location = response.getOptionSet().getLocation();
         assertEquals(Code.RESPONSE_CREATED, response.getCode(), Code.toString(response.getCode()));
         assertEquals(
-                "/1/" + MethodKey.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/test/",
+                "/1/" + Splot.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/test/",
                 location.toASCIIString());
 
         // Verify that the created resource is listed
         transaction =
                 client.newRequestBuilder()
                         .changePath(
-                                "/1/" + MethodKey.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/")
+                                "/1/" + Splot.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/")
                         .setCode(Code.METHOD_GET)
                         .send();
         response = transaction.getResponse();
@@ -89,7 +88,7 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
         // Verify that the created resource is accessible.
         transaction =
                 client.newRequestBuilder()
-                        .changePath(location.toASCIIString() + PropertyKey.SECTION_STATE + "/")
+                        .changePath(location.toASCIIString() + Splot.SECTION_STATE + "/")
                         .setCode(Code.METHOD_GET)
                         .send();
         response = transaction.getResponse();
@@ -133,7 +132,7 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
         URI location = response.getOptionSet().getLocation();
         assertEquals(Code.RESPONSE_CREATED, response.getCode(), Code.toString(response.getCode()));
         assertEquals(
-                "/1/" + MethodKey.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/test/",
+                "/1/" + Splot.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/test/",
                 location.toASCIIString());
 
         // Verify that the resource was indeed created
@@ -179,7 +178,7 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
         Transaction transaction =
                 client.newRequestBuilder()
                         .changePath(
-                                "/1/" + MethodKey.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/")
+                                "/1/" + Splot.SECTION_FUNC + "/" + SceneTrait.TRAIT_ID + "/")
                         .setCode(Code.METHOD_GET)
                         .send();
         Message response = transaction.getResponse();
@@ -194,11 +193,11 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
                 client.newRequestBuilder()
                         .changePath(
                                 "/1/"
-                                        + MethodKey.SECTION_FUNC
+                                        + Splot.SECTION_FUNC
                                         + "/"
                                         + SceneTrait.TRAIT_ID
                                         + "/hostedAdapterChildTest/"
-                                        + PropertyKey.SECTION_STATE
+                                        + Splot.SECTION_STATE
                                         + "/")
                         .setCode(Code.METHOD_GET)
                         .send();

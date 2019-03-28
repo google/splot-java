@@ -15,14 +15,14 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     }
 
     private enum Section {
-        STATE(PropertyKey.SECTION_STATE),
-        CONFIG(PropertyKey.SECTION_CONFIG),
-        METADATA(PropertyKey.SECTION_METADATA);
+        STATE(Splot.SECTION_STATE),
+        CONFIG(Splot.SECTION_CONFIG),
+        METADATA(Splot.SECTION_METADATA);
 
         String prefix;
 
         Section(String x) {
-            prefix = PropertyKey.SECTION_CONFIG;
+            prefix = Splot.SECTION_CONFIG;
         }
     }
 
@@ -39,15 +39,15 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
         ListenableFuture<Map<String,Object>> future;
 
         switch (mSection) {
-            case PropertyKey.SECTION_STATE:
+            case Splot.SECTION_STATE:
                 future = mFe.fetchState();
                 break;
 
-            case PropertyKey.SECTION_CONFIG:
+            case Splot.SECTION_CONFIG:
                 future = mFe.fetchConfig();
                 break;
 
-            case PropertyKey.SECTION_METADATA:
+            case Splot.SECTION_METADATA:
                 future = mFe.fetchMetadata();
                 break;
 
@@ -84,15 +84,15 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     protected void onListenerCountChanged(int listeners) {
         if (listeners == 0) {
             switch (mSection) {
-                case PropertyKey.SECTION_STATE:
+                case Splot.SECTION_STATE:
                     mFe.unregisterStateListener(this);
                     break;
 
-                case PropertyKey.SECTION_CONFIG:
+                case Splot.SECTION_CONFIG:
                     mFe.unregisterConfigListener(this);
                     break;
 
-                case PropertyKey.SECTION_METADATA:
+                case Splot.SECTION_METADATA:
                     mFe.unregisterMetadataListener(this);
                     break;
 
@@ -101,15 +101,15 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
             }
         } else if (listeners == 1) {
             switch (mSection) {
-                case PropertyKey.SECTION_STATE:
+                case Splot.SECTION_STATE:
                     mFe.registerStateListener(Runnable::run, this);
                     break;
 
-                case PropertyKey.SECTION_CONFIG:
+                case Splot.SECTION_CONFIG:
                     mFe.registerConfigListener(Runnable::run, this);
                     break;
 
-                case PropertyKey.SECTION_METADATA:
+                case Splot.SECTION_METADATA:
                     mFe.registerMetadataListener(Runnable::run, this);
                     break;
 

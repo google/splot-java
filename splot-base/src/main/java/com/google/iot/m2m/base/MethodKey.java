@@ -23,7 +23,6 @@ import com.google.common.base.Preconditions;
  * @see com.google.iot.m2m.annotation.Method
  */
 public final class MethodKey<T> extends TypedKey<T> {
-    public static final String SECTION_FUNC = "f";
 
     private final String mName;
     private final Class<T> mReturnType;
@@ -51,7 +50,7 @@ public final class MethodKey<T> extends TypedKey<T> {
      * @param type the class for the value that will be associated with this property.
      */
     public MethodKey(String trait, String shortName, Class<T> type) {
-        this(SECTION_FUNC + "/" + trait + "?" + shortName, type);
+        this(Splot.SECTION_FUNC + "/" + trait + "?" + shortName, type);
     }
 
     /**

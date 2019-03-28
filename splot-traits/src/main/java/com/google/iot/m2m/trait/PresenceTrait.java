@@ -20,6 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
+import com.google.iot.m2m.base.Splot;
 
 /** Presence detection trait. Used for motion sensors, pressure mats, etc. */
 @Trait
@@ -48,10 +49,10 @@ public final class PresenceTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(PropertyKey.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
 
     /** Indicator of presence. True if presence is detected, false if presence is not detected. */
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<Boolean> STAT_VALUE =
-            new PropertyKey<>(PropertyKey.SECTION_STATE, TRAIT_ID, "v", Boolean.class);
+            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "v", Boolean.class);
 }
