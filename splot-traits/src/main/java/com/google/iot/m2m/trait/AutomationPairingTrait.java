@@ -115,8 +115,18 @@ public final class AutomationPairingTrait {
      * numeric value of the source before applying it to the destination during "push" operations.
      * The value read from the source is the first item on the stack. The return value is the
      * top-most value on the stack after evaluation. Thus, an empty forward transform is the
-     * identity function. If the stack is empty the value does not propagate --- this behavior can
-     * be used to implement a predicate.
+     * identity function. If the stack is empty or the last pushed value is "DROP", the value
+     * does not propagate --- this behavior can be used to implement a predicate.
+     *
+     * <p>Example: The algebraic expression <i>x' = (cos(x/2 - 0.5) + 1)/2</i> would become
+     * {@code "2 / 0.5 - COS 1 + 2 /"}. Note that {@code COS}/<i>cos()</i> takes <em>turns</em>
+     * instead of radians for its argument.
+     *
+     * <p>Example: {@code "POP 0.1858 - SWAP POP 0.3320 - SWAP DROP SWAP / -449 3525 -6823.3 5520.33 POLY3"}
+     * would convert CIE xy chromaticity coordinates in an array into an approximate correlated
+     * color temperature in K.</p>
+     *
+     * @see #CONF_REVERSE_TRANSFORM
      */
     @Property
     public static final PropertyKey<String> CONF_FORWARD_TRANSFORM =
@@ -129,6 +139,11 @@ public final class AutomationPairingTrait {
      * top-most value on the stack after evaluation. Thus, an empty forward transform is the
      * identity function. If the stack is empty the value does not propagate --- this behavior can
      * be used to implement a predicate.
+     *
+     * <p>Example: For the forward transform {@code "2 *"} (<i>x' = x * 2</i>), the correct
+     * reverse transform would be {@code "2 /"} (<i>x' = x/2</i>).
+     *
+     * @see #CONF_FORWARD_TRANSFORM
      */
     @Property
     public static final PropertyKey<String> CONF_REVERSE_TRANSFORM =
