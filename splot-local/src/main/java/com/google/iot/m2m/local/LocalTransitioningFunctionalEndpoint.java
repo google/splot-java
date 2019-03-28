@@ -22,6 +22,7 @@ import com.google.iot.m2m.trait.SceneTrait;
 import com.google.iot.m2m.trait.TransitionTrait;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -216,8 +217,13 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
             float duration, Map<String, Object> finalState, boolean isDefault)
             throws PropertyException, TechnologyException {
         final Map<String, Object> currentState = copyCachedState();
+        boolean inProgress = isTransitionInProgress();
 
-        if (isDefault && isTransitionInProgress()) {
+        currentState.remove(TransitionTrait.STAT_DURATION.getName());
+        currentState.remove(TransitionTrait.STAT_SPEED.getName());
+        currentState.remove(SceneTrait.STAT_SCENE_ID.getName());
+
+        if (isDefault && inProgress) {
             pauseTransition();
 
             mTransitionBegin.putAll(currentState);
@@ -243,17 +249,11 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
                         + (long) (duration * TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
 
         mTransitionEnd.putAll(finalState);
-        mTransitionEnd.remove(TransitionTrait.STAT_DURATION.getName());
-        mTransitionEnd.remove(TransitionTrait.STAT_SPEED.getName());
-        mTransitionEnd.remove(SceneTrait.STAT_SCENE_ID.getName());
 
-        mTransitionFinal.putAll(mTransitionEnd);
-
-        if (DEBUG) {
-            LOGGER.info("updateTransition: finalState = " + finalState);
-            LOGGER.info("updateTransition: mTransitionBegin = " + mTransitionBegin);
-            LOGGER.info("updateTransition: mTransitionEnd = " + mTransitionEnd);
-            LOGGER.info("updateTransition: mTransitionFinal = " + mTransitionFinal);
+        if (inProgress) {
+            mTransitionFinal.putAll(finalState);
+        } else {
+            mTransitionFinal.putAll(mTransitionEnd);
         }
 
         // Special case for when we have both the OnOff and Level traits.
@@ -304,7 +304,17 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
                     LocalTrait trait = getTraitForPropertyKey(LevelTrait.STAT_VALUE);
                     trait.setValueForPropertyKey(LevelTrait.STAT_VALUE, 0.0f);
                 }
+            } else if (!Objects.equals(level,
+                    LevelTrait.STAT_VALUE.coerceFromMapNoThrow(mTransitionBegin))) {
+                LevelTrait.STAT_VALUE.putInMap(mTransitionEnd, level);
             }
+        }
+
+        if (DEBUG) {
+            LOGGER.info("updateTransition: finalState = " + finalState);
+            LOGGER.info("updateTransition: mTransitionBegin = " + mTransitionBegin);
+            LOGGER.info("updateTransition: mTransitionEnd = " + mTransitionEnd);
+            LOGGER.info("updateTransition: mTransitionFinal = " + mTransitionFinal);
         }
 
         resumeTransition();
