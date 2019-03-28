@@ -16,6 +16,7 @@
 package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.*;
+import com.google.iot.m2m.trait.AutomationPairingManagerTrait;
 import com.google.iot.m2m.trait.BaseTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class LocalAutomationManager extends LocalFunctionalEndpoint {
     final LocalPairingManagerTrait mPairingManagerTrait;
+    final LocalTimerManagerTrait mTimerManagerTrait;
 
     final BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
         @Override
@@ -43,14 +45,17 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
 
     public LocalAutomationManager(Technology technology) {
         mPairingManagerTrait = new LocalPairingManagerTrait(technology, this);
+        mTimerManagerTrait = new LocalTimerManagerTrait(technology, this);
         registerTrait(mBaseTrait);
         registerTrait(mPairingManagerTrait);
+        registerTrait(mTimerManagerTrait);
     }
 
     @Override
     public Map<String, Object> copyPersistentState() {
         Map<String, Object> ret = super.copyPersistentState();
         ret.put("pairings", mPairingManagerTrait.copyPersistentState());
+        ret.put("timers", mTimerManagerTrait.copyPersistentState());
         return ret;
     }
 
@@ -73,11 +78,24 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
 
             mPairingManagerTrait.initWithPersistentState(null);
         }
+
+        Object timersObject = persistentState.get("timers");
+
+        if (timersObject instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>)timersObject;
+
+            mTimerManagerTrait.initWithPersistentState(map);
+        } else {
+
+            mTimerManagerTrait.initWithPersistentState(null);
+        }
     }
 
     @Override
     public void setPersistentStateListener(@Nullable PersistentStateListener listener) {
         mPairingManagerTrait.setPersistentStateListener(listener);
+        mTimerManagerTrait.setPersistentStateListener(listener);
         super.setPersistentStateListener(listener);
     }
 }
