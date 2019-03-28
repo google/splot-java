@@ -181,10 +181,15 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     /** Resumes a transition that was previously paused by {@link #pauseTransition()}. */
     public final synchronized void resumeTransition() {
         if (mTimestampEnd != 0 && (mTimer == null || mTimer.isDone())) {
-            long period =
-                    Math.max(
-                            (mTimestampEnd - mTimestampBegin) / 255,
-                            TimeUnit.NANOSECONDS.convert(20, TimeUnit.MILLISECONDS));
+            long period = (mTimestampEnd - mTimestampBegin) / 1000;
+
+            // The minimum duration between transition updates is 50ms.
+            period = Math.max(period,
+                            TimeUnit.NANOSECONDS.convert(50, TimeUnit.MILLISECONDS));
+
+            // The maximum duration between transition updates is 1s.
+            period = Math.min(period,
+                            TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
 
             mTimer =
                     getExecutor()
