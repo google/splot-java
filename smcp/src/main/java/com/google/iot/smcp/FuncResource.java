@@ -21,10 +21,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.iot.cbor.*;
 import com.google.iot.coap.*;
-import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.MethodException;
-import com.google.iot.m2m.base.MethodKey;
-import com.google.iot.m2m.base.MethodNotFoundException;
+import com.google.iot.m2m.base.*;
+
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -188,7 +186,7 @@ class FuncResource extends Resource<TraitChildrenResource> {
 
             } catch (CborConversionException | CborParseException | JSONException x) {
                 if (DEBUG) LOGGER.warning("Parsing exception: " + x);
-                inboundRequest.sendSimpleResponse(Code.RESPONSE_BAD_REQUEST, x.toString());
+                inboundRequest.sendSimpleResponse(Code.RESPONSE_BAD_REQUEST, x.getMessage() + " " + x);
                 return;
             }
         }
@@ -221,9 +219,13 @@ class FuncResource extends Resource<TraitChildrenResource> {
                             if (x.getCause() instanceof MethodNotFoundException) {
                                 inboundRequest.sendSimpleResponse(Code.RESPONSE_NOT_FOUND);
 
+                            } else if (x.getCause() instanceof InvalidMethodArgumentsException) {
+                                inboundRequest.sendSimpleResponse(
+                                        Code.RESPONSE_BAD_REQUEST, x.getCause().getMessage() + " " + x.getCause());
+
                             } else if (x.getCause() instanceof MethodException) {
                                 inboundRequest.sendSimpleResponse(
-                                        Code.RESPONSE_FORBIDDEN, x.getCause().toString());
+                                        Code.RESPONSE_BAD_REQUEST, x.getCause().getMessage() + " " + x.getCause());
 
                             } else if (x.getCause() instanceof Exception
                                     && !(x.getCause() instanceof RuntimeException)) {
