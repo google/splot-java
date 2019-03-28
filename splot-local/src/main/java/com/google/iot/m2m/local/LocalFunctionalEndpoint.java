@@ -603,9 +603,7 @@ public abstract class LocalFunctionalEndpoint
             try {
                 trait.setValueForPropertyKey(key, entry.getValue());
 
-            } catch (PropertyNotFoundException
-                    | PropertyReadOnlyException
-                    | InvalidPropertyValueException x) {
+            } catch (PropertyException x) {
                 if (DEBUG) {
                     LOGGER.warning(
                             "Attempt to set " + key + " to " + entry.getValue() + " threw " + x);

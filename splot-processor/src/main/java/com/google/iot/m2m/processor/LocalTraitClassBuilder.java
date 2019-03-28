@@ -226,6 +226,7 @@ class LocalTraitClassBuilder {
                         .addException(PropertyReadOnlyException.class)
                         .addException(PropertyNotFoundException.class)
                         .addException(InvalidPropertyValueException.class)
+                        .addException(BadStateForPropertyValueException.class)
                         .addException(TechnologyException.class)
                         .addTypeVariable(sGenericName)
                         .addJavadoc(JAVADOC_EXCLUDE)
@@ -539,6 +540,7 @@ class LocalTraitClassBuilder {
             builder.addModifiers(Modifier.PUBLIC)
                     .addException(PropertyReadOnlyException.class)
                     .addException(InvalidPropertyValueException.class)
+                    .addException(BadStateForPropertyValueException.class)
                     .addException(TechnologyException.class)
                     .addParameter(
                             ParameterSpec.builder(fieldTypeName, "value")
