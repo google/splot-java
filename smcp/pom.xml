@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.google.iot.cbor</groupId>
       <artifactId>cbor</artifactId>
-      <version>0.01.00</version>
+      <version>0.01.01</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

@@ -190,7 +190,8 @@ public final class FilePersistentStateManager implements PersistentStateManager 
                 throw new CorruptPersistentStateException("Invalid top level object");
             }
 
-            if (DEBUG) LOGGER.info("Loaded persistent state from " + file);
+            if (DEBUG) LOGGER.info("Loaded persistent state from " + file + ": "
+                    + object.toString(0));
 
             return (CborMap) object;
 
