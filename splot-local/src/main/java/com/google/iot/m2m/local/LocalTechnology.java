@@ -298,26 +298,34 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
             final String trait = parser.getRelativeComponent(2);
             final String name = parser.getRelativeComponent(3);
 
-            if (uri.getQuery() == null) {
-                PropertyKey<Object> key = new PropertyKey<>(section,trait,name,Object.class);
-                ResourceLink<Object> ret = PropertyResourceLink.create(parser.mFe, key);
-                mResourceLinkUriLookup.put(ret, uri);
-                return ret;
-            }
-
-            String[] queryComponents = uri.getQuery().split("&");
-
-            if (queryComponents.length != 1) {
-                // More than one query component isn't supported.
-                throw new UnknownResourceException("More than one query component isn't supported.");
-            }
-
+            String method = "";
             ResourceLink<Object> ret;
+            LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
 
-            switch(queryComponents[0]) {
+            if (uri.getQuery() != null) {
+                String[] queryComponents = uri.getQuery().split("&;");
+                for (String query : queryComponents) {
+                    if (query.contains("=")) {
+                        String key = query.split("=")[0];
+                        String value;
+                        if (query.equals(key)) {
+                            value = "";
+                        } else {
+                            value = query.substring(key.length() + 1);
+                        }
+                        queryMap.put(key, value);
+                    } else if (method.isEmpty()) {
+                        method = query;
+                    }
+                }
+            }
+
+
+            switch (method) {
                 case PROP_METHOD_INCREMENT: {
                     PropertyKey<Number> key = new PropertyKey<>(section, trait, name,
                             Number.class);
+                    if (DEBUG) LOGGER.info("Making property incrementer for " + key);
                     ret = ResourceLink.stripType(
                             PropertyResourceLink.createIncrement(parser.mFe, key), Number.class);
                     break;
@@ -326,6 +334,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 case PROP_METHOD_TOGGLE: {
                     PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name,
                             Boolean.class);
+                    if (DEBUG) LOGGER.info("Making property toggler for " + key);
                     ret = ResourceLink.stripType(
                             PropertyResourceLink.createToggle(parser.mFe, key), Boolean.class);
                     break;
@@ -334,6 +343,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 case PROP_METHOD_INSERT: {
                     PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
                             Object[].class);
+                    if (DEBUG) LOGGER.info("Making property value inserter for " + key);
                     ret = PropertyResourceLink.createInsert(parser.mFe, key);
                     break;
                 }
@@ -341,13 +351,30 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 case PROP_METHOD_REMOVE: {
                     PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
                             Object[].class);
+                    if (DEBUG) LOGGER.info("Making property value remover for " + key);
                     ret = PropertyResourceLink.createRemove(parser.mFe, key);
+                    break;
+                }
+
+                case "": {
+                    PropertyKey<Object> key = new PropertyKey<>(section,trait,name,Object.class);
+                    if (queryMap.containsKey(PARAM_DURATION)) {
+                        try {
+                            double duration = Double.valueOf(queryMap.get(PARAM_DURATION));
+                            ret = PropertyResourceLink.createWithDuration(parser.mFe, key, duration);
+
+                        } catch(NumberFormatException x) {
+                            throw new UnknownResourceException(x);
+                        }
+                    } else {
+                        ret = PropertyResourceLink.create(parser.mFe, key);
+                    }
                     break;
                 }
 
                 default:
                     // Other operations aren't supported.
-                    throw new UnknownResourceException("query component \"" + queryComponents[0] + "\" isn't supported.");
+                    throw new UnknownResourceException("query method \"" + method + "\" isn't supported.");
             }
 
             mResourceLinkUriLookup.put(ret, uri);
