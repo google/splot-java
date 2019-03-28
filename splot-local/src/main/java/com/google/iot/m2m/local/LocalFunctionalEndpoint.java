@@ -18,6 +18,7 @@ package com.google.iot.m2m.local;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.BaseTrait;
 import java.io.IOException;
@@ -327,6 +328,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
+    @CanIgnoreReturnValue
     public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
         try {
             Boolean value = getPropertyTargetValue(key);
@@ -781,6 +783,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
+    @CanIgnoreReturnValue
     public ListenableFuture<Boolean> delete() {
         // Default behavior is you can't delete a local functional endpoint.
         return Futures.immediateFuture(false);
