@@ -420,25 +420,22 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey) throws UnassociatedResourceException {
-        return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
-    }
-
-    @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, String section) throws UnassociatedResourceException {
-        return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
-    }
-
-    @Override
-    public URI getNativeUriForResourceLink(ResourceLink<Object> rl) {
-        URI ret;
-        if (rl instanceof SmcpResourceLink) {
-            SmcpResourceLink<Object> srl = (SmcpResourceLink<Object>)rl;
-            ret = srl.getUri();
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException {
+        if (modifiers.length == 0) {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
         } else {
-            ret = mLocalTechnology.getNativeUriForResourceLink(rl);
+            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
+                    + "?" + Modifier.convertToQuery(modifiers));
         }
-        return ret;
+    }
+
+    @Override
+    public URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException {
+        if (modifiers.length == 0) {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+        } else {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/?" + Modifier.convertToQuery(modifiers));
+        }
     }
 
     @Override

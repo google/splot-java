@@ -139,35 +139,59 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value) {
-        return doPost(key.getName(), value);
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier ... modifiers) {
+        String path = key.getName();
+        if (modifiers.length > 0) {
+            path += "?" + Modifier.convertToQuery(modifiers);
+        }
+        return doPost(path, value);
     }
 
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value) {
-        return doPost(key.getName() + "?" + PROP_METHOD_INCREMENT, value);
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value, Modifier ... modifiers) {
+        String path = key.getName() + "?" + PROP_METHOD_INCREMENT;
+        if (modifiers.length > 0) {
+            path += "&" + Modifier.convertToQuery(modifiers);
+        }
+        return doPost(path, value);
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
-        return doPost(key.getName() + "?" + PROP_METHOD_INSERT, value);
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+        String path = key.getName()+ "?" + PROP_METHOD_INSERT;
+        if (modifiers.length > 0) {
+            path += "&" + Modifier.convertToQuery(modifiers);
+        }
+        return doPost(path, value);
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
-        return doPost(key.getName() + "?" + PROP_METHOD_REMOVE, value);
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+        String path = key.getName()+ "?" + PROP_METHOD_REMOVE;
+        if (modifiers.length > 0) {
+            path += "&" + Modifier.convertToQuery(modifiers);
+        }
+        return doPost(path, value);
     }
 
     @Override
-    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
-        return doPost(key.getName() + "?" + PROP_METHOD_TOGGLE, null);
+    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier ... modifiers) {
+        String path = key.getName() + "?" + PROP_METHOD_TOGGLE;
+        if (modifiers.length > 0) {
+            path += "&" + Modifier.convertToQuery(modifiers);
+        }
+        return doPost(path, null);
     }
 
     @Override
-    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key) {
+    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers) {
+        String path = key.getName();
+        if (modifiers.length > 0) {
+            path += "?" + Modifier.convertToQuery(modifiers);
+        }
         final Transaction transaction =
                 mClient.newRequestBuilder()
-                        .changePath(key.getName())
+                        .changePath(path)
                         .setOmitUriHostPortOptions(true)
                         .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
                         .send();
@@ -234,14 +258,18 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
          * there isn't an inheritance relationship, and that's not a problem with Object.
          */
         /* TODO: Not sure what to do here. */
-        return Futures.immediateFailedFuture(new RuntimeException("Method not implemented"));
+        return Futures.immediateFailedFuture(new SmcpRuntimeException("Method not implemented"));
     }
 
-    private ListenableFuture<Map<String, Object>> fetchSection(String section) {
+    private ListenableFuture<Map<String, Object>> fetchSection(String section, Modifier ... modifiers) {
         final Transaction transaction;
+        String path = section + "/";
+        if (modifiers.length > 0) {
+            path += "?" + Modifier.convertToQuery(modifiers);
+        }
         RequestBuilder requestBuilder =
                 mClient.newRequestBuilder()
-                        .changePath(section + "/")
+                        .changePath(path)
                         .setOmitUriHostPortOptions(true)
                         .addOptions(new OptionSet().setAccept(ContentFormat.APPLICATION_CBOR));
 
@@ -288,18 +316,18 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState() {
-        return fetchSection(Splot.SECTION_STATE);
+    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
+        return fetchSection(Splot.SECTION_STATE, modifiers);
     }
 
     @Override
     public ListenableFuture<Map<String, Object>> fetchConfig() {
-        return fetchSection(Splot.SECTION_CONFIG);
+        return fetchSection(Splot.SECTION_CONFIG, Modifier.EMPTY_LIST);
     }
 
     @Override
     public ListenableFuture<Map<String, Object>> fetchMetadata() {
-        return fetchSection(Splot.SECTION_METADATA);
+        return fetchSection(Splot.SECTION_METADATA, Modifier.EMPTY_LIST);
     }
 
     <T> void updateCachedPropertyValue(PropertyKey<T> key, @Nullable T value) {

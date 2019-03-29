@@ -26,6 +26,8 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
+
+import com.google.iot.m2m.trait.TransitionTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -277,7 +279,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value) {
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier ... modifiers) {
         Map<String, Object> map = new HashMap<>();
         key.putInMap(map, value);
         final LocalTrait trait = getTraitForPropertyKey(key);
@@ -287,17 +289,32 @@ public abstract class LocalFunctionalEndpoint
                     new PropertyNotFoundException("Unknown property " + key));
         }
 
+        for (Modifier mod : modifiers) {
+            if (mod instanceof Modifier.Duration) {
+                TransitionTrait.STAT_DURATION.putInMap(map, (float)((Modifier.Duration)mod).getDuration());
+            }
+        }
+
         return applyProperties(map);
     }
 
+    private void mutationCheck(Class<? extends Modifier.Mutation> clazz, Modifier ... modifiers) {
+
+        Modifier.Mutation mutation = Modifier.getMutation(modifiers);
+        if (mutation != null && !clazz.isInstance(mutation)) {
+            throw new InvalidModifierListException("Conflicting mutation " + mutation);
+        }
+    }
+
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount) {
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount, Modifier ... modifiers) {
         Number targetValue;
 
         try {
+            mutationCheck(Modifier.Increment.class, modifiers);
             targetValue = getPropertyTargetValue(key);
 
-        } catch (PropertyException | TechnologyException e) {
+        } catch (PropertyException | TechnologyException | InvalidModifierListException e) {
             return Futures.immediateFailedFuture(e);
         }
 
@@ -324,28 +341,31 @@ public abstract class LocalFunctionalEndpoint
             targetValue = targetValue.doubleValue() + amount.doubleValue();
         }
 
-        return this.setProperty(key, key.cast(targetValue));
+        return this.setProperty(key, key.cast(targetValue), modifiers);
     }
 
     @Override
     @CanIgnoreReturnValue
-    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
+    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier ... modifiers) {
         try {
+            mutationCheck(Modifier.Toggle.class, modifiers);
             Boolean value = getPropertyTargetValue(key);
             if (value == null) {
                 return Futures.immediateFailedFuture(
                         new PropertyOperationUnsupportedException("Can't toggle null"));
             } else {
-                return this.setProperty(key, !value);
+                return this.setProperty(key, !value, modifiers);
             }
-        } catch (PropertyException | TechnologyException x) {
+        } catch (PropertyException | TechnologyException | InvalidModifierListException x) {
             return Futures.immediateFailedFuture(x);
         }
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         try {
+            mutationCheck(Modifier.Insert.class, modifiers);
+
             final T[] oldArray = getPropertyTargetValue(key);
             final ArrayList<T> newArray;
 
@@ -362,16 +382,18 @@ public abstract class LocalFunctionalEndpoint
             final T[] retArray =
                     (T[]) Array.newInstance(key.getType().getComponentType(), newArray.size());
 
-            return this.setProperty(key, newArray.toArray(retArray));
+            return this.setProperty(key, newArray.toArray(retArray), modifiers);
 
-        } catch (PropertyException | TechnologyException x) {
+        } catch (PropertyException | TechnologyException | InvalidModifierListException x) {
             return Futures.immediateFailedFuture(x);
         }
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         try {
+            mutationCheck(Modifier.Remove.class, modifiers);
+
             T[] oldArray = getPropertyTargetValue(key);
 
             if (oldArray == null) {
@@ -391,9 +413,9 @@ public abstract class LocalFunctionalEndpoint
                                             oldArray.getClass().getComponentType(),
                                             newList.size()));
 
-            return this.setProperty(key, newArray);
+            return this.setProperty(key, newArray, modifiers);
 
-        } catch (PropertyException | TechnologyException x) {
+        } catch (PropertyException | TechnologyException | InvalidModifierListException x) {
             return Futures.immediateFailedFuture(x);
         }
     }
@@ -427,7 +449,12 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key) {
+    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers) {
+        for (Modifier mod : modifiers) {
+            if (mod instanceof Modifier.Duration || mod instanceof Modifier.TransitionTarget) {
+                return submit(() -> this.getPropertyTargetValue(key));
+            }
+        }
         return submit(() -> this.getCurrentPropertyValue(key));
     }
 
@@ -452,7 +479,20 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState() {
+    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
+        for (Modifier mod : modifiers) {
+            if (mod instanceof Modifier.All) {
+                return submit(() -> {
+                    Map<String, Object> state = copyCachedState();
+                    for (PropertyKey<?> key : getSupportedPropertyKeys()) {
+                        if (!state.containsKey(key.getName())) {
+                            state.put(key.getName(), null);
+                        }
+                    }
+                    return state;
+                });
+            }
+        }
         return submit(this::copyCachedState);
     }
 

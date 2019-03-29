@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.google.iot.m2m.base.Splot.*;
+import static com.google.iot.m2m.base.Modifier.convertFromQuery;
 
 /* TODO: Lambdas cause compilation problems in Android for this file. Figure out why. */
 
@@ -213,6 +213,39 @@ class SectionResource extends Resource<InboundRequestHandler> {
             x.printStackTrace();
             inboundRequest.sendSimpleResponse(Code.RESPONSE_INTERNAL_SERVER_ERROR, x.toString());
             throw x;
+        }
+
+        URI uri = request.getOptionSet().getUri();
+
+        // Handle any modifiers
+        if (uri != null) {
+            Modifier[] modifierList;
+
+            try {
+                modifierList = convertFromQuery(uri.getQuery());
+            } catch (InvalidModifierListException x) {
+                inboundRequest.sendSimpleResponse(
+                        Code.RESPONSE_BAD_REQUEST, x.getMessage());
+                return;
+            }
+
+            for (Modifier modifier : modifierList) {
+                if ((modifier instanceof Modifier.Duration)
+                        && Splot.SECTION_STATE.equals(mSection)) {
+                    // Duration modifier basically collapses to an additional parameter
+                    // if we are the state section. It is ignored (like all other modifiers)
+                    // if this is applied to any other section.
+                    double dur = ((Modifier.Duration)modifier).getDuration();
+                    content.computeIfAbsent(
+                            TransitionTrait.TRAIT_ID,
+                            new Function<String, Map<String, Object>>() {
+                                @Override
+                                public Map<String, Object> apply(String ignore) {
+                                    return new HashMap<>();
+                                }
+                            }).put(Splot.PARAM_DURATION, dur);
+                }
+            }
         }
 
         if (DEBUG) LOGGER.info("onSpecificPostRequest Applying " + content);
@@ -458,73 +491,65 @@ class SectionResource extends Resource<InboundRequestHandler> {
             return;
         }
 
+        URI uri = request.getOptionSet().getUri();
         ListenableFuture<?> future;
-        Float duration = null;
-        Map<String, String> queryMap = request.getOptionSet().getUriQueriesAsMap();
-        String queryDuration = queryMap.get(PARAM_DURATION);
+        Modifier.Mutation method = null;
+        Modifier[] modifierList = Modifier.EMPTY_LIST;
 
-        if (queryDuration != null) {
+        if (uri != null) {
             try {
-                duration = Float.valueOf(queryMap.get(PARAM_DURATION));
-            } catch (NumberFormatException x) {
+                modifierList = convertFromQuery(uri.getQuery());
+                method = Modifier.getMutation(modifierList);
+
+            } catch (InvalidModifierListException x) {
                 inboundRequest.sendSimpleResponse(
-                        Code.RESPONSE_BAD_REQUEST, "Unable to parse query duration");
+                        Code.RESPONSE_BAD_REQUEST, x.getMessage());
                 return;
             }
         }
 
-        if ((query == null) || query.isEmpty() || query.get(0).contains("=")) {
-            Map<String, Object> props = new HashMap<>();
-            props.put(section + "/" + trait + "/" + prop, content);
+        if (method instanceof Modifier.Increment) {
+            PropertyKey<Number> key = new PropertyKey<>(section, trait, prop, Number.class);
 
-            if (duration != null) {
-                TransitionTrait.STAT_DURATION.putInMap(props, duration);
-            }
-
-            future = mFe.applyProperties(props);
-
-        } else if (PROP_METHOD_INCREMENT.equals(query.get(0))) {
-            PropertyKey<Number> key =
-                    new PropertyKey<>(section + "/" + trait + "/" + prop, Number.class);
             if (content == null) {
-                future = mFe.incrementProperty(key, 1);
+                future = mFe.incrementProperty(key, 1, modifierList);
             } else if (content instanceof Number) {
-                future = mFe.incrementProperty(key, (Number) content);
+                future = mFe.incrementProperty(key, (Number) content, modifierList);
             } else {
                 inboundRequest.sendSimpleResponse(
                         Code.RESPONSE_BAD_REQUEST, "Increment value not a number");
                 return;
             }
 
-        } else if (PROP_METHOD_TOGGLE.equals(query.get(0))) {
-            PropertyKey<Boolean> key =
-                    new PropertyKey<>(section + "/" + trait + "/" + prop, Boolean.class);
-            future = mFe.toggleProperty(key);
+        } else if (method instanceof Modifier.Toggle) {
+            PropertyKey<Boolean> key = new PropertyKey<>(section, trait, prop, Boolean.class);
+            future = mFe.toggleProperty(key, modifierList);
 
-        } else if (PROP_METHOD_INSERT.equals(query.get(0))) {
-            PropertyKey<Object[]> key =
-                    new PropertyKey<>(section + "/" + trait + "/" + prop, Object[].class);
+        } else if (method instanceof Modifier.Insert) {
+            PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
+
             if (content == null) {
                 inboundRequest.sendSimpleResponse(
                         Code.RESPONSE_BAD_REQUEST, "Missing value to add");
                 return;
             }
-            future = mFe.addValueToProperty(key, content);
 
-        } else if (PROP_METHOD_REMOVE.equals(query.get(0))) {
-            PropertyKey<Object[]> key =
-                    new PropertyKey<>(section + "/" + trait + "/" + prop, Object[].class);
+            future = mFe.addValueToProperty(key, content, modifierList);
+
+        } else if (method instanceof Modifier.Remove) {
+            PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
+
             if (content == null) {
                 inboundRequest.sendSimpleResponse(
                         Code.RESPONSE_BAD_REQUEST, "Missing value to remove");
                 return;
             }
-            future = mFe.removeValueFromProperty(key, content);
+            future = mFe.removeValueFromProperty(key, content, modifierList);
 
         } else {
-            inboundRequest.sendSimpleResponse(
-                    Code.RESPONSE_BAD_REQUEST, "Unknown query action \"" + query.get(0) + "\"");
-            return;
+            PropertyKey<Object> key = new PropertyKey<>(section, trait, prop, Object.class);
+            future = mFe.setProperty(key, content, modifierList);
+
         }
 
         inboundRequest.responsePending();
@@ -555,9 +580,23 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
         inboundRequest.responsePending();
 
+        URI uri = request.getOptionSet().getUri();
+        Modifier[] modifierList = Modifier.EMPTY_LIST;
+
+        if (uri != null) {
+            try {
+                modifierList = convertFromQuery(uri.getQuery());
+            } catch (InvalidModifierListException x) {
+                inboundRequest.sendSimpleResponse(
+                        Code.RESPONSE_BAD_REQUEST, x.getMessage());
+                return;
+            }
+        }
+
         ListenableFuture<Object> future =
                 mFe.fetchProperty(
-                        new PropertyKey<>(section + "/" + trait + "/" + prop, Object.class));
+                        new PropertyKey<>(section + "/" + trait + "/" + prop, Object.class),
+                        modifierList);
 
         future.addListener(
                 new Runnable() {

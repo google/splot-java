@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static com.google.iot.m2m.base.Modifier.convertFromQuery;
 import static com.google.iot.m2m.base.Splot.*;
 
 /**
@@ -406,13 +407,22 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey) throws UnassociatedResourceException {
-        return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException {
+        if (modifiers.length == 0) {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+        } else {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
+                    + "?" + Modifier.convertToQuery(modifiers));
+        }
     }
 
     @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, String section) throws UnassociatedResourceException {
-        return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+    public URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException {
+        if (modifiers.length == 0) {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+        } else {
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/?" + Modifier.convertToQuery(modifiers));
+        }
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package com.google.iot.m2m.local;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.LevelTrait;
 import com.google.iot.m2m.trait.OnOffTrait;
@@ -137,6 +138,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     private Boolean isTransitionInProgress() {
         return mTransitionInProgress;
     }
+
 
     @Override
     public synchronized Map<String, Object> copyPersistentState() {
@@ -357,6 +359,20 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
             ret = super.getPropertyTargetValue(key);
         }
         return ret;
+    }
+
+    @Override
+    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
+        for (Modifier mod : modifiers) {
+            if (mod instanceof Modifier.Duration || mod instanceof Modifier.TransitionTarget) {
+                return submit(() -> {
+                    Map<String, Object> state = copyCachedState();
+                    state.putAll(mTransitionFinal);
+                    return state;
+                });
+            }
+        }
+        return super.fetchState(modifiers);
     }
 
     /**

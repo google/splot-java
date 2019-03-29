@@ -335,11 +335,11 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState() {
+    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
         LinkedList<ListenableFuture<Map<String, Object>>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.fetchState()));
+            mMembers.forEach((fe) -> futures.add(fe.fetchState(modifiers)));
         }
 
         Futures.FutureCombiner<Map<String, Object>> combiner;
@@ -385,90 +385,90 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key) {
+    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.fetchProperty(key);
+            return super.fetchProperty(key, modifiers);
         }
 
         LinkedList<ListenableFuture<T>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.fetchProperty(key)));
+            mMembers.forEach((fe) -> futures.add(fe.fetchProperty(key, modifiers)));
         }
 
         return singleValueFromFutureList(futures);
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value) {
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value,Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.setProperty(key, value);
+            return super.setProperty(key, value, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.setProperty(key, value)));
+            mMembers.forEach((fe) -> futures.add(fe.setProperty(key, value, modifiers)));
         }
 
         return Futures.successfulAsList(futures);
     }
 
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount) {
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.incrementProperty(key, amount);
+            return super.incrementProperty(key, amount, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.incrementProperty(key, amount)));
+            mMembers.forEach((fe) -> futures.add(fe.incrementProperty(key, amount, modifiers)));
         }
 
         return Futures.successfulAsList(futures);
     }
 
     @Override
-    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
+    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key,Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.toggleProperty(key);
+            return super.toggleProperty(key, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.toggleProperty(key)));
+            mMembers.forEach((fe) -> futures.add(fe.toggleProperty(key, modifiers)));
         }
 
         return Futures.successfulAsList(futures);
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.addValueToProperty(key, value);
+            return super.addValueToProperty(key, value, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.addValueToProperty(key, value)));
+            mMembers.forEach((fe) -> futures.add(fe.addValueToProperty(key, value, modifiers)));
         }
 
         return Futures.successfulAsList(futures);
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.removeValueFromProperty(key, value);
+            return super.removeValueFromProperty(key, value, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.removeValueFromProperty(key, value)));
+            mMembers.forEach((fe) -> futures.add(fe.removeValueFromProperty(key, value, modifiers)));
         }
 
         return Futures.successfulAsList(futures);

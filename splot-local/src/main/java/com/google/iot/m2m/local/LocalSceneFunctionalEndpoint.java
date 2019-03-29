@@ -89,7 +89,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value) {
+        public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier[] modifiers) {
             LocalTrait trait = getTraitForPropertyKey(key);
 
             if (trait == null) {
@@ -113,35 +113,35 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
 
         @Override
         public <T extends Number> ListenableFuture<?> incrementProperty(
-                PropertyKey<T> key, T value) {
+                PropertyKey<T> key, T value, Modifier[] modifiers) {
             // Incrementing properties in scenes isn't supported.
             return Futures.immediateFailedFuture(
                     new PropertyOperationUnsupportedException("Scenes only support get/set"));
         }
 
         @Override
-        public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
+        public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier[] modifiers) {
             // Inserting values into properties in scenes isn't supported.
             return Futures.immediateFailedFuture(
                     new PropertyOperationUnsupportedException("Scenes only support get/set"));
         }
 
         @Override
-        public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
+        public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier[] modifiers) {
             // Removing values from properties in scenes isn't supported.
             return Futures.immediateFailedFuture(
                     new PropertyOperationUnsupportedException("Scenes only support get/set"));
         }
 
         @Override
-        public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
+        public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier[] modifiers) {
             // Toggling properties in scenes isn't supported.
             return Futures.immediateFailedFuture(
                     new PropertyOperationUnsupportedException("Scenes only support get/set"));
         }
 
         @Override
-        public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key) {
+        public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier[] modifiers) {
             T ret = getCachedProperty(key);
             if (ret == null) {
                 return Futures.immediateFailedFuture(new PropertyNotFoundException());
@@ -155,7 +155,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public ListenableFuture<Map<String, Object>> fetchState() {
+        public ListenableFuture<Map<String, Object>> fetchState(Modifier[] modifiers) {
             return Futures.immediateFuture(copyCachedState());
         }
 

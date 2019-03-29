@@ -211,71 +211,73 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value) {
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier ... modifiers) {
+        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
+            ListenableFuture<?> nativeFuture = super.setProperty(key, value, modifiers);
+            ListenableFuture<?> hostedFuture = mLocalGroup.setProperty(key, value, modifiers);
+            return chainCancelation(nativeFuture, hostedFuture);
+        }
+        return super.setProperty(key, value, modifiers);
+    }
+
+    @Override
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value, Modifier ... modifiers) {
+        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
+            ListenableFuture<?> nativeFuture = super.incrementProperty(key, value, modifiers);
+            ListenableFuture<?> hostedFuture = mLocalGroup.incrementProperty(key, value, modifiers);
+            return chainCancelation(nativeFuture, hostedFuture);
+        }
+        return super.incrementProperty(key, value, modifiers);
+    }
+
+    @Override
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
             return chainCancelation(
-                    super.setProperty(key, value), mLocalGroup.setProperty(key, value));
+                    super.addValueToProperty(key, value, modifiers),
+                    mLocalGroup.addValueToProperty(key, value, modifiers));
         }
-        return super.setProperty(key, value);
+        return super.addValueToProperty(key, value, modifiers);
     }
 
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value) {
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
             return chainCancelation(
-                    super.incrementProperty(key, value), mLocalGroup.incrementProperty(key, value));
+                    super.removeValueFromProperty(key, value, modifiers),
+                    mLocalGroup.removeValueFromProperty(key, value, modifiers));
         }
-        return super.incrementProperty(key, value);
+        return super.removeValueFromProperty(key, value, modifiers);
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value) {
+    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return chainCancelation(
-                    super.addValueToProperty(key, value),
-                    mLocalGroup.addValueToProperty(key, value));
+            return chainCancelation(super.toggleProperty(key, modifiers), mLocalGroup.toggleProperty(key, modifiers));
         }
-        return super.addValueToProperty(key, value);
+        return super.toggleProperty(key, modifiers);
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value) {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return chainCancelation(
-                    super.removeValueFromProperty(key, value),
-                    mLocalGroup.removeValueFromProperty(key, value));
-        }
-        return super.removeValueFromProperty(key, value);
-    }
-
-    @Override
-    public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key) {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return chainCancelation(super.toggleProperty(key), mLocalGroup.toggleProperty(key));
-        }
-        return super.toggleProperty(key);
-    }
-
-    @Override
-    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key) {
+    public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers) {
         if (BaseTrait.META_UID.equals(key)) {
             // We always know the UID, since it is the group id.
             return Futures.immediateFuture(key.cast(mGroupId));
         }
 
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.fetchProperty(key);
+            return mLocalGroup.fetchProperty(key, modifiers);
         }
 
-        return super.fetchProperty(key);
+        return super.fetchProperty(key, modifiers);
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState() {
+    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.fetchState();
+            return mLocalGroup.fetchState(modifiers);
         }
-        return super.fetchState();
+        return super.fetchState(modifiers);
     }
 
     @Override

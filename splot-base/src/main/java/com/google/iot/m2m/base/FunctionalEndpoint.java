@@ -176,7 +176,7 @@ public interface FunctionalEndpoint {
     boolean isLocal();
 
     /**
-     * Asynchronously changes a specific property to the given value.
+     * Asynchronously changes a specific property to the given value, using given modifiers.
      *
      * <p>The caller can optionally block until completion by calling the {@link
      * ListenableFuture#get()} method, or can be notified of completion by adding a listener via
@@ -197,10 +197,11 @@ public interface FunctionalEndpoint {
      *
      * @param key the key identifying the property and its type
      * @param value the new value to set the property to
+     * @param modifiers The modifiers to apply to this operation, like {@link Modifier#duration(double)}.
      * @return a future that can be cancelled or monitored asynchronously for completion
      */
     @CanIgnoreReturnValue
-    <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value);
+    <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier ... modifiers);
 
     /**
      * Asynchronously increments a specific property by the given amount.
@@ -229,10 +230,11 @@ public interface FunctionalEndpoint {
      *
      * @param key the key identifying the property and its type
      * @param value the amount to increment the value of the property by
+     * @param modifiers The modifiers to apply to this operation, like {@link Modifier#duration(double)}.
      * @return a future that can be cancelled or monitored asynchronously for completion
      */
     @CanIgnoreReturnValue
-    <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value);
+    <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T value, Modifier ... modifiers);
 
     /**
      * Asynchronously adds the given value to a list/set property
@@ -264,10 +266,11 @@ public interface FunctionalEndpoint {
      *
      * @param key the key identifying the property and its type
      * @param value the value to be added to the list or set
+     * @param modifiers The modifiers to apply to this operation, like {@link Modifier#duration(double)}.
      * @return a future that can be cancelled or monitored asynchronously for completion
      */
     @CanIgnoreReturnValue
-    <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value);
+    <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers);
 
     /**
      * Asynchronously removes the given value from a list/set property. If the value is not in the
@@ -300,10 +303,11 @@ public interface FunctionalEndpoint {
      *
      * @param key the key identifying the property and its type
      * @param value the value to be added to the list or set
+     * @param modifiers The modifiers to apply to this operation, like {@link Modifier#duration(double)}.
      * @return a future that can be cancelled or monitored asynchronously for completion
      */
     @CanIgnoreReturnValue
-    <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value);
+    <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers);
 
     /**
      * Asynchronously toggle a specific property. This only works on boolean properties.
@@ -330,11 +334,12 @@ public interface FunctionalEndpoint {
      * </ul>
      *
      * @param key the key identifying the property to toggle
+     * @param modifiers The modifiers to apply to this operation, like {@link Modifier#duration(double)}.
      * @return a future that can be used to block execution until the action is complete, cancel the
      *     action, or monitor the action asynchronously for completion
      */
     @CanIgnoreReturnValue
-    ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key);
+    ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier ... modifiers);
 
     /**
      * Asynchronously fetch the value of a specific property.
@@ -360,12 +365,14 @@ public interface FunctionalEndpoint {
      * <p>
      *
      * @param key the key for the property to fetch
+     * @param modifiers The modifiers to apply to this operation, like
+     *                  {@link Modifier#transitionTarget()}.
      * @return a future to access the fetched value (Can also be cancelled or monitored
      *     asynchronously for completion)
      * @see #getCachedProperty(PropertyKey)
      */
     @CanIgnoreReturnValue
-    <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key);
+    <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers);
 
     /**
      * Asynchronously fetch the set property keys that are supported by this functional endpoint.
@@ -400,11 +407,13 @@ public interface FunctionalEndpoint {
      *   <li>{@link TechnologyException} if there was a technology-specific problem
      * </ul>
      *
+     * @param modifiers The modifiers to apply to this operation, like
+     *                  {@link Modifier#transitionTarget()}.
      * @return a future to retrieve a map containing all "state" property values (Can also be
      *     cancelled or monitored asynchronously for completion)
      */
     @CanIgnoreReturnValue
-    ListenableFuture<Map<String, Object>> fetchState();
+    ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers);
 
     /**
      * Asynchronously fetch a Map containing the values of all of the "config" properties on this
@@ -465,7 +474,7 @@ public interface FunctionalEndpoint {
      * </ul>
      *
      * If such ambiguity is unacceptable, you will need to either use the {@link
-     * #fetchProperty(PropertyKey)} method or inspect the maps returned from {@link
+     * #fetchProperty} method or inspect the maps returned from {@link
      * #copyCachedState()}, {@link #copyCachedConfig()}, and/or {@link #copyCachedMetadata()}.
      *
      * @param key the key for the property to fetch

@@ -22,6 +22,7 @@ import com.squareup.javapoet.*;
 import java.util.*;
 import javax.annotation.Generated;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import org.checkerframework.checker.nullness.qual.Nullable;
