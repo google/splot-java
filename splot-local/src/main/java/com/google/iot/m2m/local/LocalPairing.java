@@ -15,6 +15,7 @@
  */
 package com.google.iot.m2m.local;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.rpn.RPNContext;
 import com.google.iot.m2m.local.rpn.RPNException;
@@ -25,7 +26,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -71,7 +75,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
     private int mCount = 0;
 
     // Timestamp of last change.
-    private long mTimestamp;
+    private long mTimestamp = 0;
 
     // Forward Transform
     private Function<Object, Object> mForwardTransform = (x) -> x;
@@ -138,17 +142,32 @@ public class LocalPairing extends LocalFunctionalEndpoint {
 
         mDestinationLastValue = value;
 
-        rl.invoke(value);
-        mCount++;
-        mTimestamp = System.currentTimeMillis();
-        mPairingTrait.didChangeCount(mCount);
-        mPairingTrait.didChangeLast(0);
-
         if (mPushTrap != null) {
             // Clear the trap.
             mPushTrap = null;
             mBaseTrait.didChangeTrap(getTrapString());
         }
+
+        ListenableFuture<?> invokedFuture = rl.invoke(value);
+
+        invokedFuture.addListener(()->{
+            try {
+                invokedFuture.get();
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+
+            } catch (ExecutionException e) {
+                LOGGER.warning(AutomationPairingTrait.TRAP_DESTINATION_WRITE_FAIL + " " + e);
+                mPushTrap = AutomationPairingTrait.TRAP_DESTINATION_WRITE_FAIL;
+                mBaseTrait.didChangeTrap(getTrapString());
+            }
+        }, mExecutor);
+
+        mCount++;
+        mTimestamp = System.nanoTime();
+        mPairingTrait.didChangeCount(mCount);
+        mPairingTrait.didChangeLast(0);
     }
 
     void handleDestinationChange(@Nullable Object value) {
@@ -194,17 +213,32 @@ public class LocalPairing extends LocalFunctionalEndpoint {
 
         mSourceLastValue = value;
 
-        rl.invoke(value);
-        mCount++;
-        mTimestamp = System.currentTimeMillis();
-        mPairingTrait.didChangeCount(mCount);
-        mPairingTrait.didChangeLast(0);
-
         if (mPullTrap != null) {
             // Clear the trap.
             mPullTrap = null;
             mBaseTrait.didChangeTrap(getTrapString());
         }
+
+        ListenableFuture<?> invokedFuture = rl.invoke(value);
+
+        invokedFuture.addListener(()->{
+            try {
+                invokedFuture.get();
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+
+            } catch (ExecutionException|CancellationException e) {
+                LOGGER.warning(AutomationPairingTrait.TRAP_SOURCE_WRITE_FAIL + " " + e);
+                mPullTrap = AutomationPairingTrait.TRAP_SOURCE_WRITE_FAIL;
+                mBaseTrait.didChangeTrap(getTrapString());
+            }
+        }, mExecutor);
+
+        mCount++;
+        mTimestamp = System.nanoTime();
+        mPairingTrait.didChangeCount(mCount);
+        mPairingTrait.didChangeLast(0);
     }
 
     @Nullable String getTrapString() {
@@ -306,7 +340,16 @@ public class LocalPairing extends LocalFunctionalEndpoint {
         public @Nullable String onGetTrap() {
             return getTrapString();
         }
+
+        @Override
+        public Boolean onGetPermanent()  {
+            return getPermanent();
+        }
     };
+
+    protected boolean getPermanent() {
+        return true;
+    }
 
     EnabledDisabledTrait.AbstractLocalTrait mEnabledDisabledTrait = new EnabledDisabledTrait.AbstractLocalTrait() {
         @Override
@@ -534,6 +577,18 @@ public class LocalPairing extends LocalFunctionalEndpoint {
             }
 
             didChangePull(mPull);
+        }
+
+        @Override
+        @Nullable
+        public Integer onGetLast() throws TechnologyException {
+            long last = System.nanoTime() - mTimestamp;
+
+            if (mTimestamp == 0 || last < 0) {
+                return null;
+            }
+
+            return (int)TimeUnit.NANOSECONDS.toSeconds(last);
         }
     };
 }

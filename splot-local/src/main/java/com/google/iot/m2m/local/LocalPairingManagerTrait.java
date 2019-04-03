@@ -19,9 +19,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.trait.AutomationPairingManagerTrait;
-import com.google.iot.m2m.trait.AutomationPairingTrait;
-import com.google.iot.m2m.trait.EnabledDisabledTrait;
+import com.google.iot.m2m.trait.*;
 import com.google.iot.m2m.util.NestedPersistentStateManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -110,6 +108,11 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
             public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
                 return mParent;
             }
+
+            @Override
+            protected boolean getPermanent() {
+                return false;
+            }
         };
 
         mPairingLookup.put(childId, pairing);
@@ -159,6 +162,12 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
                 param = AutomationPairingManagerTrait.PARAM_REVERSE_TRANSFORM.getName();
                 ret.setProperty(AutomationPairingTrait.CONF_REVERSE_TRANSFORM,
                         AutomationPairingManagerTrait.PARAM_REVERSE_TRANSFORM.coerceFromMap(args)).get();
+            }
+
+            if (AutomationPairingManagerTrait.PARAM_NAME.isInMap(args)) {
+                param = AutomationPairingManagerTrait.PARAM_NAME.getName();
+                ret.setProperty(BaseTrait.META_NAME,
+                        AutomationPairingManagerTrait.PARAM_NAME.getFromMap(args)).get();
             }
 
             if (AutomationPairingManagerTrait.PARAM_ENABLED.isInMap(args)) {

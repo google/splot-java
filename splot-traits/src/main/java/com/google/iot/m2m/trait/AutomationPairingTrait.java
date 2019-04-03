@@ -148,4 +148,9 @@ public final class AutomationPairingTrait {
     @Property
     public static final PropertyKey<String> CONF_REVERSE_TRANSFORM =
             new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "xrev", java.lang.String.class);
+
+    public static String TRAP_SOURCE_WRITE_FAIL = "src-write-fail";
+    public static String TRAP_DESTINATION_WRITE_FAIL = "dst-write-fail";
+    public static String TRAP_SOURCE_READ_FAIL = "src-read-fail";
+    public static String TRAP_DESTINATION_READ_FAIL = "dst-read-fail";
 }

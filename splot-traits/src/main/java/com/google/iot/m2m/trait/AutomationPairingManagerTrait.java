@@ -99,6 +99,13 @@ public final class AutomationPairingManagerTrait {
             new ParamKey<>("en", java.lang.Boolean.class);
 
     /**
+     * Name of the created pairing.
+     *
+     * @see #METHOD_CREATE
+     */
+    public static final ParamKey<String> PARAM_NAME = new ParamKey<>("name", String.class);
+
+    /**
      * Source parameter.
      *
      * @see #METHOD_CREATE
