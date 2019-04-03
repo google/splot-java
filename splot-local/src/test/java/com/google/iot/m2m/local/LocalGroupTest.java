@@ -167,14 +167,14 @@ public class LocalGroupTest extends TestBase {
         livingRoom.setProperty(OnOffTrait.STAT_VALUE, false).get();
         FunctionalEndpoint offScene =
                 livingRoom
-                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "off")
+                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off"))
                         .get();
 
         livingRoom.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
         livingRoom.setProperty(OnOffTrait.STAT_VALUE, true).get();
         FunctionalEndpoint onScene =
                 livingRoom
-                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "on")
+                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on"))
                         .get();
 
         bulb1.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
@@ -182,7 +182,7 @@ public class LocalGroupTest extends TestBase {
         bulb3.setProperty(OnOffTrait.STAT_VALUE, false).get();
         FunctionalEndpoint dimScene =
                 livingRoom
-                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "dim")
+                        .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim"))
                         .get();
 
         assertNull(bulb1.fetchProperty(SceneTrait.STAT_GROUP_ID).get());

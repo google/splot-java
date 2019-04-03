@@ -25,8 +25,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <T> the type associated with this key
  */
 public abstract class TypedKey<T> {
+    private final TypeConverter<T> mTypeConverter;
+
     // Package-private constructor to prevent external subclassing.
-    TypedKey() {}
+    TypedKey(Class<T> type) {
+        mTypeConverter = new TypeConverter<>(type);
+    }
 
     /**
      * Casts the given object to the type of property, coercing the value if necessary.
@@ -47,7 +51,13 @@ public abstract class TypedKey<T> {
     public abstract String getName();
 
     /** Gets the class associated with this key. */
-    public abstract Class<T> getType();
+    public Class<T> getType() {
+        return mTypeConverter.getType();
+    }
+
+    public TypedKeyValue<T> with(T value) {
+        return new TypedKeyValue<>(this, value);
+    }
 
     /** Puts a specific value into a string-keyed map in a type-safe way. */
     public void putInMap(Map<String, Object> map, @Nullable T value) {
@@ -148,7 +158,7 @@ public abstract class TypedKey<T> {
      */
     @Nullable
     public T coerce(@Nullable Object value) throws InvalidValueException {
-        return coerce(value, getType());
+        return mTypeConverter.coerce(value);
     }
 
     @Override

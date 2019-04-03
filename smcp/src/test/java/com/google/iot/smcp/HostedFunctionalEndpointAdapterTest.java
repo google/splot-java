@@ -168,8 +168,7 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
         FunctionalEndpoint testScene =
                 remoteFe.invokeMethod(
                                 SceneTrait.METHOD_SAVE,
-                                SceneTrait.PARAM_SCENE_ID,
-                                "hostedAdapterChildTest")
+                                SceneTrait.PARAM_SCENE_ID.with("hostedAdapterChildTest"))
                         .get();
 
         assertNotNull(testScene);

@@ -16,6 +16,7 @@
 package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Modifier;
 import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
 import com.google.iot.m2m.trait.*;
@@ -65,7 +66,7 @@ class LocalTimerTest extends TestBase {
         if (DEBUG) {
             timer.registerPropertyListener(
                     Runnable::run,
-                    AutomationTimerTrait.STAT_COUNT,
+                    ActionsTrait.STAT_COUNT,
                     (fe, property, value) -> {
                         LOGGER.info(
                                 "Timer Property changed! Key: " + property + " Value: " + value);
@@ -127,12 +128,12 @@ class LocalTimerTest extends TestBase {
         assertEquals(0.0f, (float)bulb1.fetchProperty(LevelTrait.STAT_VALUE).get());
         assertFalse(timer.fetchProperty(AutomationTimerTrait.STAT_RUNNING).get());
 
-        AutomationTimerTrait.PARAM_ACTION_PATH.putInMap(action,
+        ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
                 technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE));
 
-        AutomationTimerTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
+        ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(AutomationTimerTrait.CONF_ACTIONS, action).get();
+        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "0.2").get();
         //timer.setProperty(AutomationTimerTrait.CONF_AUTO_RESET, true).get();
         timer.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
@@ -162,12 +163,12 @@ class LocalTimerTest extends TestBase {
         assertEquals(0.0f, (float)bulb1.fetchProperty(LevelTrait.STAT_VALUE).get());
         assertFalse(timer.fetchProperty(AutomationTimerTrait.STAT_RUNNING).get());
 
-        AutomationTimerTrait.PARAM_ACTION_PATH.putInMap(action,
-                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE).resolve("v?" + PROP_METHOD_INCREMENT));
+        ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
+                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Modifier.increment()));
 
-        AutomationTimerTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
+        ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(AutomationTimerTrait.CONF_ACTIONS, action).get();
+        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "0.2").get();
         timer.setProperty(AutomationTimerTrait.CONF_AUTO_RESET, true).get();
         timer.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
@@ -202,12 +203,12 @@ class LocalTimerTest extends TestBase {
         assertEquals(0.0f, (float)bulb1.fetchProperty(LevelTrait.STAT_VALUE).get());
         assertFalse(timer.fetchProperty(AutomationTimerTrait.STAT_RUNNING).get());
 
-        AutomationTimerTrait.PARAM_ACTION_PATH.putInMap(action,
-                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE).resolve("v?" + PROP_METHOD_INCREMENT));
+        ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
+                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Modifier.increment()));
 
-        AutomationTimerTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
+        ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(AutomationTimerTrait.CONF_ACTIONS, action).get();
+        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
 
         // This schedule program will stop the timer after two runs.
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "c 2 < IF 0.2 ENDIF").get();

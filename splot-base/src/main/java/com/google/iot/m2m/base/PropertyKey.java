@@ -59,7 +59,6 @@ public final class PropertyKey<T> extends TypedKey<T> {
     }
 
     private final String mName;
-    private final Class<T> mType;
 
     /**
      * Constructs a property key object. Note that {@link #PropertyKey(String, String, String,
@@ -70,11 +69,10 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @param type the class for the value that will be associated with this property.
      */
     public PropertyKey(String fullName, Class<T> type) {
+        super(type);
         Preconditions.checkNotNull(fullName, "fullName cannot be null");
-        Preconditions.checkNotNull(type, "type cannot be null");
 
         mName = fullName;
-        mType = type;
     }
 
     /**
@@ -104,12 +102,6 @@ public final class PropertyKey<T> extends TypedKey<T> {
     @Override
     public final String getName() {
         return mName;
-    }
-
-    /** Returns the class object for this property's values. */
-    @Override
-    public Class<T> getType() {
-        return mType;
     }
 
     /**

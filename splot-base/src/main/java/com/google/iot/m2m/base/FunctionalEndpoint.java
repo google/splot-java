@@ -585,8 +585,6 @@ public interface FunctionalEndpoint {
      *   <li>{@link TechnologyException} if there was a technology-specific problem
      * </ul>
      *
-     * <p>
-     *
      * @return a future object returning a boolean. If the boolean is true, the object was
      *     successfully deleted. If the boolean is false, the object is not deletable.
      */
@@ -673,35 +671,13 @@ public interface FunctionalEndpoint {
      * <p>
      *
      * @param methodKey The {@link MethodKey} object associated with the method to invoke.
-     * @param firstKey the key for the first argument.
-     * @param firstValueAndOtherKeyValuePairs the value of the first argument, along with all other
-     *     key-value pairs.
+     * @param params the parameters to the method, created using {@link ParamKey#with(Object)}.
      * @return A future capable of retrieving the return value of the method, if any.
-     * @throws IllegalArgumentException if a key isn't a {@link String}, or if a key is specified
-     *     without a value.
      */
     @CanIgnoreReturnValue
-    default <T> ListenableFuture<T> invokeMethod(
-            MethodKey<T> methodKey,
-            ParamKey<?> firstKey,
-            Object... firstValueAndOtherKeyValuePairs) {
-        if ((firstValueAndOtherKeyValuePairs.length & 1) == 0) {
-            throw new IllegalArgumentException("Argument key missing value");
-        }
-
-        final Map<String, Object> arguments = new HashMap<>();
-        arguments.put(firstKey.getName(), firstKey.cast(firstValueAndOtherKeyValuePairs[0]));
-
-        for (int i = 1; i < firstValueAndOtherKeyValuePairs.length; i += 2) {
-            final Object key = firstValueAndOtherKeyValuePairs[i];
-            final Object value = firstValueAndOtherKeyValuePairs[i + 1];
-            if (!(key instanceof ParamKey)) {
-                throw new IllegalArgumentException("Key must be a ParamKey");
-            }
-            arguments.put(key.toString(), ((ParamKey<?>) key).cast(value));
-        }
-
-        return invokeMethod(methodKey, arguments);
+    default <T> ListenableFuture<T> invokeMethod(MethodKey<T> methodKey,
+                                                 TypedKeyValue<?> ... params) {
+        return invokeMethod(methodKey, TypedKeyValue.asMap(params));
     }
 
     /**

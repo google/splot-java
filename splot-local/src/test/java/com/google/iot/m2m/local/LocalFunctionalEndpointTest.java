@@ -355,7 +355,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
         fe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
         fe.setProperty(OnOffTrait.STAT_VALUE, false).get();
         FunctionalEndpoint offScene =
-                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "off").get();
+                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off")).get();
 
         verify(mChildListenerMock, timeout(100).only())
                 .onChildAdded(eq(fe), eq(SceneTrait.TRAIT_ID), eq(offScene));
@@ -369,7 +369,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
         verify(mChildListenerMock, never()).onChildRemoved(any(), any(), any());
 
         FunctionalEndpoint onScene =
-                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "on").get();
+                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on")).get();
 
         verify(mChildListenerMock, timeout(100).only())
                 .onChildAdded(eq(fe), eq(SceneTrait.TRAIT_ID), eq(onScene));
@@ -378,7 +378,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
         fe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
         FunctionalEndpoint dimScene =
-                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "dim").get();
+                fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim")).get();
 
         verify(mChildListenerMock, timeout(100).only())
                 .onChildAdded(eq(fe), eq(SceneTrait.TRAIT_ID), eq(dimScene));
@@ -441,16 +441,16 @@ public class LocalFunctionalEndpointTest extends TestBase {
             fe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
             fe.setProperty(OnOffTrait.STAT_VALUE, false).get();
             FunctionalEndpoint offScene =
-                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "off").get();
+                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off")).get();
 
             fe.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
             fe.setProperty(OnOffTrait.STAT_VALUE, true).get();
             FunctionalEndpoint onScene =
-                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "on").get();
+                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on")).get();
 
             fe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
             FunctionalEndpoint dimScene =
-                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "dim").get();
+                    fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim")).get();
 
             persistentState = psm.copyPersistentState();
             psm.close();

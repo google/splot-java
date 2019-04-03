@@ -293,8 +293,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             FunctionalEndpoint testScene =
                     localFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
-                                    SceneTrait.PARAM_SCENE_ID,
-                                    "childFetchTest")
+                                    SceneTrait.PARAM_SCENE_ID.with("childFetchTest"))
                             .get();
             assertNotNull(testScene);
 
@@ -366,8 +365,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             FunctionalEndpoint testScene1 =
                     localFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
-                                    SceneTrait.PARAM_SCENE_ID,
-                                    "childAddedTest-1")
+                                    SceneTrait.PARAM_SCENE_ID.with("childAddedTest-1"))
                             .get();
             assertNotNull(testScene1);
 
@@ -390,8 +388,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             FunctionalEndpoint testScene2 =
                     remoteFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
-                                    SceneTrait.PARAM_SCENE_ID,
-                                    "childAddedTest-2")
+                                    SceneTrait.PARAM_SCENE_ID.with("childAddedTest-2"))
                             .get();
             assertNotNull(testScene2);
 
@@ -444,20 +441,20 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
         remoteFe.setProperty(OnOffTrait.STAT_VALUE, false).get();
         FunctionalEndpoint offScene =
-                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "off")
+                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off"))
                         .get();
         assertNotNull(offScene);
 
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
         remoteFe.setProperty(OnOffTrait.STAT_VALUE, true).get();
         FunctionalEndpoint onScene =
-                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "on")
+                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on"))
                         .get();
         assertNotNull(onScene);
 
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
         FunctionalEndpoint dimScene =
-                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, "dim")
+                remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim"))
                         .get();
         assertNotNull(dimScene);
 

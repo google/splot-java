@@ -28,36 +28,36 @@ class TypedKeyTest {
 
     @Test
     void coerceFloatInteger() throws Exception {
-        assertEquals((Integer) 0, TypedKey.coerce(0.1f, Integer.class));
-        assertEquals((Integer) 0, TypedKey.coerce(0.4f, Integer.class));
-        assertEquals((Integer) 0, TypedKey.coerce(0.8f, Integer.class));
-        assertEquals((Integer) 1, TypedKey.coerce(1.0f, Integer.class));
-        assertEquals((Float) 1.0f, TypedKey.coerce(1, Float.class));
-        assertEquals((Float) 0.0f, TypedKey.coerce(0, Float.class));
-        assertEquals((Float) (-1.0f), TypedKey.coerce(-1, Float.class));
+        assertEquals((Integer) 0, TypeConverter.INTEGER.coerce(0.1f));
+        assertEquals((Integer) 0, TypeConverter.INTEGER.coerce(0.4f));
+        assertEquals((Integer) 0, TypeConverter.INTEGER.coerce(0.8f));
+        assertEquals((Integer) 1, TypeConverter.INTEGER.coerce(1.0f));
+        assertEquals((Float) 1.0f, TypeConverter.FLOAT.coerce(1));
+        assertEquals((Float) 0.0f, TypeConverter.FLOAT.coerce(0));
+        assertEquals((Float) (-1.0f), TypeConverter.FLOAT.coerce(-1));
     }
 
     @Test
     void coerceDoubleInteger() throws Exception {
-        assertEquals((Double) 1.0, TypedKey.coerce(1, Double.class));
+        assertEquals((Double) 1.0, TypeConverter.DOUBLE.coerce(1));
     }
 
     @Test
     void coerceFloatBoolean() throws Exception {
-        assertEquals(Boolean.FALSE, TypedKey.coerce(0.1f, Boolean.class));
-        assertEquals(Boolean.TRUE, TypedKey.coerce(0.5f, Boolean.class));
+        assertEquals(Boolean.FALSE, TypeConverter.BOOLEAN.coerce(0.1f));
+        assertEquals(Boolean.TRUE, TypeConverter.BOOLEAN.coerce(0.5f));
     }
 
     @Test
     void coerceStringInteger() throws Exception {
-        assertEquals("1", TypedKey.coerce(1, String.class));
-        assertThrows(InvalidValueException.class, () -> TypedKey.coerce("1", Integer.class));
+        assertEquals("1", TypeConverter.STRING.coerce(1));
+        assertThrows(InvalidValueException.class, () -> TypeConverter.INTEGER.coerce("1"));
     }
 
     @Test
     void coerceStringUri() throws Exception {
-        assertEquals("http://google.com/", TypedKey.coerce(URI.create("http://google.com/"), String.class));
-        assertEquals(URI.create("http://google.com/"), TypedKey.coerce("http://google.com/", URI.class));
+        assertEquals("http://google.com/", TypeConverter.STRING.coerce(URI.create("http://google.com/")));
+        assertEquals(URI.create("http://google.com/"), TypeConverter.URI.coerce("http://google.com/"));
         assertEquals(URI.create("http://google.com/"), TypeConverter.URI.coerce("http://google.com/"));
         assertEquals(URI.create("http://google.com/"), TypeConverter.URI.coerce(URI.create("http://google.com/")));
         assertEquals("http://google.com/", TypeConverter.STRING.coerce(URI.create("http://google.com/")));
@@ -67,7 +67,7 @@ class TypedKeyTest {
     @Test
     void coerceLongInteger() throws Exception {
         assertThrows(
-                InvalidValueException.class, () -> TypedKey.coerce(Long.MAX_VALUE, Integer.class));
+                InvalidValueException.class, () -> TypeConverter.INTEGER.coerce(Long.MAX_VALUE));
         assertEquals((Integer) 1, TypedKey.coerce(1L, Integer.class));
     }
 

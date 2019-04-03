@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 /** A generic class for identifying and facilitating return-type-safety for method parameters. */
 public final class ParamKey<T> extends TypedKey<T> {
     private final String mName;
-    private final Class<T> mType;
 
     /**
      * Constructs a parameter key object.
@@ -29,21 +28,15 @@ public final class ParamKey<T> extends TypedKey<T> {
      * @param type the class for the value that will be associated with this parameter
      */
     public ParamKey(String name, Class<T> type) {
+        super(type);
         Preconditions.checkNotNull(name, "name cannot be null");
         Preconditions.checkNotNull(type, "type cannot be null");
 
         mName = name;
-        mType = type;
     }
 
     /** Returns the name of this parameter. */
     public final String getName() {
         return mName;
-    }
-
-    /** Indicates the return type associated with this key. */
-    @Override
-    public Class<T> getType() {
-        return mType;
     }
 }

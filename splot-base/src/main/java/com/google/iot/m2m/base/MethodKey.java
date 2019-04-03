@@ -25,7 +25,6 @@ import com.google.common.base.Preconditions;
 public final class MethodKey<T> extends TypedKey<T> {
 
     private final String mName;
-    private final Class<T> mReturnType;
 
     /**
      * Constructs a method key object.
@@ -35,11 +34,11 @@ public final class MethodKey<T> extends TypedKey<T> {
      * @param type the class for the value that will be associated with this property.
      */
     private MethodKey(String fullName, Class<T> type) {
+        super(type);
         Preconditions.checkNotNull(fullName, "fullName cannot be null");
         Preconditions.checkNotNull(type, "type cannot be null");
 
         mName = fullName;
-        mReturnType = type;
     }
 
     /**
@@ -59,11 +58,5 @@ public final class MethodKey<T> extends TypedKey<T> {
      */
     public final String getName() {
         return mName;
-    }
-
-    /** Indicates the return type associated with this key. */
-    @Override
-    public Class<T> getType() {
-        return mReturnType;
     }
 }
