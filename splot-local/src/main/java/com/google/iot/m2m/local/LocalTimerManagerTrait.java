@@ -109,6 +109,11 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
             public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
                 return mParent;
             }
+
+            @Override
+            protected boolean getPermanent() {
+                return false;
+            }
         };
 
         mTimerLookup.put(childId, timer);
@@ -138,25 +143,25 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
 
             if (AutomationTimerManagerTrait.PARAM_ACTIONS.isInMap(args)) {
                 param = AutomationTimerManagerTrait.PARAM_ACTIONS.getName();
-                ret.setProperty(AutomationTimerTrait.CONF_ACTIONS,
-                        AutomationTimerManagerTrait.PARAM_ACTIONS.getFromMap(args)).get();
+                ret.setProperty(ActionsTrait.CONF_ACTIONS,
+                        AutomationTimerManagerTrait.PARAM_ACTIONS.coerceFromMap(args)).get();
 
             } else if (AutomationTimerManagerTrait.PARAM_ACTION_PATH.isInMap(args)) {
                 Map<String, Object> action = new HashMap<>();
                 param = AutomationTimerManagerTrait.PARAM_ACTION_PATH.getName();
 
-                AutomationTimerTrait.PARAM_ACTION_PATH.putInMap(action,
+                ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
                         AutomationTimerManagerTrait.PARAM_ACTION_PATH.coerceFromMap(args));
 
                 if (AutomationTimerManagerTrait.PARAM_ACTION_METH.isInMap(args)) {
                     param = AutomationTimerManagerTrait.PARAM_ACTION_PATH.getName();
-                    AutomationTimerTrait.PARAM_ACTION_METH.putInMap(action,
+                    ActionsTrait.PARAM_ACTION_METH.putInMap(action,
                             AutomationTimerManagerTrait.PARAM_ACTION_METH.getFromMap(args));
                 }
 
                 if (AutomationTimerManagerTrait.PARAM_ACTION_BODY.isInMap(args)) {
                     param = AutomationTimerManagerTrait.PARAM_ACTION_BODY.getName();
-                    AutomationTimerTrait.PARAM_ACTION_BODY.putInMap(action,
+                    ActionsTrait.PARAM_ACTION_BODY.putInMap(action,
                             AutomationTimerManagerTrait.PARAM_ACTION_BODY.getFromMap(args));
                 }
 
@@ -165,25 +170,31 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
                 @SuppressWarnings("unchecked")
                 Map<String, Object>[] actionArray = new Map[]{action};
 
-                ret.setProperty(AutomationTimerTrait.CONF_ACTIONS, actionArray).get();
+                ret.setProperty(ActionsTrait.CONF_ACTIONS, actionArray).get();
             }
 
             if (AutomationTimerManagerTrait.PARAM_SCHEDULE_PROGRAM.isInMap(args)) {
                 param = AutomationTimerManagerTrait.PARAM_SCHEDULE_PROGRAM.getName();
                 ret.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM,
-                        AutomationTimerManagerTrait.PARAM_SCHEDULE_PROGRAM.getFromMap(args)).get();
+                        AutomationTimerManagerTrait.PARAM_SCHEDULE_PROGRAM.coerceFromMap(args)).get();
             }
 
             if (AutomationTimerManagerTrait.PARAM_DURATION.isInMap(args)) {
                 param = AutomationTimerManagerTrait.PARAM_DURATION.getName();
                 ret.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM,
-                        "" + AutomationTimerManagerTrait.PARAM_DURATION.getFromMap(args)).get();
+                        "" + AutomationTimerManagerTrait.PARAM_DURATION.coerceFromMap(args)).get();
+            }
+
+            if (AutomationTimerManagerTrait.PARAM_NAME.isInMap(args)) {
+                param = AutomationTimerManagerTrait.PARAM_NAME.getName();
+                ret.setProperty(BaseTrait.META_NAME,
+                        AutomationTimerManagerTrait.PARAM_NAME.getFromMap(args)).get();
             }
 
             if (AutomationTimerManagerTrait.PARAM_PREDICATE_PROGRAM.isInMap(args)) {
                 param = AutomationTimerManagerTrait.PARAM_PREDICATE_PROGRAM.getName();
                 ret.setProperty(AutomationTimerTrait.CONF_PREDICATE_PROGRAM,
-                        AutomationTimerManagerTrait.PARAM_PREDICATE_PROGRAM.getFromMap(args)).get();
+                        AutomationTimerManagerTrait.PARAM_PREDICATE_PROGRAM.coerceFromMap(args)).get();
             }
 
             if (AutomationTimerManagerTrait.PARAM_ENABLED.isInMap(args)) {

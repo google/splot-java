@@ -16,6 +16,7 @@
 package com.google.iot.m2m.local;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.rpn.RPNContext;
 import com.google.iot.m2m.local.rpn.RPNException;
@@ -34,7 +35,7 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class LocalTimer extends LocalFunctionalEndpoint {
+public class LocalTimer extends LocalActions {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalTimer.class.getCanonicalName());
 
@@ -43,41 +44,6 @@ public class LocalTimer extends LocalFunctionalEndpoint {
     private RPNContext mPredicateRPNContext = new RPNContext(mSharedRPNContext);
 
     private long mFireTime = 0;
-    private long mLastFiredTime = 0;
-
-    @SuppressWarnings("unchecked")
-    private Map<String,Object>[] mActionsInfo = new Map[0];
-
-    class Action {
-        ResourceLink<Object> mResourceLink;
-        Object mBody;
-
-        Action(ResourceLink<Object> resourceLink, @Nullable Object body) {
-            mResourceLink = resourceLink;
-            mBody = body;
-        }
-
-        void invoke() {
-            if (DEBUG) LOGGER.info("Invoking " + mResourceLink + " with " + mBody);
-            ListenableFuture<?> future = mResourceLink.invoke(mBody);
-
-            future.addListener(()->{
-                try {
-                    future.get();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (ExecutionException|CancellationException e) {
-                    LOGGER.warning("Caught exception on action invoke: " + e);
-                    e.printStackTrace();
-                }
-            }, mExecutor);
-        }
-    }
-
-    private List<Action> mActions = new ArrayList<>();
-
-    // Technology backing this timer
-    private final ResourceLinkManager mTechnology;
 
     private ScheduledExecutorService mExecutor = Utils.getDefaultExecutor();
 
@@ -90,9 +56,6 @@ public class LocalTimer extends LocalFunctionalEndpoint {
     // True if this timer is enabled.
     private boolean mEnabled = false;
 
-    // Number of times this automation pairing has fired.
-    private int mCount = 0;
-
     // Schedule Program
     private Function<Object, Object> mScheduleProgram = (x) -> x;
     private String mScheduleProgramRecipe = "";
@@ -102,42 +65,23 @@ public class LocalTimer extends LocalFunctionalEndpoint {
     private String mPredicateProgramRecipe = "";
 
     public LocalTimer(ResourceLinkManager technology) {
-        mTechnology = technology;
+        super(technology);
         registerTrait(mBaseTrait);
         registerTrait(mTimerTrait);
         registerTrait(mEnabledDisabledTrait);
     }
 
-    void updateRpnContextVariables() {
-        final int SECONDS_PER_HOUR = 60*60;
-
-        Calendar now = Calendar.getInstance();
-
-        now.setFirstDayOfWeek(Calendar.MONDAY);
-
-        mSharedRPNContext.setVariable("c", mCount);
-        mSharedRPNContext.setVariable("rtc.dom", now.get(Calendar.DAY_OF_MONTH) - now.getMinimum(Calendar.DAY_OF_MONTH));
-        mSharedRPNContext.setVariable("rtc.doy", now.get(Calendar.DAY_OF_YEAR)  - now.getMinimum(Calendar.DAY_OF_YEAR));
-        mSharedRPNContext.setVariable("rtc.moy", now.get(Calendar.MONTH) - now.getMinimum(Calendar.MONTH));
-        mSharedRPNContext.setVariable("rtc.awm", now.get(Calendar.DAY_OF_WEEK_IN_MONTH) - now.getMinimum(Calendar.DAY_OF_WEEK_IN_MONTH));
-        mSharedRPNContext.setVariable("rtc.y", now.get(Calendar.YEAR));
-        mSharedRPNContext.setVariable("rtc.wom", now.get(Calendar.WEEK_OF_MONTH) - now.getMinimum(Calendar.WEEK_OF_MONTH));
-        mSharedRPNContext.setVariable("rtc.woy", now.get(Calendar.WEEK_OF_YEAR) - now.getMinimum(Calendar.WEEK_OF_YEAR));
-
-        int secondOfDay = now.get(Calendar.SECOND)
-                + now.get(Calendar.MINUTE)*60
-                + now.get(Calendar.HOUR_OF_DAY)*3600;
-        mSharedRPNContext.setVariable("rtc.tod", (double)secondOfDay/SECONDS_PER_HOUR);
-
-        // Convert to zero-based day with monday as start of week.
-        int dow = now.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
-        if (dow < 0) {
-            dow = 7 - dow;
-        }
-        mSharedRPNContext.setVariable("rtc.dow", dow);
+    @Override
+    protected ScheduledExecutorService getExecutor() {
+        return mExecutor;
     }
 
-    void stopTimer() {
+    private void updateRpnContextVariables() {
+        mSharedRPNContext.setVariable("c", getCount());
+        mSharedRPNContext.updateRtcVariables(Calendar.getInstance());
+    }
+
+    private void stopTimer() {
         if (mTimer != null && !mTimer.isDone()) {
             mTimer.cancel(false);
             if (DEBUG) LOGGER.info("Timer stopped");
@@ -145,7 +89,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         mTimer = null;
     }
 
-    void resetTimer() {
+    private void resetTimer() {
         if (mEnabled) {
             stopTimer();
 
@@ -157,7 +101,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
                     long nanoseconds = TimeUnit.MILLISECONDS.toNanos((long) (seconds * 1000));
                     mFireTime = now + nanoseconds;
 
-                    mTimer = mExecutor.schedule(
+                    mTimer = getExecutor().schedule(
                             this::handleTimerFired, nanoseconds, TimeUnit.NANOSECONDS);
                     mTimerTrait.didChangeNext((float) seconds);
                     if (DEBUG) LOGGER.info("Timer started, will fire in " + seconds + "s (" + nanoseconds + "ns)");
@@ -170,7 +114,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
     }
 
-    boolean doesPredicatePass() {
+    private boolean doesPredicatePass() {
         Object predObj = mPredicateProgram.apply(true);
 
         try {
@@ -186,12 +130,18 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         return false;
     }
 
-    boolean isRunning() {
+    private boolean isRunning() {
         Future<?> timer = mTimer;
         return timer != null && !timer.isDone();
     }
 
-    void handleTimerFired() {
+    @Override
+    protected void invoke() {
+        super.invoke();
+        mSharedRPNContext.setVariable("c", getCount());
+    }
+
+    private void handleTimerFired() {
         if (DEBUG) LOGGER.info("handleTimerFired");
 
         updateRpnContextVariables();
@@ -201,17 +151,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
             return;
         }
 
-        List<Action> actions = mActions;
-
-        for (Action action : actions) {
-            action.invoke();
-        }
-
-        mCount++;
-        mLastFiredTime = System.nanoTime();
-        mTimerTrait.didChangeCount(mCount);
-        mTimerTrait.didChangeLast(0);
-        mSharedRPNContext.setVariable("c", mCount);
+        invoke();
 
         if (mAutoReset) {
             if (DEBUG) LOGGER.info("Auto restart");
@@ -232,9 +172,9 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
     }
 
-    BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
+    private BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
         @Override
-        public String onGetModel() throws TechnologyException {
+        public String onGetModel() {
             return "Timer";
         }
 
@@ -244,19 +184,28 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
 
         @Override
-        public String onGetManufacturer() throws TechnologyException {
+        public String onGetManufacturer() {
             return "Splot for Java";
+        }
+
+        @Override
+        public Boolean onGetPermanent()  {
+            return getPermanent();
         }
     };
 
-    EnabledDisabledTrait.AbstractLocalTrait mEnabledDisabledTrait = new EnabledDisabledTrait.AbstractLocalTrait() {
+    protected boolean getPermanent() {
+        return true;
+    }
+
+    private EnabledDisabledTrait.AbstractLocalTrait mEnabledDisabledTrait = new EnabledDisabledTrait.AbstractLocalTrait() {
         @Override
         public Boolean onGetValue() {
             return mEnabled;
         }
 
         @Override
-        public void onSetValue(@Nullable Boolean value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetValue(@Nullable Boolean value) {
 
             if (value == null || value == mEnabled) {
                 return;
@@ -267,6 +216,8 @@ public class LocalTimer extends LocalFunctionalEndpoint {
 
                 if (mAutoReset) {
                     updateRpnContextVariables();
+                    resetCount();
+                    mSharedRPNContext.setVariable("c", getCount());
                     resetTimer();
                 }
 
@@ -296,25 +247,19 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
     };
 
-    AutomationTimerTrait.AbstractLocalTrait mTimerTrait = new AutomationTimerTrait.AbstractLocalTrait() {
-        @Override
-        public Integer onGetCount() {
-            return mCount;
-        }
-
+    private AutomationTimerTrait.AbstractLocalTrait mTimerTrait = new AutomationTimerTrait.AbstractLocalTrait() {
         @Override
         public Boolean onGetRunning() {
             return isRunning();
         }
 
         @Override
-        public @Nullable Float onInvokeReset(Map<String, Object> ignored) throws InvalidMethodArgumentsException {
+        public @Nullable Float onInvokeReset(Map<String, Object> ignored) {
             if (mEnabled) {
                 if (mAutoReset) {
-                    mCount = 0;
-                    didChangeCount(0);
+                    resetCount();
                 }
-                mSharedRPNContext.setVariable("c", mCount);
+                mSharedRPNContext.setVariable("c", getCount());
                 resetTimer();
                 mTimerTrait.didChangeRunning(false);
             }
@@ -323,7 +268,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
 
         @Override
-        public void onSetRunning(@Nullable Boolean value) throws BadStateForPropertyValueException,PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetRunning(@Nullable Boolean value) throws BadStateForPropertyValueException {
             if (value == null || value.equals(isRunning())) {
                 return;
             }
@@ -345,12 +290,12 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
 
         @Override
-        public @Nullable String onGetScheduleProgram() throws TechnologyException {
+        public @Nullable String onGetScheduleProgram() {
             return mScheduleProgramRecipe;
         }
 
         @Override
-        public void onSetScheduleProgram(@Nullable String value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetScheduleProgram(@Nullable String value) throws InvalidPropertyValueException {
             if (value == null) {
                 value = "";
             }
@@ -375,12 +320,12 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
 
         @Override
-        public @Nullable String onGetPredicateProgram() throws TechnologyException {
+        public @Nullable String onGetPredicateProgram() {
             return mPredicateProgramRecipe;
         }
 
         @Override
-        public void onSetPredicateProgram(@Nullable String value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetPredicateProgram(@Nullable String value) throws InvalidPropertyValueException {
             if (value == null) {
                 value = "";
             }
@@ -399,75 +344,18 @@ public class LocalTimer extends LocalFunctionalEndpoint {
             didChangePredicateProgram(value);
         }
 
-        @Nullable
         @Override
-        public Map<String, Object>[] onGetActions() throws TechnologyException {
-            return mActionsInfo;
-        }
-
-        @Override
-        public void onSetActions(@Nullable Map<String, Object>[] value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
-            if (value == null || Arrays.equals(mActionsInfo, value)) {
-                return;
-            }
-
-            List<Action> actions = new ArrayList<>();
-            try {
-                for (Map<String, Object> actionInfo : value) {
-                    if (actionInfo == null) {
-                        throw new InvalidPropertyValueException("Action can't be null");
-                    }
-
-                    String method = "POST";
-                    Object body = null;
-                    URI path = AutomationTimerTrait.PARAM_ACTION_PATH.coerceFromMap(actionInfo);
-
-                    if (path == null) {
-                        throw new InvalidPropertyValueException("Action path can't be null");
-                    }
-
-                    if (AutomationTimerTrait.PARAM_ACTION_METH.isInMap(actionInfo)) {
-                        method = AutomationTimerTrait.PARAM_ACTION_METH.getFromMap(actionInfo);
-                    }
-
-                    if (!"POST".equals(method)) {
-                        throw new InvalidPropertyValueException("Method \"" + method + "\" not yet supported");
-                    }
-
-                    if (AutomationTimerTrait.PARAM_ACTION_BODY.isInMap(actionInfo)) {
-                        body = AutomationTimerTrait.PARAM_ACTION_BODY.getFromMap(actionInfo);
-                    }
-
-                    ResourceLink<Object> resourceLink = mTechnology.getResourceLinkForNativeUri(path);
-
-                    if (DEBUG) LOGGER.info("Will " + method + " to " + path + " with body of " + body);
-                    actions.add(new Action(resourceLink, body));
-                }
-            } catch (InvalidValueException e) {
-                throw new InvalidPropertyValueException(e);
-
-            } catch (UnknownResourceException e) {
-                throw new TechnologyException(e);
-            }
-
-            mActionsInfo = value;
-            mActions = actions;
-
-            didChangeActions(mActionsInfo);
-        }
-
-        @Override
-        public Boolean onGetAutoReset() throws TechnologyException {
+        public Boolean onGetAutoReset() {
             return mAutoReset;
         }
 
         @Override
-        public Boolean onGetAutoDelete() throws TechnologyException {
+        public Boolean onGetAutoDelete() {
             return mAutoDelete;
         }
 
         @Override
-        public void onSetAutoDelete(@Nullable Boolean value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetAutoDelete(@Nullable Boolean value) {
             if (value == null || value.equals(mAutoDelete)) {
                 return;
             }
@@ -476,7 +364,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
         }
 
         @Override
-        public void onSetAutoReset(@Nullable Boolean value) throws PropertyReadOnlyException, InvalidPropertyValueException, TechnologyException {
+        public void onSetAutoReset(@Nullable Boolean value)  {
             if (value == null || value.equals(mAutoReset)) {
                 return;
             }
@@ -486,7 +374,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
 
         @Override
         @Nullable
-        public Float onGetNext() throws TechnologyException {
+        public Float onGetNext() {
             if (!isRunning() || mFireTime == 0) {
                 return null;
             }
@@ -498,18 +386,6 @@ public class LocalTimer extends LocalFunctionalEndpoint {
             }
 
             return TimeUnit.NANOSECONDS.toMillis(next) / 1000.0f;
-        }
-
-        @Override
-        @Nullable
-        public Integer onGetLast() throws TechnologyException {
-            long last = System.nanoTime() - mLastFiredTime;
-
-            if (mLastFiredTime == 0 || last < 0) {
-                return null;
-            }
-
-            return (int)TimeUnit.NANOSECONDS.toSeconds(last);
         }
     };
 

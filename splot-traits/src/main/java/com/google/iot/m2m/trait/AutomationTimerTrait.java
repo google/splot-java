@@ -28,6 +28,9 @@ import static com.google.iot.m2m.annotation.Property.*;
 /**
  * Experimental trait representing a timer or schedule. An automation timer allows you to trigger
  * events to occur at certain times. They may be repeating or restartable.
+ *
+ * <p>This trait is typically used with {@link ActionsTrait}.
+ * @see ActionsTrait
  */
 @Trait
 public final class AutomationTimerTrait {
@@ -56,23 +59,6 @@ public final class AutomationTimerTrait {
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
             new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
-
-    /**
-     * The number of times this timer has "fired". This count may be reset by writing zero.
-     * Writing any other value results in an error. The count is generally not volatile and is
-     * lost after a power cycle.
-     */
-    @Property(READ_ONLY | RESET)
-    public static final PropertyKey<Integer> STAT_COUNT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "c", Integer.class);
-
-    /**
-     * The number of seconds ago that this timer last fired. This value is not cacheable.
-     * Observing it will only indicate changes to "zero".
-     */
-    @Property(READ_ONLY)
-    public static final PropertyKey<Integer> STAT_LAST =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "last", Integer.class);
 
     /**
      * The number of seconds until the timer fires next. This value is not cacheable.
@@ -106,7 +92,7 @@ public final class AutomationTimerTrait {
      * <h2>Available variables</h2>
      *
      * <ul>
-     *     <li>{@code c}: The value of {@link #STAT_COUNT}</li>
+     *     <li>{@code c}: The value of {@link ActionsTrait#STAT_COUNT}</li>
      *   <li>{@code rtc.tod}: Pushes Time of day, in hours. 0.000 - 23.999.
      *   <li>{@code rtc.dow}: Pushes Day of week. 0-6. Monday is 0, Sunday
      *       is 6.
@@ -148,7 +134,7 @@ public final class AutomationTimerTrait {
     /**
      * Predicate program. This program is evaluated whenever the timer expires. If the
      * predicate evaluates to true, then the actions are fired. If it evaluates to false,
-     * then the timer is reset, and {@link #STAT_COUNT} is not incremented. The intent of
+     * then the timer is reset, and {@link ActionsTrait#STAT_COUNT} is not incremented. The intent of
      * the predicate is to allow for complex schedules to be implemented, such as
      * "every second tuesday of the month at noon" or "Every easter at 9am".
      *
@@ -157,7 +143,7 @@ public final class AutomationTimerTrait {
      * <h2>Available variables</h2>
      *
      * <ul>
-     *     <li>{@code c}: The value of {@link #STAT_COUNT}</li>
+     *     <li>{@code c}: The value of {@link ActionsTrait#STAT_COUNT}</li>
      *   <li>{@code rtc.tod}: Pushes Time of day, in hours. 0.000 - 23.999.
      *   <li>{@code rtc.dow}: Pushes Day of week. 0-6. Monday is 0, Sunday
      *       is 6.
@@ -199,23 +185,6 @@ public final class AutomationTimerTrait {
             new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "pred", String.class);
 
     /**
-     * Actions to perform when this timer fires.
-     * <p>Each criteria is defined as a map keyed by strings. The string keys are the following:
-     *
-     * <ul>
-     *   <li><code>p</code> ({@link #PARAM_ACTION_PATH}): URL or absolute path to perform an action on
-     *   <li><code>s</code> ({@link #PARAM_ACTION_SKIP}): True if this action should be skipped.
-     *   <li><code>d</code> ({@link #PARAM_ACTION_DESC}): Human-readable description of the action
-     *   <li><code>e</code> ({@link #PARAM_ACTION_METH}): The REST method to perform on the path
-     *   <li><code>e</code> ({@link #PARAM_ACTION_BODY}): The body of the action
-     * </ul>
-     */
-    @Property(READ_WRITE | REQUIRED)
-    @SuppressWarnings("unchecked")
-    public static final PropertyKey<Map<String, Object>[]> CONF_ACTIONS =
-            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "acti", java.util.Map[].class);
-
-    /**
      * Auto restart flag. If this flag is true, then the timer will automatically restart after
      * firing. It will continue to run until it is explicitly stopped or until the schedule program
      * fails to return a positive number.
@@ -240,41 +209,6 @@ public final class AutomationTimerTrait {
     public static final PropertyKey<Boolean> CONF_AUTO_DELETE =
             new PropertyKey<>(
                     Splot.SECTION_CONFIG, TRAIT_ID, "adel", Boolean.class);
-
-    /**
-     * Path for action.
-     * @see #CONF_ACTIONS
-     */
-    public static final ParamKey<URI> PARAM_ACTION_PATH = new ParamKey<>("p", URI.class);
-
-    /**
-     * The REST method to use for the action. Can be one of the following strings:
-     * <ul>
-     *     <li>{@code "POST"}</li>
-     *     <li>{@code "PUT"}</li>
-     *     <li>{@code "DELETE"}</li>
-     * </ul>
-     * @see #CONF_ACTIONS
-     */
-    public static final ParamKey<String> PARAM_ACTION_METH = new ParamKey<>("m", String.class);
-
-    /**
-     * The body to use for the action.
-     * @see #CONF_ACTIONS
-     */
-    public static final ParamKey<Object> PARAM_ACTION_BODY = new ParamKey<>("b", Object.class);
-
-    /**
-     * Flag indicating if this action should be skipped. If absent, it is assumed to be false.
-     * @see #CONF_ACTIONS
-     */
-    public static final ParamKey<Boolean> PARAM_ACTION_SKIP = new ParamKey<>("s", Boolean.class);
-
-    /**
-     * Human readable description of the action. Optional.
-     * @see #CONF_ACTIONS
-     */
-    public static final ParamKey<String> PARAM_ACTION_DESC = new ParamKey<>("c", String.class);
 
     /**
      * Method for resetting the timer. Calling this method will always restart the timer,

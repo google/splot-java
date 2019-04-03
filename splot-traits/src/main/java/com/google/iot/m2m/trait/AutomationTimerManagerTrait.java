@@ -121,6 +121,13 @@ public final class AutomationTimerManagerTrait {
             new ParamKey<>("dura", Double.class);
 
     /**
+     * Name of the created timer.
+     *
+     * @see #METHOD_CREATE
+     */
+    public static final ParamKey<String> PARAM_NAME = new ParamKey<>("name", String.class);
+
+    /**
      * Schedule program.
      *
      * @see #METHOD_CREATE
@@ -140,10 +147,10 @@ public final class AutomationTimerManagerTrait {
      * List of actions. If only one action is needed, use {@link #PARAM_ACTION_PATH},
      * {@link #PARAM_ACTION_METH}, and {@link #PARAM_ACTION_BODY} instead.
      *
-     * <p>This parameter takes the same arguments as {@link AutomationTimerTrait#CONF_ACTIONS}.
+     * <p>This parameter takes the same arguments as {@link ActionsTrait#CONF_ACTIONS}.
      *
      * @see #METHOD_CREATE
-     * @see AutomationTimerTrait#CONF_ACTIONS
+     * @see ActionsTrait#CONF_ACTIONS
      */
     @SuppressWarnings("unchecked")
     public static final ParamKey<Map<String, Object>[]> PARAM_ACTIONS = new ParamKey("acti", Map[].class);

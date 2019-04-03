@@ -30,6 +30,9 @@ import java.util.Map;
  * Experimental trait representing an automation rule. An automation rule allows you to create
  * if-this-then-that style relationships across functional endpoints that are associated with the
  * same {@link com.google.iot.m2m.base.Technology} instance.
+ *
+ * <p>This trait is typically used with {@link ActionsTrait}.
+ * @see ActionsTrait
  */
 @Trait
 public final class AutomationRuleTrait {
@@ -58,23 +61,6 @@ public final class AutomationRuleTrait {
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
             new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
-
-    /**
-     * The number of times this rule has "fired". This count may be reset by writing zero. Writing
-     * any other value results in an error. The count will generally not volatile and is lost after
-     * a power cycle.
-     */
-    @Property(READ_ONLY | RESET)
-    public static final PropertyKey<Integer> STAT_COUNT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "c", java.lang.Integer.class);
-
-    /**
-     * The number of seconds ago that this rule last fired. This value is not cacheable. Observing
-     * it will only indicate changes to "zero".
-     */
-    @Property(READ_ONLY)
-    public static final PropertyKey<Integer> STAT_LAST =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "last", java.lang.Integer.class);
 
     /**
      * Criteria table for determining when the action should fire. All of the given criteria must be
@@ -133,76 +119,10 @@ public final class AutomationRuleTrait {
     public static final PropertyKey<Map<String, Object>[]> CONF_CONDITIONS =
             new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "cond", java.util.Map[].class);
 
-    /** The absolute path or URI for the action. */
+
     @Property(READ_WRITE | REQUIRED)
-    public static final PropertyKey<URI> CONF_ACTION_PATH =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "path", URI.class);
 
-    /**
-     * The method (GET/POST/PUT/DELETE) used for the action.
-     *
-     * @see #METHOD_GET
-     * @see #METHOD_PUT
-     * @see #METHOD_POST
-     * @see #METHOD_DELETE
-     * @see #CONF_ACTION_PATH
-     * @see #CONF_ACTION_BODY
-     */
-    @Property(READ_WRITE | REQUIRED)
-    public static final PropertyKey<String> CONF_ACTION_METHOD =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "meth", java.lang.String.class);
 
-    /**
-     * {@code GET} RESTful method.
-     *
-     * @see #CONF_ACTION_METHOD
-     */
-    public static final String METHOD_GET = "GET";
-
-    /**
-     * {@code PUT} RESTful method.
-     *
-     * @see #CONF_ACTION_METHOD
-     */
-    public static final String METHOD_PUT = "PUT";
-
-    /**
-     * {@code POST} RESTful method.
-     *
-     * @see #CONF_ACTION_METHOD
-     */
-    public static final String METHOD_POST = "POST";
-
-    /**
-     * {@code DELETE} RESTful method.
-     *
-     * @see #CONF_ACTION_METHOD
-     */
-    public static final String METHOD_DELETE = "DELETE";
-
-    /**
-     * The content of the body used for the action.
-     *
-     * @see #CONF_ACTION_PATH
-     * @see #CONF_ACTION_METHOD
-     * @see #CONF_ACTION_CONTENT_FORMAT
-     */
-    @Property(READ_WRITE | REQUIRED)
-    public static final PropertyKey<Object> CONF_ACTION_BODY =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "body", java.lang.Object.class);
-
-    /**
-     * The <a href="https://tools.ietf.org/html/rfc7252#section-12.3">CoAP content-format</a> to use
-     * for rendering the body when performing the action.
-     *
-     * @see #CONF_ACTION_BODY
-     * @see <a href="https://tools.ietf.org/html/rfc7252#section-12.3">RFC7252 Section 12.3</a>
-     * @see <a href="https://goo.gl/ZHfEs6">IANA CoAP Content-Format Registry</a>
-     */
-    @Property(READ_WRITE | REQUIRED)
-    public static final PropertyKey<Integer> CONF_ACTION_CONTENT_FORMAT =
-            new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "cfmt", java.lang.Integer.class);
 
     /**
      * Path for condition. Optional.

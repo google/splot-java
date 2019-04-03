@@ -692,6 +692,32 @@ public class RPNContext {
         return mVariables.get(key);
     }
 
+    public void updateRtcVariables(Calendar now) {
+        final int SECONDS_PER_HOUR = 60*60;
+
+        now.setFirstDayOfWeek(Calendar.MONDAY);
+
+        setVariable("rtc.dom", now.get(Calendar.DAY_OF_MONTH) - now.getMinimum(Calendar.DAY_OF_MONTH));
+        setVariable("rtc.doy", now.get(Calendar.DAY_OF_YEAR)  - now.getMinimum(Calendar.DAY_OF_YEAR));
+        setVariable("rtc.moy", now.get(Calendar.MONTH) - now.getMinimum(Calendar.MONTH));
+        setVariable("rtc.awm", now.get(Calendar.DAY_OF_WEEK_IN_MONTH) - now.getMinimum(Calendar.DAY_OF_WEEK_IN_MONTH));
+        setVariable("rtc.y", now.get(Calendar.YEAR));
+        setVariable("rtc.wom", now.get(Calendar.WEEK_OF_MONTH) - now.getMinimum(Calendar.WEEK_OF_MONTH));
+        setVariable("rtc.woy", now.get(Calendar.WEEK_OF_YEAR) - now.getMinimum(Calendar.WEEK_OF_YEAR));
+
+        int secondOfDay = now.get(Calendar.SECOND)
+                + now.get(Calendar.MINUTE)*60
+                + now.get(Calendar.HOUR_OF_DAY)*3600;
+        setVariable("rtc.tod", (double)secondOfDay/SECONDS_PER_HOUR);
+
+        // Convert to zero-based day with monday as start of week.
+        int dow = now.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+        if (dow < 0) {
+            dow = 7 - dow;
+        }
+        setVariable("rtc.dow", dow);
+    }
+
     private TokenType identifyToken(String token) {
         if (token.matches(REGEX_NUMBER)) {
             return TokenType.CONST_NUMBER;
