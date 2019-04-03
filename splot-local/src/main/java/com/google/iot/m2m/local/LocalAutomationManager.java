@@ -23,10 +23,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Map;
 
 public class LocalAutomationManager extends LocalFunctionalEndpoint {
-    final LocalPairingManagerTrait mPairingManagerTrait;
-    final LocalTimerManagerTrait mTimerManagerTrait;
+    private final LocalPairingManagerTrait mPairingManagerTrait;
+    private final LocalTimerManagerTrait mTimerManagerTrait;
 
-    final BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
+    private final BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
         @Override
         public String onGetModel() {
             return "Automation Manager";
@@ -46,6 +46,7 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
     public LocalAutomationManager(ResourceLinkManager technology) {
         mPairingManagerTrait = new LocalPairingManagerTrait(technology, this);
         mTimerManagerTrait = new LocalTimerManagerTrait(technology, this);
+
         registerTrait(mBaseTrait);
         registerTrait(mPairingManagerTrait);
         registerTrait(mTimerManagerTrait);
@@ -61,35 +62,29 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
 
     @Override
     public void initWithPersistentState(@Nullable Map<String, Object> persistentState) {
+        if (persistentState != null) {
+            Object pairingsObject = persistentState.remove("pairings");
+            if (pairingsObject instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>)pairingsObject;
+                mPairingManagerTrait.initWithPersistentState(map);
+            } else {
+
+                mPairingManagerTrait.initWithPersistentState(null);
+            }
+
+            Object timersObject = persistentState.remove("timers");
+            if (timersObject instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>)timersObject;
+                mTimerManagerTrait.initWithPersistentState(map);
+            } else {
+
+                mTimerManagerTrait.initWithPersistentState(null);
+            }
+        }
+
         super.initWithPersistentState(persistentState);
-
-        if (persistentState == null) {
-            return;
-        }
-
-        Object pairingsObject = persistentState.get("pairings");
-
-        if (pairingsObject instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>)pairingsObject;
-
-            mPairingManagerTrait.initWithPersistentState(map);
-        } else {
-
-            mPairingManagerTrait.initWithPersistentState(null);
-        }
-
-        Object timersObject = persistentState.get("timers");
-
-        if (timersObject instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>)timersObject;
-
-            mTimerManagerTrait.initWithPersistentState(map);
-        } else {
-
-            mTimerManagerTrait.initWithPersistentState(null);
-        }
     }
 
     @Override
