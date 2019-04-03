@@ -53,6 +53,7 @@ public final class FilePersistentStateManager implements PersistentStateManager 
     private final File mFile;
     private final File mTempFile;
     private final File mOldFile;
+    private final File mCorruptFile;
     private final AtomicBoolean mWritePending = new AtomicBoolean(false);
 
     /**
@@ -98,7 +99,14 @@ public final class FilePersistentStateManager implements PersistentStateManager 
         } catch (CorruptPersistentStateException e) {
             LOGGER.warning("Persistent data was corrupted, clearing and starting over.");
 
-            if (ret.mFile.delete()) {
+            if (ret.mCorruptFile.delete()) {
+                LOGGER.warning("Deleted \"" + ret.mCorruptFile + "\"");
+            }
+
+            if (ret.mFile.renameTo(ret.mCorruptFile)) {
+                LOGGER.warning("Moved " + ret.mFile + " to " + ret.mCorruptFile);
+
+            } else if (ret.mFile.delete()) {
                 LOGGER.warning("Deleted \"" + ret.mFile + "\"");
             }
 
@@ -127,6 +135,7 @@ public final class FilePersistentStateManager implements PersistentStateManager 
 
         mTempFile = new File(mFile.getParentFile(), mFile.getName() + ".temp");
         mOldFile = new File(mFile.getParentFile(), mFile.getName() + ".old");
+        mCorruptFile = new File(mFile.getParentFile(), mFile.getName() + ".corrupt");
 
         mExecutor = new ScheduledThreadPoolExecutor(1) {
             @Override
@@ -237,6 +246,20 @@ public final class FilePersistentStateManager implements PersistentStateManager 
                 outputStream.flush();
             }
 
+            if (DEBUG) {
+                LOGGER.info("Verifying written parses correctly");
+                CborMap checkMap;
+                try {
+                    checkMap = readStateFromFile(mTempFile, false);
+
+                } catch (CorruptPersistentStateException x) {
+                    LOGGER.warning("Written persistent state was corrupt! " + x);
+                    x.printStackTrace();
+                    LOGGER.warning("Data being written: " + state.toString(0));
+                    throw new AssertionError("Wrote corrupt CBOR data");
+                }
+            }
+
             if (DEBUG) LOGGER.info("Moving " + mTempFile + " to " + mFile);
 
             // Try a straightforward rename first. If it works it seems like the most safe approach.
@@ -315,7 +338,7 @@ public final class FilePersistentStateManager implements PersistentStateManager 
                     Map<String, Object> map = ((CborMap) obj).toJavaObject(Map.class);
                     objectInstance.initWithPersistentState(map);
                 } else {
-                    objectInstance.initWithPersistentState(ImmutableMap.of());
+                    objectInstance.initWithPersistentState(null);
                     needsSave = true;
                 }
             } catch (CborConversionException e) {
