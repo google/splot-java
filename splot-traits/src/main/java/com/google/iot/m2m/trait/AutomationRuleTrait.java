@@ -121,8 +121,13 @@ public final class AutomationRuleTrait {
 
 
     @Property(READ_WRITE | REQUIRED)
+    @SuppressWarnings("unchecked")
+    public static final PropertyKey<String> CONF_MATCH =
+            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "mtch", String.class);
 
+    public static final String MATCH_ALL = "all";
 
+    public static final String MATCH_ANY = "any";
 
     /**
      * Path for condition. Optional.

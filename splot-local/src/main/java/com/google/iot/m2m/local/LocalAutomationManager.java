@@ -25,6 +25,7 @@ import java.util.Map;
 public class LocalAutomationManager extends LocalFunctionalEndpoint {
     private final LocalPairingManagerTrait mPairingManagerTrait;
     private final LocalTimerManagerTrait mTimerManagerTrait;
+    private final LocalRuleManagerTrait mRuleManagerTrait;
 
     private final BaseTrait.AbstractLocalTrait mBaseTrait = new BaseTrait.AbstractLocalTrait() {
         @Override
@@ -46,10 +47,12 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
     public LocalAutomationManager(ResourceLinkManager technology) {
         mPairingManagerTrait = new LocalPairingManagerTrait(technology, this);
         mTimerManagerTrait = new LocalTimerManagerTrait(technology, this);
+        mRuleManagerTrait = new LocalRuleManagerTrait(technology, this);
 
         registerTrait(mBaseTrait);
         registerTrait(mPairingManagerTrait);
         registerTrait(mTimerManagerTrait);
+        registerTrait(mRuleManagerTrait);
     }
 
     @Override
@@ -57,6 +60,7 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
         Map<String, Object> ret = super.copyPersistentState();
         ret.put("pairings", mPairingManagerTrait.copyPersistentState());
         ret.put("timers", mTimerManagerTrait.copyPersistentState());
+        ret.put("rules", mRuleManagerTrait.copyPersistentState());
         return ret;
     }
 
@@ -82,6 +86,16 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
 
                 mTimerManagerTrait.initWithPersistentState(null);
             }
+
+            Object rulesObject = persistentState.remove("rules");
+            if (rulesObject instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>)rulesObject;
+                mRuleManagerTrait.initWithPersistentState(map);
+            } else {
+
+                mRuleManagerTrait.initWithPersistentState(null);
+            }
         }
 
         super.initWithPersistentState(persistentState);
@@ -91,6 +105,7 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
     public void setPersistentStateListener(@Nullable PersistentStateListener listener) {
         mPairingManagerTrait.setPersistentStateListener(listener);
         mTimerManagerTrait.setPersistentStateListener(listener);
+        mRuleManagerTrait.setPersistentStateListener(listener);
         super.setPersistentStateListener(listener);
     }
 }
