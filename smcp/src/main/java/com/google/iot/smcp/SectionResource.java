@@ -149,7 +149,8 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Map<String, Object>> castToMapOfMaps(Map<String, ?> payload) throws IllegalArgumentException {
+    private Map<String, Map<String, Object>> castToMapOfMaps(Map<String, ?> payload)
+            throws IllegalArgumentException {
         for (Map.Entry<String, ?> entry : payload.entrySet()) {
             String k = entry.getKey();
             Object v = entry.getValue();
@@ -203,7 +204,8 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
             content = castToMapOfMaps(payload);
 
-        } catch (CborConversionException | CborParseException | JSONException | IllegalArgumentException x) {
+        } catch (CborConversionException | CborParseException
+                | JSONException | IllegalArgumentException x) {
             if (DEBUG) LOGGER.warning("Parsing exception: " + x);
             inboundRequest.sendSimpleResponse(Code.RESPONSE_BAD_REQUEST, x.toString());
             return;
@@ -290,6 +292,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
                                             .addEtag(Etag.createFromInteger(value.hashCode()));
                                     response.setPayload(value.toCborByteArray());
                                     break;
+
                                 case -1:
                                 case ContentFormat.TEXT_PLAIN_UTF8:
                                     response.getOptionSet()
@@ -297,26 +300,32 @@ class SectionResource extends Resource<InboundRequestHandler> {
                                             .addEtag(Etag.createFromInteger(value.hashCode()));
                                     response.setPayload(value.toJsonString());
                                     break;
+
                                 case ContentFormat.APPLICATION_JSON:
                                     response.getOptionSet()
                                             .setContentFormat(ContentFormat.APPLICATION_JSON)
                                             .addEtag(Etag.createFromInteger(value.hashCode()));
                                     response.setPayload(value.toJsonString());
                                     break;
+
                                 case ContentFormat.APPLICATION_LINK_FORMAT:
                                     response.getOptionSet()
                                             .setContentFormat(ContentFormat.APPLICATION_LINK_FORMAT)
                                             .addEtag(Etag.createFromInteger(value.hashCode()));
                                     LinkFormat.Builder builder = new LinkFormat.Builder();
+
                                     if (DEBUG) {
                                         builder.setAddNewlines(true);
                                     }
+
                                     final String prefix;
+
                                     if (trailingSlash) {
                                         prefix = "";
                                     } else {
                                         prefix = mSection + "/";
                                     }
+
                                     for (String traitKey : value.keySetAsStrings()) {
                                         CborObject traitObj = value.get(traitKey);
 
@@ -565,7 +574,8 @@ class SectionResource extends Resource<InboundRequestHandler> {
         if (DEBUG) LOGGER.info("onPropPutRequest " + inboundRequest.getMessage());
 
         // Currently, we do everything with GET, POST, and DELETE.
-        inboundRequest.sendSimpleResponse(Code.RESPONSE_METHOD_NOT_ALLOWED);
+        inboundRequest.sendSimpleResponse(Code.RESPONSE_METHOD_NOT_ALLOWED,
+                "PUT not implemented");
     }
 
     private void onPropGetRequest(
