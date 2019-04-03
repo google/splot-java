@@ -77,7 +77,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
     private List<Action> mActions = new ArrayList<>();
 
     // Technology backing this timer
-    private final Technology mTechnology;
+    private final ResourceLinkManager mTechnology;
 
     private ScheduledExecutorService mExecutor = Utils.getDefaultExecutor();
 
@@ -101,7 +101,7 @@ public class LocalTimer extends LocalFunctionalEndpoint {
     private Function<Object, Object> mPredicateProgram = (x) -> true;
     private String mPredicateProgramRecipe = "";
 
-    public LocalTimer(Technology technology) {
+    public LocalTimer(ResourceLinkManager technology) {
         mTechnology = technology;
         registerTrait(mBaseTrait);
         registerTrait(mTimerTrait);

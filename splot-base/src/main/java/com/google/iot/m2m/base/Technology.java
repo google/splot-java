@@ -315,11 +315,7 @@ public interface Technology {
         return new LinkedList<>();
     }
 
-    ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException;
     URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException;
 
-
-
-    URI getNativeUriForResourceLink(ResourceLink<Object> rl) throws UnassociatedResourceException;
     URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException;
 }

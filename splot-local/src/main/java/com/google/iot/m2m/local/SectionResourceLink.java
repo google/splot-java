@@ -6,12 +6,17 @@ import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.iot.m2m.base.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements StateListener, MetadataListener, ConfigListener {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section, Technology technology) {
+        return new SectionResourceLink(fe, section, technology);
+    }
+
     public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section) {
-        return new SectionResourceLink(fe, section);
+        return new SectionResourceLink(fe, section, null);
     }
 
     private enum Section {
@@ -28,10 +33,19 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
 
     private final FunctionalEndpoint mFe;
     private final String mSection;
+    @Nullable private final Technology mTechnology;
 
-    SectionResourceLink(FunctionalEndpoint fe, String section) {
+    private SectionResourceLink(FunctionalEndpoint fe, String section, @Nullable Technology technology) {
         mFe = fe;
         mSection = section;
+        mTechnology = technology;
+    }
+
+    public URI getUri() {
+        if (mTechnology == null) {
+            throw new TechnologyRuntimeException("SectionResourceLink has no technology, can't get URI");
+        }
+        return mTechnology.getNativeUriForSection(mFe, mSection);
     }
 
     @Override

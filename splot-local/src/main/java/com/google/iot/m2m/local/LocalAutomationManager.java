@@ -43,7 +43,7 @@ public class LocalAutomationManager extends LocalFunctionalEndpoint {
         }
     };
 
-    public LocalAutomationManager(Technology technology) {
+    public LocalAutomationManager(ResourceLinkManager technology) {
         mPairingManagerTrait = new LocalPairingManagerTrait(technology, this);
         mTimerManagerTrait = new LocalTimerManagerTrait(technology, this);
         registerTrait(mBaseTrait);

@@ -46,7 +46,8 @@ import static com.google.iot.m2m.base.Splot.*;
  * @see FunctionalEndpoint
  * @see Group
  */
-public final class LocalTechnology implements Technology, PersistentStateInterface {
+public final class LocalTechnology
+        implements Technology, PersistentStateInterface, ResourceLinkManager {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalTechnology.class.getCanonicalName());
 
@@ -60,7 +61,30 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
     private final Map<FunctionalEndpoint, String> mHostedPathLookup = new WeakHashMap<>();
     private final Map<String, WeakReference<LocalGroup>> mGroups = new WeakHashMap<>();
 
-    private final WeakHashMap<ResourceLink<?>, URI> mResourceLinkUriLookup = new WeakHashMap<>();
+    private final List<WeakReference<LazyResourceLink<Object>>> mLazyResourceLinks = new ArrayList<>();
+
+    private void registerLazyResourceLink(LazyResourceLink<Object> resourceLink) {
+        WeakReference<LazyResourceLink<Object>> ref = new WeakReference<>(resourceLink);
+        synchronized (mLazyResourceLinks) {
+            if (!mLazyResourceLinks.contains(ref)) {
+                mLazyResourceLinks.add(ref);
+            }
+        }
+    }
+
+    private void resolveLazyResourceLinks() {
+        synchronized (mLazyResourceLinks) {
+            for (int i = 0; i < mLazyResourceLinks.size(); i++) {
+                WeakReference<LazyResourceLink<Object>> ref = mLazyResourceLinks.get(i);
+                LazyResourceLink<Object> link = ref.get();
+                if (link != null) {
+                    link.resolve();
+                } else {
+                    mLazyResourceLinks.remove(i--);
+                }
+            }
+        }
+    }
 
     public LocalTechnology(Executor executor) {
         mExecutor = executor;
@@ -141,6 +165,8 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
         }
         if (!isHosted(fe)) {
             throw new UnacceptableFunctionalEndpointException();
+        } else {
+            resolveLazyResourceLinks();
         }
     }
 
@@ -217,6 +243,13 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
         return ((fe instanceof Group) && ((Group) fe).getTechnology() == this);
     }
 
+    class LookupMissException extends UnknownResourceException {
+        public LookupMissException() {}
+        public LookupMissException(String str) {
+            super(str);
+        }
+    }
+
     private class FEParser {
         String[] mComponents = null;
         int mComponentIndex = 0;
@@ -263,7 +296,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
             if (mFe == null) {
                 if (DEBUG) LOGGER.info("FE lookup miss, looking for \"" + path + "\" in " + mHostedPathLookup.values());
-                throw new UnknownResourceException("Unable to find FE for " + uri);
+                throw new LookupMissException("Unable to find FE for " + uri);
             }
 
             // Find the child
@@ -275,7 +308,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
                 if (mFe == null) {
                     if (DEBUG) LOGGER.info("FE child lookup miss for \"" + path + "\"");
-                    throw new UnknownResourceException("Unable to find child FE for " + uri);
+                    throw new LookupMissException("Unable to find child FE for " + uri);
                 }
 
                 mComponentIndex += 3;
@@ -292,6 +325,34 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
     }
 
     public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+        try {
+            return internalGetResourceLinkForNativeUri(uri);
+
+        } catch(LookupMissException ignore) {
+            LazyResourceLink<Object> ret;
+
+            ret = new LazyResourceLink<Object>() {
+                @Override
+                public boolean resolve() {
+                    try {
+                        setContainedResourceLink(internalGetResourceLinkForNativeUri(uri));
+                    } catch (UnknownResourceException e) {
+                        return false;
+                    }
+                    return true;
+                }
+
+                @Override
+                public URI getUri() {
+                    return uri;
+                }
+            };
+            registerLazyResourceLink(ret);
+            return ret;
+        }
+    }
+
+    private ResourceLink<Object> internalGetResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
         final FEParser parser = new FEParser(uri);
 
         if (parser.remainingComponents() == 4) {
@@ -299,86 +360,56 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
             final String trait = parser.getRelativeComponent(2);
             final String name = parser.getRelativeComponent(3);
 
-            String method = "";
+            Modifier.Mutation method = null;
             ResourceLink<Object> ret;
-            LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+            Modifier[] modifierList;
 
-            if (uri.getQuery() != null) {
-                String[] queryComponents = uri.getQuery().split("&;");
-                for (String query : queryComponents) {
-                    if (query.contains("=")) {
-                        String key = query.split("=")[0];
-                        String value;
-                        if (query.equals(key)) {
-                            value = "";
-                        } else {
-                            value = query.substring(key.length() + 1);
-                        }
-                        queryMap.put(key, value);
-                    } else if (method.isEmpty()) {
-                        method = query;
+            try {
+                modifierList = convertFromQuery(uri.getQuery());
+            } catch(InvalidModifierListException x) {
+                throw new UnknownResourceException(x);
+            }
+
+            for (Modifier mod : modifierList) {
+                if (mod instanceof Modifier.Mutation) {
+                    if (method != null) {
+                        throw new UnknownResourceException("Too many mutations in modifier list");
                     }
+                    method = (Modifier.Mutation)mod;
                 }
             }
 
+            if (method instanceof Modifier.Increment) {
+                PropertyKey<Number> key = new PropertyKey<>(section, trait, name, Number.class);
+                if (DEBUG) LOGGER.info("Making property incrementer for " + key);
+                ret = ResourceLink.stripType(
+                        PropertyResourceLink.createIncrement(parser.mFe, key,
+                                this, modifierList),
+                        Number.class);
 
-            switch (method) {
-                case PROP_METHOD_INCREMENT: {
-                    PropertyKey<Number> key = new PropertyKey<>(section, trait, name,
-                            Number.class);
-                    if (DEBUG) LOGGER.info("Making property incrementer for " + key);
-                    ret = ResourceLink.stripType(
-                            PropertyResourceLink.createIncrement(parser.mFe, key), Number.class);
-                    break;
-                }
+            } else if (method instanceof Modifier.Toggle) {
+                PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name, Boolean.class);
+                if (DEBUG) LOGGER.info("Making property toggler for " + key);
+                ret = ResourceLink.stripType(
+                        PropertyResourceLink.createToggle(parser.mFe, key, this, modifierList),
+                        Boolean.class);
 
-                case PROP_METHOD_TOGGLE: {
-                    PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name,
-                            Boolean.class);
-                    if (DEBUG) LOGGER.info("Making property toggler for " + key);
-                    ret = ResourceLink.stripType(
-                            PropertyResourceLink.createToggle(parser.mFe, key), Boolean.class);
-                    break;
-                }
+            } else if (method instanceof Modifier.Insert) {
+                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
+                if (DEBUG) LOGGER.info("Making property value inserter for " + key);
+                ret = PropertyResourceLink.createInsert(parser.mFe, key, this, modifierList);
 
-                case PROP_METHOD_INSERT: {
-                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
-                            Object[].class);
-                    if (DEBUG) LOGGER.info("Making property value inserter for " + key);
-                    ret = PropertyResourceLink.createInsert(parser.mFe, key);
-                    break;
-                }
+            } else if (method instanceof Modifier.Remove) {
+                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
+                if (DEBUG) LOGGER.info("Making property value inserter for " + key);
+                ret = PropertyResourceLink.createRemove(parser.mFe, key, this, modifierList);
 
-                case PROP_METHOD_REMOVE: {
-                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name,
-                            Object[].class);
-                    if (DEBUG) LOGGER.info("Making property value remover for " + key);
-                    ret = PropertyResourceLink.createRemove(parser.mFe, key);
-                    break;
-                }
+            } else {
+                PropertyKey<Object> key = new PropertyKey<>(section, trait, name, Object.class);
+                ret = PropertyResourceLink.create(parser.mFe, key,this, modifierList);
 
-                case "": {
-                    PropertyKey<Object> key = new PropertyKey<>(section,trait,name,Object.class);
-                    if (queryMap.containsKey(PARAM_DURATION)) {
-                        try {
-                            double duration = Double.valueOf(queryMap.get(PARAM_DURATION));
-                            ret = PropertyResourceLink.createWithDuration(parser.mFe, key, duration);
-
-                        } catch(NumberFormatException x) {
-                            throw new UnknownResourceException(x);
-                        }
-                    } else {
-                        ret = PropertyResourceLink.create(parser.mFe, key);
-                    }
-                    break;
-                }
-
-                default:
-                    // Other operations aren't supported.
-                    throw new UnknownResourceException("query method \"" + method + "\" isn't supported.");
             }
 
-            mResourceLinkUriLookup.put(ret, uri);
             return ret;
 
         }
@@ -386,7 +417,7 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
         // Resource link tracking a trait in a section
         if (parser.remainingComponents() == 3) {
             // We don't support resource links for traits yet.
-            return null;
+            throw new UnknownResourceException("Not yet supported");
         }
 
         // Resource link tracking a section
@@ -395,15 +426,13 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
 
             @SuppressWarnings("unchecked")
             ResourceLink<Object> ret = ResourceLink.stripType(
-                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section),
+                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section, this),
                     Map.class);
-
-            mResourceLinkUriLookup.put(ret, uri);
 
             return ret;
         }
 
-        return null;
+        throw new UnknownResourceException("Not found");
     }
 
     @Override
@@ -423,15 +452,6 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
         } else {
             return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/?" + Modifier.convertToQuery(modifiers));
         }
-    }
-
-    @Override
-    public URI getNativeUriForResourceLink(ResourceLink<Object> rl) throws UnassociatedResourceException {
-        URI ret = mResourceLinkUriLookup.get(rl);
-        if (ret == null) {
-            throw new UnassociatedResourceException("Unable to lookup URI for " + rl);
-        }
-        return ret;
     }
 
     @Override
@@ -753,6 +773,8 @@ public final class LocalTechnology implements Technology, PersistentStateInterfa
                 }
             }
         }
+
+        resolveLazyResourceLinks();
     }
 
     @Override

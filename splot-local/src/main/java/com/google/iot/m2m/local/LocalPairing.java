@@ -50,7 +50,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
     private Object mDestinationLastValue = EMPTY;
 
     // Technology backing this pairing
-    private final Technology mTechnology;
+    private final ResourceLinkManager mTechnology;
 
     private Executor mExecutor = Runnable::run;
 
@@ -87,7 +87,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
     // Minimum destination difference required for change to propagate to the source.
     private double mDestinationEpsilon = 0.0001;
 
-    public LocalPairing(Technology technology) {
+    public LocalPairing(ResourceLinkManager technology) {
         mTechnology = technology;
         registerTrait(mBaseTrait);
         registerTrait(mPairingTrait);
@@ -354,7 +354,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
             if (mSource == null) {
                 return null;
             }
-            return mTechnology.getNativeUriForResourceLink(mSource);
+            return mSource.getUri();
         }
 
         @Override
@@ -393,7 +393,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
             if (mDestination == null) {
                 return null;
             }
-            return mTechnology.getNativeUriForResourceLink(mDestination);
+            return mDestination.getUri();
         }
 
         @Override

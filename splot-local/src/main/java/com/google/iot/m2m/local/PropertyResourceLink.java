@@ -6,44 +6,42 @@ import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.TransitionTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import java.util.*;
 import java.util.concurrent.Executor;
 
-abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implements PropertyListener<T> {
+class PropertyResourceLink<T> extends AbstractResourceLink<T> implements PropertyListener<T> {
     final FunctionalEndpoint mFe;
     final PropertyKey<T> mKey;
+    final Technology mTechnology;
+    final Modifier[] mModifiers;
 
-
-    PropertyResourceLink(FunctionalEndpoint fe, PropertyKey<T> key) {
+    PropertyResourceLink(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
         mFe = fe;
         mKey = key;
+        mTechnology = technology;
+        mModifiers = modifiers;
     }
 
-    public static <T> ResourceLink<T> create(FunctionalEndpoint fe, PropertyKey<T> key) {
-        return new PropertyResourceLink<T>(fe, key) {
-            @Override
-            public ListenableFuture<?> invoke(@Nullable T value) {
-                return mFe.setProperty(mKey, value);
-            }
-        };
+    public URI getUri() {
+        return mTechnology.getNativeUriForProperty(mFe, mKey, mModifiers);
     }
 
-    public static <T> ResourceLink<T> createWithDuration(FunctionalEndpoint fe, PropertyKey<T> key, double duration) {
-        return new PropertyResourceLink<T>(fe, key) {
-            @Override
-            public ListenableFuture<?> invoke(@Nullable T value) {
-                Map<String, Object> props = new HashMap<>();
-                key.putInMap(props, value);
-                TransitionTrait.STAT_DURATION.putInMap(props, (float)duration);
-
-                return mFe.applyProperties(props);
-            }
-        };
+    @Override
+    public ListenableFuture<?> invoke(@Nullable T value) {
+        return mFe.setProperty(mKey, value, mModifiers);
     }
 
-    public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key) {
-        return new PropertyResourceLink<T>(fe, key) {
+    public static <T> ResourceLink<T> create(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
+        return new PropertyResourceLink<>(fe, key, technology, modifiers);
+    }
+
+    public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
+        List<Modifier> withIncrement = new ArrayList<>();
+        withIncrement.add(Modifier.increment());
+        withIncrement.addAll(Arrays.asList(modifiers));
+
+        return new PropertyResourceLink<T>(fe, key, technology, withIncrement.toArray(Modifier.EMPTY_LIST)) {
             @Override
             public ListenableFuture<?> invoke(@Nullable T value) {
                 if (value == null) {
@@ -62,21 +60,29 @@ abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implement
                     }
                 }
 
-                return mFe.incrementProperty(mKey, value);
+                return mFe.incrementProperty(mKey, value, modifiers);
             }
         };
     }
 
-    public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key) {
-        return new PropertyResourceLink<Boolean>(fe, key) {
+    public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key, Technology technology, Modifier ... modifiers) {
+        List<Modifier> withMutator = new ArrayList<>();
+        withMutator.add(Modifier.toggle());
+        withMutator.addAll(Arrays.asList(modifiers));
+
+        return new PropertyResourceLink<Boolean>(fe, key, technology, withMutator.toArray(Modifier.EMPTY_LIST)) {
             @Override
             public ListenableFuture<?> invoke(@Nullable Boolean value) {
-                return mFe.toggleProperty(mKey);
+                return mFe.toggleProperty(mKey, modifiers);
             }
         };
     }
 
-    public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key) {
+    public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key, Technology technology, Modifier ... modifiers) {
+        List<Modifier> withMutator = new ArrayList<>();
+        withMutator.add(Modifier.insert());
+        withMutator.addAll(Arrays.asList(modifiers));
+
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
@@ -91,8 +97,12 @@ abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implement
                     return Futures.immediateFailedFuture(
                             new InvalidPropertyValueException("Can't add null to property value"));
                 } else {
-                    return fe.addValueToProperty(key, value);
+                    return fe.addValueToProperty(key, value, modifiers);
                 }
+            }
+
+            public URI getUri() {
+                return technology.getNativeUriForProperty(fe, key, withMutator.toArray(Modifier.EMPTY_LIST));
             }
 
             @Override
@@ -107,7 +117,11 @@ abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implement
         };
     }
 
-    public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key) {
+    public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key, Technology technology, Modifier ... modifiers) {
+        List<Modifier> withMutator = new ArrayList<>();
+        withMutator.add(Modifier.insert());
+        withMutator.addAll(Arrays.asList(modifiers));
+
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
@@ -122,8 +136,12 @@ abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implement
                     return Futures.immediateFailedFuture(new InvalidPropertyValueException(
                             "Can't remove null from property value"));
                 } else {
-                    return fe.removeValueFromProperty(key, value);
+                    return fe.removeValueFromProperty(key, value, modifiers);
                 }
+            }
+
+            public URI getUri() {
+                return technology.getNativeUriForProperty(fe, key, withMutator.toArray(Modifier.EMPTY_LIST));
             }
 
             @Override
@@ -140,7 +158,7 @@ abstract class PropertyResourceLink<T> extends AbstractResourceLink<T> implement
 
     @Override
     public ListenableFuture<T> fetchValue() {
-        return mFe.fetchProperty(mKey);
+        return mFe.fetchProperty(mKey, mModifiers);
     }
 
     @Override

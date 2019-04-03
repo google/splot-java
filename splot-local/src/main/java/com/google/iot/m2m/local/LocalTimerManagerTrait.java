@@ -34,7 +34,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalTimerManagerTrait.class.getCanonicalName());
 
-    private final Technology mTechnology;
+    private final ResourceLinkManager mTechnology;
 
     Map<String, LocalTimer> mTimerLookup = new HashMap<>();
     Map<FunctionalEndpoint, String> mTimerReverseLookup = new HashMap<>();
@@ -42,7 +42,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     FunctionalEndpoint mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalTimerManagerTrait(Technology technology, FunctionalEndpoint parent) {
+    public LocalTimerManagerTrait(ResourceLinkManager technology, FunctionalEndpoint parent) {
         mTechnology = technology;
         mParent = parent;
     }

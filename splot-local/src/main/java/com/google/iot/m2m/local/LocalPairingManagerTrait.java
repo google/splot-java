@@ -36,7 +36,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalPairingManagerTrait.class.getCanonicalName());
 
-    private final Technology mTechnology;
+    private final ResourceLinkManager mTechnology;
 
     Map<String, LocalPairing> mPairingLookup = new HashMap<>();
     Map<FunctionalEndpoint, String> mPairingReverseLookup = new HashMap<>();
@@ -44,7 +44,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     FunctionalEndpoint mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalPairingManagerTrait(Technology technology, FunctionalEndpoint parent) {
+    public LocalPairingManagerTrait(ResourceLinkManager technology, FunctionalEndpoint parent) {
         mTechnology = technology;
         mParent = parent;
     }

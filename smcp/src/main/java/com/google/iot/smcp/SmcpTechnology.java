@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * which are remotely hosted using SMCP. It can also be used for hosting other functional endpoints
  * (Local or otherwise) to allow them to be used by other devices which support SMCP or CoAP.
  */
-public final class SmcpTechnology implements Technology, PersistentStateInterface {
+public final class SmcpTechnology implements Technology, PersistentStateInterface, ResourceLinkManager {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(SmcpTechnology.class.getCanonicalName());
 

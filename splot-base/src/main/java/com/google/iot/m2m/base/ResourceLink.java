@@ -30,7 +30,6 @@ import java.util.concurrent.Executor;
  * on it. Because of this, Local functional endpoints which use ResourceLinks need to
  * have a reference to the {@link Technology} that is hosting it.
  *
- * @see Technology#getNativeUriForResourceLink(ResourceLink)
  * @see Technology#getResourceLinkForNativeUri(URI)
  */
 public abstract class ResourceLink<T> {
@@ -63,6 +62,11 @@ public abstract class ResourceLink<T> {
                 return resourceLink.invoke(clazz.cast(value));
             }
 
+            @Override
+            public URI getUri() {
+                return resourceLink.getUri();
+            }
+
             @SuppressWarnings("unchecked")
             @Override
             public void registerListener(Executor executor, Listener<Object> listener) {
@@ -81,6 +85,8 @@ public abstract class ResourceLink<T> {
 
     @CanIgnoreReturnValue
     public abstract ListenableFuture<?> invoke(@Nullable T value);
+
+    public abstract URI getUri();
 
     public abstract void registerListener(Executor executor, Listener<T> listener);
 
