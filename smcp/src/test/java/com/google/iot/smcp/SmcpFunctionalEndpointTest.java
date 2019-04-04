@@ -354,7 +354,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             Collection<FunctionalEndpoint> children;
 
-            remoteFe.registerChildListener(mExecutor, SceneTrait.TRAIT_ID, mChildListenerMock);
+            remoteFe.registerChildListener(mExecutor, mChildListenerMock, SceneTrait.TRAIT_ID);
 
             children = remoteFe.fetchChildrenForTrait(SceneTrait.TRAIT_ID).get();
             assertNotNull(children);

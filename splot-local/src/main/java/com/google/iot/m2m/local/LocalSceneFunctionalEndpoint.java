@@ -265,12 +265,12 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
 
         @Override
         public void registerChildListener(
-                Executor executor, String traitShortName, ChildListener listener) {
+                Executor executor, ChildListener listener, String traitShortName) {
             // We don't support children.
         }
 
         @Override
-        public void unregisterChildListener(String traitShortName, ChildListener listener) {
+        public void unregisterChildListener(ChildListener listener, String traitShortName) {
             // We don't support children.
         }
 

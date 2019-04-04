@@ -704,7 +704,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Override
     public void registerChildListener(
-            Executor executor, String traitShortName, ChildListener listener) {
+            Executor executor, ChildListener listener, String traitShortName) {
         final ChildListenerEntry entry =
                 new ChildListenerEntry(
                         Objects.requireNonNull(executor), Objects.requireNonNull(listener));
@@ -736,7 +736,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public void unregisterChildListener(String traitShortName, ChildListener listener) {
+    public void unregisterChildListener(ChildListener listener, String traitShortName) {
         synchronized (mChildListenerMap) {
             final Set<ChildListenerEntry> keySet = mChildListenerMap.get(traitShortName);
             if (keySet != null) {

@@ -20,8 +20,8 @@ import java.util.concurrent.Executor;
 /**
  * Interface for handling changes to a {@link FunctionalEndpoint}'s children.
  *
- * @see FunctionalEndpoint#registerChildListener(Executor, String, ChildListener)
- * @see FunctionalEndpoint#unregisterChildListener(String, ChildListener)
+ * @see FunctionalEndpoint#registerChildListener(Executor, ChildListener, String)
+ * @see FunctionalEndpoint#unregisterChildListener(ChildListener, String)
  */
 public interface ChildListener {
     void onChildAdded(FunctionalEndpoint parent, String traitShortName, FunctionalEndpoint child);

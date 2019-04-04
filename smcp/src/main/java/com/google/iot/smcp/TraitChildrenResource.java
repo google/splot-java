@@ -46,7 +46,7 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
         mTechnology = technology;
         mFe = fe;
         mTrait = trait;
-        mFe.registerChildListener(technology.getExecutor(), mTrait, this);
+        mFe.registerChildListener(technology.getExecutor(), this, mTrait);
     }
 
     @SuppressWarnings("EmptyMethod")

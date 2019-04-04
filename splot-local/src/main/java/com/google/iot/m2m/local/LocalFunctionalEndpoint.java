@@ -715,7 +715,7 @@ public abstract class LocalFunctionalEndpoint
 
     @Override
     public void registerChildListener(
-            Executor executor, String traitShortName, ChildListener listener) {
+            Executor executor, ChildListener listener, String traitShortName) {
         final LocalTrait trait = mTraits.get(traitShortName);
 
         if (trait == null) {
@@ -762,7 +762,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public void unregisterChildListener(String traitShortName, ChildListener listener) {
+    public void unregisterChildListener(ChildListener listener, String traitShortName) {
         final Set<ChildListenerEntry> keySet = mChildListenerMap.get(traitShortName);
         if (keySet != null) {
             if (!keySet.removeIf(childListenerEntry -> childListenerEntry.mListener == listener)) {
@@ -778,8 +778,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public final synchronized void registerStateListener(
-            Executor executor, StateListener listener) {
+    public final synchronized void registerStateListener(Executor executor,
+                                                         StateListener listener) {
         mStateListenerMap.put(listener, executor);
         executor.execute(()->listener.onStateChanged(this, copyCachedState()));
     }

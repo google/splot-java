@@ -347,7 +347,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
             fe.registerPropertyListener(mExecutor, TransitionTrait.STAT_DURATION, listener);
         }
 
-        fe.registerChildListener(mExecutor, SceneTrait.TRAIT_ID, mChildListenerMock);
+        fe.registerChildListener(mExecutor, mChildListenerMock, SceneTrait.TRAIT_ID);
 
         verify(mChildListenerMock, never()).onChildAdded(any(), any(), any());
         verify(mChildListenerMock, never()).onChildRemoved(any(), any(), any());
@@ -483,7 +483,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
             assertEquals(true, fe.fetchProperty(OnOffTrait.STAT_VALUE).get());
             assertEquals((Float) 0.25f, fe.fetchProperty(LevelTrait.STAT_VALUE).get());
 
-            fe.registerChildListener(mExecutor, SceneTrait.TRAIT_ID, mChildListenerMock);
+            fe.registerChildListener(mExecutor, mChildListenerMock, SceneTrait.TRAIT_ID);
 
             tick(10);
             verify(mChildListenerMock, times(3))

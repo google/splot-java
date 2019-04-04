@@ -823,9 +823,9 @@ public interface FunctionalEndpoint {
      */
     void unregisterMetadataListener(MetadataListener listener);
 
-    void registerChildListener(Executor executor, String traitShortName, ChildListener listener);
+    void registerChildListener(Executor executor, ChildListener listener, String traitId);
 
-    void unregisterChildListener(String traitShortName, ChildListener listener);
+    void unregisterChildListener(ChildListener listener, String traitId);
 
     void unregisterAllListeners();
 
