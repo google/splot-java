@@ -405,7 +405,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
             }
 
             if (ret == null && mLocalEndpointManager.supportsScheme(uri.getScheme())) {
-                Client client = null;
+                Client client;
                 try {
                     client = new Client(mLocalEndpointManager, uri);
                 } catch (UnsupportedSchemeException e) {

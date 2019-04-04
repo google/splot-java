@@ -400,7 +400,8 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value,Modifier ... modifiers) {
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value,
+                                               Modifier ... modifiers) {
         if (!key.isSectionState()) {
             return super.setProperty(key, value, modifiers);
         }
@@ -415,7 +416,8 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,Modifier ... modifiers) {
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,
+                                                                    Modifier ... modifiers) {
         if (!key.isSectionState()) {
             return super.incrementProperty(key, amount, modifiers);
         }
@@ -445,7 +447,8 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value,
+                                                      Modifier ... modifiers) {
         if (!key.isSectionState()) {
             return super.addValueToProperty(key, value, modifiers);
         }
@@ -460,7 +463,8 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value,
+                                                           Modifier ... modifiers) {
         if (!key.isSectionState()) {
             return super.removeValueFromProperty(key, value, modifiers);
         }

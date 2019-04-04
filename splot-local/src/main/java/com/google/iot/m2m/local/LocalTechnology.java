@@ -61,7 +61,8 @@ public final class LocalTechnology
     private final Map<FunctionalEndpoint, String> mHostedPathLookup = new WeakHashMap<>();
     private final Map<String, WeakReference<LocalGroup>> mGroups = new WeakHashMap<>();
 
-    private final List<WeakReference<LazyResourceLink<Object>>> mLazyResourceLinks = new ArrayList<>();
+    private final List<WeakReference<LazyResourceLink<Object>>> mLazyResourceLinks
+            = new ArrayList<>();
 
     // Cache for resource links. Note that this only works properly
     // if the ResourceLink retains a copy of URI.

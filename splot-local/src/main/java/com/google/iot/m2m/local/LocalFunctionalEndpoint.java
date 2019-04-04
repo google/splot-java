@@ -279,7 +279,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value,
+                                               Modifier ... modifiers) {
         Map<String, Object> map = new HashMap<>();
         key.putInMap(map, value);
         final LocalTrait trait = getTraitForPropertyKey(key);
@@ -291,7 +292,8 @@ public abstract class LocalFunctionalEndpoint
 
         for (Modifier mod : modifiers) {
             if (mod instanceof Modifier.Duration) {
-                TransitionTrait.STAT_DURATION.putInMap(map, (float)((Modifier.Duration)mod).getDuration());
+                TransitionTrait.STAT_DURATION.putInMap(map,
+                        (float)((Modifier.Duration)mod).getDuration());
             }
         }
 
@@ -307,7 +309,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount, Modifier ... modifiers) {
+    public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,
+                                                                    Modifier ... modifiers) {
         Number targetValue;
 
         try {
@@ -362,7 +365,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value,
+                                                      Modifier ... modifiers) {
         try {
             mutationCheck(Modifier.Insert.class, modifiers);
 
@@ -390,7 +394,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value,
+                                                           Modifier ... modifiers) {
         try {
             mutationCheck(Modifier.Remove.class, modifiers);
 
@@ -440,7 +445,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> @Nullable T getCachedProperty(PropertyKey<T> key) {
+    @Nullable
+    public <T> T getCachedProperty(PropertyKey<T> key) {
         try {
             return getPropertyCurrentValue(key);
         } catch (PropertyException | TechnologyException ignored) {
