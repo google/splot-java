@@ -81,12 +81,12 @@ public final class ActionsTrait {
      * <p>Each criteria is defined as a map keyed by strings. The string keys are the following:
      *
      * <ul>
-     *   <li><code>p</code> ({@link #PARAM_ACTION_PATH}): URL or absolute path to perform an action on
-     *   <li><code>s</code> ({@link #PARAM_ACTION_SKIP}): True if this action should be skipped.
-     *   <li><code>d</code> ({@link #PARAM_ACTION_DESC}): Human-readable description of the action
-     *   <li><code>e</code> ({@link #PARAM_ACTION_METH}): The REST method to perform on the path
-     *   <li><code>e</code> ({@link #PARAM_ACTION_BODY}): The body of the action
-     *   <li><code>e</code> ({@link #PARAM_ACTION_SYNC}): If this action should complete before the next action
+     *   <li>({@link #PARAM_ACTION_PATH}): URL or absolute path to perform an action on
+     *   <li>({@link #PARAM_ACTION_SKIP}): True if this action should be skipped.
+     *   <li>({@link #PARAM_ACTION_DESC}): Human-readable description of the action
+     *   <li>({@link #PARAM_ACTION_METH}): The REST method to perform on the path
+     *   <li>({@link #PARAM_ACTION_BODY}): The body of the action
+     *   <li>({@link #PARAM_ACTION_SYNC}): If this action should complete before the next action
      * </ul>
      */
     @Property(READ_WRITE | REQUIRED)
@@ -118,14 +118,14 @@ public final class ActionsTrait {
     public static final ParamKey<Object> PARAM_ACTION_BODY = new ParamKey<>("b", Object.class);
 
     /**
-     * The <a href="https://tools.ietf.org/html/rfc7252#section-12.3">CoAP content-format</a> to use
-     * for rendering the body when performing the action.
+     * The <a href="https://tools.ietf.org/html/rfc7252#section-12.3">CoAP content-format</a> to
+     * use for rendering the body when performing the action.
      *
      * @see #CONF_ACTIONS
      * @see <a href="https://tools.ietf.org/html/rfc7252#section-12.3">RFC7252 Section 12.3</a>
      * @see <a href="https://goo.gl/ZHfEs6">IANA CoAP Content-Format Registry</a>
      */
-    public static final ParamKey<Integer> PARAM_ACTION_CONTENT_TYPE = new ParamKey<>("ctyp", Integer.class);
+    public static final ParamKey<Integer> PARAM_ACTION_CONTENT_TYPE = new ParamKey<>("ct", Integer.class);
 
     /**
      * Flag indicating if this action should be skipped. If absent, it is assumed to be false.
@@ -145,20 +145,37 @@ public final class ActionsTrait {
      * The parameter can have one of three possible values:
      *
      * <ul>
-     *     <li>{@code 0}: Trigger this action asynchronously. The next action is scheduled to
-     *                    happen ASAP. This is the default behavior.</li>
-     *     <li>{@code 1}: Trigger this action synchronously. The next action is scheduled to
-     *                    happen once this action is complete, either with success or failure.</li>
-     *     <li>{@code 2}: Trigger this action synchronously, stopping on error. The next action is
-     *                    scheduled to happen once this action has completed successfully, otherwise
-     *                    later actions are canceled.</li>
+     *     <li>{@code 0} ({@link #SYNC_DO_NOT_WAIT}): Trigger this action asynchronously. The next
+     *         action is scheduled to happen ASAP. This is the default behavior.</li>
+     *     <li>{@code 1} ({@link #SYNC_WAIT_TO_FINISH}): Trigger this action synchronously. The
+     *         next action is scheduled to happen once this action is complete, either with success
+     *         or failure.</li>
+     *     <li>{@code 2} ({@link #SYNC_STOP_ON_ERROR}): Trigger this action synchronously, stopping
+     *         on error. The next action is scheduled to happen once this action has completed
+     *         successfully, otherwise later actions are canceled.</li>
      * </ul>
      * @see #CONF_ACTIONS
      */
     public static final ParamKey<Integer> PARAM_ACTION_SYNC = new ParamKey<>("b", Integer.class);
 
+    /**
+     * Do not wait for action to finish before processing other actions.
+     *
+     * @see #PARAM_ACTION_SYNC
+     */
     public static int SYNC_DO_NOT_WAIT = 0;
+
+    /**
+     * Wait for this action to finish (or fail) before processing other actions.
+     *
+     * @see #PARAM_ACTION_SYNC
+     */
     public static int SYNC_WAIT_TO_FINISH = 1;
+
+    /**
+     * Stop processing actions if this action fails.
+     * @see #PARAM_ACTION_SYNC
+     */
     public static int SYNC_STOP_ON_ERROR = 2;
 
     /**
