@@ -421,7 +421,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Nullable
-    private <T> T getCurrentPropertyValue(PropertyKey<T> key)
+    private <T> T getPropertyCurrentValue(PropertyKey<T> key)
             throws PropertyException, TechnologyException {
         final LocalTrait trait = getTraitForPropertyKey(key);
 
@@ -432,20 +432,20 @@ public abstract class LocalFunctionalEndpoint
         return trait.getValueForPropertyKey(key);
     }
 
-    @Override
-    public <T> @Nullable T getCachedProperty(PropertyKey<T> key) {
-        try {
-            return getCurrentPropertyValue(key);
-        } catch (PropertyException | TechnologyException ignored) {
-            return null;
-        }
-    }
-
     /** This is overridden by subclasses to implement transitions. */
     @Nullable
     protected <T> T getPropertyTargetValue(PropertyKey<T> key)
             throws PropertyException, TechnologyException {
-        return this.getCurrentPropertyValue(key);
+        return this.getPropertyCurrentValue(key);
+    }
+
+    @Override
+    public <T> @Nullable T getCachedProperty(PropertyKey<T> key) {
+        try {
+            return getPropertyCurrentValue(key);
+        } catch (PropertyException | TechnologyException ignored) {
+            return null;
+        }
     }
 
     @Override
@@ -455,7 +455,7 @@ public abstract class LocalFunctionalEndpoint
                 return submit(() -> this.getPropertyTargetValue(key));
             }
         }
-        return submit(() -> this.getCurrentPropertyValue(key));
+        return submit(() -> this.getPropertyCurrentValue(key));
     }
 
     /**
@@ -687,7 +687,7 @@ public abstract class LocalFunctionalEndpoint
         keySet.add(entry);
         executor.execute(()->{
             try {
-                listener.onPropertyChanged(this, key, getCurrentPropertyValue(key));
+                listener.onPropertyChanged(this, key, getPropertyCurrentValue(key));
             } catch (PropertyException|TechnologyException ignored) {
                 // We eat these exceptions since they simply indicate that
                 // the property couldn't be directly accessed at this time.

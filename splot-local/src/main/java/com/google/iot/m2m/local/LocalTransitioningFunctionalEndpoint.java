@@ -52,6 +52,21 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     private static final Logger LOGGER =
             Logger.getLogger(LocalTransitioningFunctionalEndpoint.class.getCanonicalName());
 
+    private static final long NSEC_PER_SEC
+            = TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS);
+
+    /** The "ideal" number of updates during a transition.
+     *
+     * This value is largely aspirational when it comes to tick duration, which is
+     * subject to {@link #MIN_TICK_PERIOD} and {@link #MAX_TICK_PERIOD}.
+     */
+    private static final int TICKS_PER_TRANSITION = 1000;
+
+    private static final long MIN_TICK_PERIOD
+            = TimeUnit.NANOSECONDS.convert(50, TimeUnit.MILLISECONDS);
+
+    private static final long MAX_TICK_PERIOD = NSEC_PER_SEC;
+
     /**
      * This is an internal marker property used to communicate to other parts of the class that any
      * transition properties present came from defaults and weren't explicitly specified by the
@@ -97,7 +112,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     private long mTimestampEnd = 0;
 
     /** Future for canceling the timer used to update the properties during the transition. */
-    private ScheduledFuture<?> mTimer = null;
+    private volatile ScheduledFuture<?> mTimer = null;
 
     /** Indicates if a transition is currently in progress or not. */
     private volatile boolean mTransitionInProgress = false;
@@ -158,10 +173,6 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     /** Stops the current transition. */
     public final synchronized void stopTransition() {
         pauseTransition();
-        if (mTimer != null) {
-            mTimer.cancel(false);
-            mTimer = null;
-        }
         mTransitionBegin.clear();
         mTransitionEnd.clear();
         mTransitionFinal.clear();
@@ -184,15 +195,13 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     /** Resumes a transition that was previously paused by {@link #pauseTransition()}. */
     public final synchronized void resumeTransition() {
         if (mTimestampEnd != 0 && (mTimer == null || mTimer.isDone())) {
-            long period = (mTimestampEnd - mTimestampBegin) / 1000;
+            long period = (mTimestampEnd - mTimestampBegin) / TICKS_PER_TRANSITION;
 
             // The minimum duration between transition updates is 50ms.
-            period = Math.max(period,
-                            TimeUnit.NANOSECONDS.convert(50, TimeUnit.MILLISECONDS));
+            period = Math.max(period, MIN_TICK_PERIOD);
 
             // The maximum duration between transition updates is 1s.
-            period = Math.min(period,
-                            TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
+            period = Math.min(period, MAX_TICK_PERIOD);
 
             mTimer =
                     getExecutor()
@@ -201,6 +210,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
                                     period,
                                     period,
                                     TimeUnit.NANOSECONDS);
+
             mTransitionTrait.didChangeDuration(getRemainingDuration());
             mTransitionInProgress = true;
 
@@ -246,9 +256,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
         }
 
         mTimestampBegin = nanoTime();
-        mTimestampEnd =
-                mTimestampBegin
-                        + (long) (duration * TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
+        mTimestampEnd = mTimestampBegin + (long) (duration * NSEC_PER_SEC);
 
         mTransitionEnd.putAll(finalState);
 
@@ -328,10 +336,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
      * Returns zero if there is no transition currently in progress.
      */
     public final float getRemainingDuration() {
-        final float remaining =
-                (float)
-                        ((mTimestampEnd - nanoTime())
-                                / (double) TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
+        final float remaining = (float) ((mTimestampEnd - nanoTime()) / (double) NSEC_PER_SEC);
         if (remaining < 0) {
             return 0;
         }
@@ -344,20 +349,25 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
      */
     public final synchronized float getPercentDone() {
         final long now = nanoTime();
-        float percent = (float) (now - mTimestampBegin) / (float) (mTimestampEnd - mTimestampBegin);
-        if (now > mTimestampEnd) {
-            percent = 1.0f;
+        final long begin = mTimestampBegin;
+        final long end = mTimestampEnd;
+
+        if (now > end) {
+            return 1.0f;
+        } else {
+            return (float) (now - begin) / (float) (end - begin);
         }
-        return percent;
     }
 
     @Override
     protected synchronized <T> T getPropertyTargetValue(PropertyKey<T> key)
             throws PropertyException, TechnologyException {
         T ret = key.coerceFromMapNoThrow(mTransitionFinal);
+
         if (ret == null) {
             ret = super.getPropertyTargetValue(key);
         }
+
         return ret;
     }
 
@@ -493,17 +503,16 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
 
     private synchronized void updateCurrentTransitionValues() {
         final long now = nanoTime();
-        float percent = (float) (now - mTimestampBegin) / (float) (mTimestampEnd - mTimestampBegin);
-
-        if (now > mTimestampEnd) {
-            percent = 1.0f;
-            mTimer.cancel(false);
-        }
+        final long begin = mTimestampBegin;
+        final long end = mTimestampEnd;
 
         try {
-            if (now <= mTimestampEnd) {
+            if (now <= end) {
+                final float percent = (float) (now - begin) / (float) (end - begin);
                 applyPropertiesImmediately(getCurrentTransitionValues(percent));
+
             } else {
+                pauseTransition();
                 applyPropertiesImmediately(mTransitionFinal);
                 stopTransition();
                 mTransitionTrait.didChangeDuration(0.0f);
@@ -529,6 +538,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
                             mTransitionBegin.get(entry.getKey()),
                             entry.getValue()));
         }
+
         return transMap;
     }
 
@@ -541,17 +551,59 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
         return 0.4f; // 400 milliseconds
     }
 
+    /**
+     * Override this to change the default transition duration for off->on
+     * transitions.
+     *
+     * @return The default on->off transition duration (the value of
+     *         {@link #getDefaultTransitionDuration()} if unchanged)
+     */
+    protected float getDefaultOnTransitionDuration() {
+        return getDefaultTransitionDuration();
+    }
+
+    /**
+     * Override this to change the default transition duration for off->on
+     * transitions.
+     *
+     * @return The default off->on transition duration (the value of
+     *         {@link #getDefaultTransitionDuration()} if unchanged)
+     */
+    protected float getDefaultOffTransitionDuration() {
+        return getDefaultTransitionDuration();
+    }
+
     /** TODO: Consider making this protected. */
     @Override
     Map<String, Object> expandProperties(Map<String, Object> properties)
             throws PropertyException, TechnologyException {
+
+        final boolean hadSpecificDuration = TransitionTrait.STAT_DURATION.isInMap(properties);
+
         Map<String, Object> ret = super.expandProperties(properties);
 
-        if (!TransitionTrait.STAT_DURATION.isInMap(properties)) {
+        if (!hadSpecificDuration) {
+            // The previous call to expandProperties may have added its own default
+            // transition duration.
             Float duration = TransitionTrait.STAT_DURATION.coerceFromMapNoThrow(ret);
 
             if (duration == null) {
-                final float defaultDuration = getDefaultTransitionDuration();
+                float defaultDuration = getDefaultTransitionDuration();
+
+                // Handle on/off transition duration specializations
+                if (OnOffTrait.STAT_VALUE.isInMap(ret)) {
+                    Boolean oldValue = getCachedProperty(OnOffTrait.STAT_VALUE);
+                    Boolean newValue = OnOffTrait.STAT_VALUE.getFromMapNoThrow(ret);
+
+                    if (oldValue != null && newValue != null && !oldValue.equals(newValue)) {
+                        if (oldValue && !newValue) {
+                            defaultDuration = getDefaultOffTransitionDuration();
+                        } else {
+                            defaultDuration = getDefaultOnTransitionDuration();
+                        }
+                    }
+                }
+
                 TransitionTrait.STAT_DURATION.putInMap(ret, defaultDuration);
                 duration = defaultDuration;
             }
