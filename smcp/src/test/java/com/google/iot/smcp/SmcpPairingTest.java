@@ -68,8 +68,6 @@ class SmcpPairingTest extends SmcpTestBase {
 
         techHosting = new SmcpTechnology(mContextB);
         bulbHosted = new MyLightBulbNoTrans();
-        techHosting.prepareToHost();
-        techHosting.host(bulbHosted);
 
         final String scheme = Coap.SCHEME_UDP;
         LocalEndpoint localHostingEndpoint = techHosting.getLocalEndpointManager().getLocalEndpointForScheme(scheme);
@@ -81,6 +79,9 @@ class SmcpPairingTest extends SmcpTestBase {
         }
 
         techHosting.getServer().addLocalEndpoint(localHostingEndpoint);
+        techHosting.prepareToHost();
+        techHosting.host(bulbHosted);
+
         techHosting.getServer().start();
 
         bulbRemote = techBacking.getFunctionalEndpointForNativeUri(new URI(

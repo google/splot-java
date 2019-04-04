@@ -19,8 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.google.iot.coap.Coap;
+import com.google.iot.coap.LocalEndpoint;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.*;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -87,15 +91,25 @@ class SmcpDiscoveryQueryTest extends SmcpTestBase {
 
             MyLightBulb localFe = new MyLightBulb();
 
+            LocalEndpoint hostingEndpoint = mContextA.getLocalEndpointForScheme(Coap.SCHEME_UDP);
+
+            techHosting.getServer().addLocalEndpoint(hostingEndpoint);
             techHosting.prepareToHost();
             techHosting.host(localFe);
+
             techHosting.getServer().start();
+
+            int port = 0;
+            SocketAddress hostingSockaddr = hostingEndpoint.getLocalSocketAddress();
+            if (hostingSockaddr instanceof InetSocketAddress) {
+                port = ((InetSocketAddress)hostingSockaddr).getPort();
+            }
 
             DiscoveryQuery query =
                     techBacking
                             .createDiscoveryQueryBuilder()
                             .setTimeout(100, TimeUnit.MILLISECONDS)
-                            .setBaseUri(URI.create("coap://" + Coap.ALL_NODES_MCAST_IP4 + "/"))
+                            .setBaseUri(URI.create("coap://" + Coap.ALL_NODES_MCAST_IP4 + ":" + port + "/"))
                             .buildAndRun();
 
             Set<FunctionalEndpoint> results = query.get();

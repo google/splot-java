@@ -48,8 +48,6 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             MyLightBulb localFe = new MyLightBulb();
 
-            techHosting.prepareToHost();
-            techHosting.host(localFe);
 
             LocalEndpoint localHostingEndpoint = techHosting.getLocalEndpointManager().getLocalEndpointForScheme(Coap.SCHEME_UDP);
             String host = "localhost";
@@ -60,6 +58,9 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             }
 
             techHosting.getServer().addLocalEndpoint(localHostingEndpoint);
+            techHosting.prepareToHost();
+            techHosting.host(localFe);
+
             techHosting.getServer().start();
 
             FunctionalEndpoint remoteFe = techBacking.getFunctionalEndpointForNativeUri(new URI(

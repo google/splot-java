@@ -134,12 +134,19 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
     @Override
     public void prepareToHost() throws IOException {
-        if (mDefaultLocalEndpoint == null) {
-            final MulticastSocket socket = new MulticastSocket(Coap.DEFAULT_PORT_NOSEC);
+        mLocalTechnology.prepareToHost();
 
-            mDefaultLocalEndpoint = new LocalEndpointCoap(mLocalEndpointManager, socket);
-            getServer().addLocalEndpoint(mDefaultLocalEndpoint);
-            socket.setLoopbackMode(true);
+        if (mDefaultLocalEndpoint == null) {
+            if (getServer().getLocalEndpoints().isEmpty()) {
+                final MulticastSocket socket = new MulticastSocket(Coap.DEFAULT_PORT_NOSEC);
+
+                mDefaultLocalEndpoint = new LocalEndpointCoap(mLocalEndpointManager, socket);
+                getServer().addLocalEndpoint(mDefaultLocalEndpoint);
+                socket.setLoopbackMode(true);
+
+            } else {
+                mDefaultLocalEndpoint = getServer().getLocalEndpoints().iterator().next();
+            }
 
             Enumeration<NetworkInterface> iter = NetworkInterface.getNetworkInterfaces();
             while (iter.hasMoreElements()) {
@@ -154,8 +161,6 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 }
             }
         }
-
-        mLocalTechnology.prepareToHost();
     }
 
     @Override
