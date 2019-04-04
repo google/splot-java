@@ -741,6 +741,7 @@ public interface FunctionalEndpoint {
      * @param key the key of the property to receive change notifications for
      * @param listener the listener to call when the value of the given property has changed
      * @see #unregisterPropertyListener(PropertyKey, PropertyListener)
+     * @see #unregisterAllListeners()
      */
     <T> void registerPropertyListener(
             Executor executor, PropertyKey<T> key, PropertyListener<T> listener);
@@ -754,6 +755,7 @@ public interface FunctionalEndpoint {
      *
      * @param key the key of the property to no longer receive change notifications for
      * @param listener the listener to unregister
+     * @see #unregisterAllListeners()
      */
     <T> void unregisterPropertyListener(PropertyKey<T> key, PropertyListener<T> listener);
 
@@ -764,6 +766,7 @@ public interface FunctionalEndpoint {
      * @param executor the executor to use when making calls to the listener
      * @param listener the listener to call when the "state" has changed
      * @see #unregisterStateListener(StateListener)
+     * @see #unregisterAllListeners()
      */
     void registerStateListener(Executor executor, StateListener listener);
 
@@ -776,6 +779,7 @@ public interface FunctionalEndpoint {
      *
      * @param listener the listener to unregister
      * @see #registerStateListener(Executor, StateListener)
+     * @see #unregisterAllListeners()
      */
     void unregisterStateListener(StateListener listener);
 
@@ -786,6 +790,7 @@ public interface FunctionalEndpoint {
      * @param executor the executor to use when making calls to the listener
      * @param listener the listener to call when the "config" has changed
      * @see #unregisterConfigListener(ConfigListener)
+     * @see #unregisterAllListeners()
      */
     void registerConfigListener(Executor executor, ConfigListener listener);
 
@@ -798,6 +803,7 @@ public interface FunctionalEndpoint {
      *
      * @param listener the listener to unregister
      * @see #registerConfigListener(Executor, ConfigListener)
+     * @see #unregisterAllListeners()
      */
     void unregisterConfigListener(ConfigListener listener);
 
@@ -808,6 +814,7 @@ public interface FunctionalEndpoint {
      * @param executor the executor to use when making calls to the listener
      * @param listener the listener to call when the "metadata" has changed
      * @see #unregisterMetadataListener(MetadataListener)
+     * @see #unregisterAllListeners()
      */
     void registerMetadataListener(Executor executor, MetadataListener listener);
 
@@ -820,13 +827,44 @@ public interface FunctionalEndpoint {
      *
      * @param listener the listener to unregister
      * @see #registerMetadataListener(Executor,MetadataListener)
+     * @see #unregisterAllListeners()
      */
     void unregisterMetadataListener(MetadataListener listener);
 
+    /**
+     * Registers a listener for children being added or removed.
+     *
+     * @param executor The executor to use for executing the callback on the listener.
+     * @param listener The listener to call into when chindren are added or removed.
+     * @param traitId The trait id of the trait to listen for changes to.
+     *
+     * @see #unregisterChildListener(ChildListener, String)
+     * @see #unregisterAllListeners()
+     */
     void registerChildListener(Executor executor, ChildListener listener, String traitId);
 
+    /**
+     * Unregisters a {@link ChildListener} that was previously registered with
+     * {@link #registerChildListener(Executor, ChildListener, String)}.
+     *
+     * @param listener The listener to unregister. If the given listener was never
+     *                 registered, then this method does nothing.
+     * @param traitId The traitId to unregister from.
+     *
+     * @see #registerChildListener(Executor, ChildListener, String)
+     * @see #unregisterAllListeners()
+     */
     void unregisterChildListener(ChildListener listener, String traitId);
 
+    /**
+     * Unregisters all listeners from this functional endpoint.
+     *
+     * @see #registerChildListener(Executor, ChildListener, String)
+     * @see #registerPropertyListener(Executor, PropertyKey, PropertyListener)
+     * @see #registerMetadataListener(Executor, MetadataListener)
+     * @see #registerStateListener(Executor, StateListener)
+     * @see #registerConfigListener(Executor, ConfigListener)
+     */
     void unregisterAllListeners();
 
     /**
