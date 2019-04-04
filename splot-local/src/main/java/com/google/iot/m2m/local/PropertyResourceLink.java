@@ -13,18 +13,18 @@ import java.util.concurrent.Executor;
 class PropertyResourceLink<T> extends AbstractResourceLink<T> implements PropertyListener<T> {
     final FunctionalEndpoint mFe;
     final PropertyKey<T> mKey;
-    final Technology mTechnology;
+    final URI mUri;
     final Modifier[] mModifiers;
 
-    PropertyResourceLink(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
+    PropertyResourceLink(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
         mFe = fe;
         mKey = key;
-        mTechnology = technology;
+        mUri = uri;
         mModifiers = modifiers;
     }
 
     public URI getUri() {
-        return mTechnology.getNativeUriForProperty(mFe, mKey, mModifiers);
+        return mUri;
     }
 
     @Override
@@ -32,16 +32,16 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         return mFe.setProperty(mKey, value, mModifiers);
     }
 
-    public static <T> ResourceLink<T> create(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
-        return new PropertyResourceLink<>(fe, key, technology, modifiers);
+    public static <T> ResourceLink<T> create(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
+        return new PropertyResourceLink<>(fe, key, uri, modifiers);
     }
 
-    public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key, Technology technology, Modifier ... modifiers) {
+    public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
         List<Modifier> withIncrement = new ArrayList<>();
         withIncrement.add(Modifier.increment());
         withIncrement.addAll(Arrays.asList(modifiers));
 
-        return new PropertyResourceLink<T>(fe, key, technology, withIncrement.toArray(Modifier.EMPTY_LIST)) {
+        return new PropertyResourceLink<T>(fe, key, uri, withIncrement.toArray(Modifier.EMPTY_LIST)) {
             @Override
             public ListenableFuture<?> invoke(@Nullable T value) {
                 if (value == null) {
@@ -65,12 +65,12 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key, Technology technology, Modifier ... modifiers) {
+    public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key, URI uri, Modifier ... modifiers) {
         List<Modifier> withMutator = new ArrayList<>();
         withMutator.add(Modifier.toggle());
         withMutator.addAll(Arrays.asList(modifiers));
 
-        return new PropertyResourceLink<Boolean>(fe, key, technology, withMutator.toArray(Modifier.EMPTY_LIST)) {
+        return new PropertyResourceLink<Boolean>(fe, key, uri, withMutator.toArray(Modifier.EMPTY_LIST)) {
             @Override
             public ListenableFuture<?> invoke(@Nullable Boolean value) {
                 return mFe.toggleProperty(mKey, modifiers);
@@ -78,7 +78,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key, Technology technology, Modifier ... modifiers) {
+    public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
         List<Modifier> withMutator = new ArrayList<>();
         withMutator.add(Modifier.insert());
         withMutator.addAll(Arrays.asList(modifiers));
@@ -102,7 +102,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
             }
 
             public URI getUri() {
-                return technology.getNativeUriForProperty(fe, key, withMutator.toArray(Modifier.EMPTY_LIST));
+                return uri;
             }
 
             @Override
@@ -117,7 +117,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key, Technology technology, Modifier ... modifiers) {
+    public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
         List<Modifier> withMutator = new ArrayList<>();
         withMutator.add(Modifier.insert());
         withMutator.addAll(Arrays.asList(modifiers));
@@ -141,7 +141,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
             }
 
             public URI getUri() {
-                return technology.getNativeUriForProperty(fe, key, withMutator.toArray(Modifier.EMPTY_LIST));
+                return uri;
             }
 
             @Override

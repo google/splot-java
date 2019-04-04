@@ -68,6 +68,10 @@ public abstract class LazyResourceLink<T> extends ResourceLink<T> {
         return mResourceLink;
     }
 
+    public final boolean hasResolved() {
+        return mResourceLink != null;
+    }
+
     @CanIgnoreReturnValue
     abstract public boolean resolve();
 

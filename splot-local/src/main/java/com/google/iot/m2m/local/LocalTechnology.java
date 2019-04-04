@@ -63,28 +63,10 @@ public final class LocalTechnology
 
     private final List<WeakReference<LazyResourceLink<Object>>> mLazyResourceLinks = new ArrayList<>();
 
-    private void registerLazyResourceLink(LazyResourceLink<Object> resourceLink) {
-        WeakReference<LazyResourceLink<Object>> ref = new WeakReference<>(resourceLink);
-        synchronized (mLazyResourceLinks) {
-            if (!mLazyResourceLinks.contains(ref)) {
-                mLazyResourceLinks.add(ref);
-            }
-        }
-    }
-
-    private void resolveLazyResourceLinks() {
-        synchronized (mLazyResourceLinks) {
-            for (int i = 0; i < mLazyResourceLinks.size(); i++) {
-                WeakReference<LazyResourceLink<Object>> ref = mLazyResourceLinks.get(i);
-                LazyResourceLink<Object> link = ref.get();
-                if (link != null) {
-                    link.resolve();
-                } else {
-                    mLazyResourceLinks.remove(i--);
-                }
-            }
-        }
-    }
+    // Cache for resource links. Note that this only works properly
+    // if the ResourceLink retains a copy of URI.
+    private final WeakHashMap<URI, WeakReference<ResourceLink<Object>>> mResourceLinkCache
+            = new WeakHashMap<>();
 
     public LocalTechnology(Executor executor) {
         mExecutor = executor;
@@ -324,30 +306,69 @@ public final class LocalTechnology
         }
     }
 
-    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
-        try {
-            return internalGetResourceLinkForNativeUri(uri);
+    private void registerLazyResourceLink(LazyResourceLink<Object> resourceLink) {
+        WeakReference<LazyResourceLink<Object>> ref = new WeakReference<>(resourceLink);
+        synchronized (mLazyResourceLinks) {
+            if (!mLazyResourceLinks.contains(ref)) {
+                mLazyResourceLinks.add(ref);
+            }
+        }
+    }
 
-        } catch(LookupMissException ignore) {
-            LazyResourceLink<Object> ret;
-
-            ret = new LazyResourceLink<Object>() {
-                @Override
-                public boolean resolve() {
-                    try {
-                        setContainedResourceLink(internalGetResourceLinkForNativeUri(uri));
-                    } catch (UnknownResourceException e) {
-                        return false;
+    private void resolveLazyResourceLinks() {
+        synchronized (mLazyResourceLinks) {
+            for (int i = 0; i < mLazyResourceLinks.size(); i++) {
+                WeakReference<LazyResourceLink<Object>> ref = mLazyResourceLinks.get(i);
+                LazyResourceLink<Object> link = ref.get();
+                if (link != null) {
+                    if (!link.hasResolved()) {
+                        link.resolve();
                     }
-                    return true;
+                } else {
+                    mLazyResourceLinks.remove(i--);
                 }
+            }
+        }
+    }
 
-                @Override
-                public URI getUri() {
-                    return uri;
-                }
-            };
-            registerLazyResourceLink(ret);
+    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+        synchronized (mResourceLinkCache) {
+            WeakReference<ResourceLink<Object>> ref = mResourceLinkCache.get(uri);
+            ResourceLink<Object> ret = ref != null ? ref.get() : null;
+
+            if (ret != null) {
+                if (DEBUG) LOGGER.info("ResourceLink cache hit for <" + uri + ">: " + ret);
+                return ret;
+            }
+
+            try {
+                ret = internalGetResourceLinkForNativeUri(uri);
+
+            } catch (LookupMissException ignore) {
+                LazyResourceLink<Object> lazyRet;
+
+                lazyRet = new LazyResourceLink<Object>() {
+                    @Override
+                    public boolean resolve() {
+                        try {
+                            setContainedResourceLink(internalGetResourceLinkForNativeUri(uri));
+                        } catch (UnknownResourceException e) {
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public URI getUri() {
+                        return uri;
+                    }
+                };
+                registerLazyResourceLink(lazyRet);
+                ret = lazyRet;
+            }
+
+            mResourceLinkCache.put(uri, new WeakReference<>(ret));
+
             return ret;
         }
     }
@@ -384,29 +405,29 @@ public final class LocalTechnology
                 if (DEBUG) LOGGER.info("Making property incrementer for " + key);
                 ret = ResourceLink.stripType(
                         PropertyResourceLink.createIncrement(parser.mFe, key,
-                                this, modifierList),
+                                uri, modifierList),
                         Number.class);
 
             } else if (method instanceof Modifier.Toggle) {
                 PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name, Boolean.class);
                 if (DEBUG) LOGGER.info("Making property toggler for " + key);
                 ret = ResourceLink.stripType(
-                        PropertyResourceLink.createToggle(parser.mFe, key, this, modifierList),
+                        PropertyResourceLink.createToggle(parser.mFe, key, uri, modifierList),
                         Boolean.class);
 
             } else if (method instanceof Modifier.Insert) {
                 PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
                 if (DEBUG) LOGGER.info("Making property value inserter for " + key);
-                ret = PropertyResourceLink.createInsert(parser.mFe, key, this, modifierList);
+                ret = PropertyResourceLink.createInsert(parser.mFe, key, uri, modifierList);
 
             } else if (method instanceof Modifier.Remove) {
                 PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
                 if (DEBUG) LOGGER.info("Making property value inserter for " + key);
-                ret = PropertyResourceLink.createRemove(parser.mFe, key, this, modifierList);
+                ret = PropertyResourceLink.createRemove(parser.mFe, key, uri, modifierList);
 
             } else {
                 PropertyKey<Object> key = new PropertyKey<>(section, trait, name, Object.class);
-                ret = PropertyResourceLink.create(parser.mFe, key,this, modifierList);
+                ret = PropertyResourceLink.create(parser.mFe, key, uri, modifierList);
 
             }
 
@@ -426,7 +447,7 @@ public final class LocalTechnology
 
             @SuppressWarnings("unchecked")
             ResourceLink<Object> ret = ResourceLink.stripType(
-                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section, this),
+                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section, uri),
                     Map.class);
 
             return ret;

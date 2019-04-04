@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements StateListener, MetadataListener, ConfigListener {
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section, Technology technology) {
-        return new SectionResourceLink(fe, section, technology);
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section, URI uri) {
+        return new SectionResourceLink(fe, section, uri);
     }
 
     public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section) {
@@ -33,19 +33,19 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
 
     private final FunctionalEndpoint mFe;
     private final String mSection;
-    @Nullable private final Technology mTechnology;
+    @Nullable private final URI mUri;
 
-    private SectionResourceLink(FunctionalEndpoint fe, String section, @Nullable Technology technology) {
+    private SectionResourceLink(FunctionalEndpoint fe, String section, @Nullable URI uri) {
         mFe = fe;
         mSection = section;
-        mTechnology = technology;
+        mUri = uri;
     }
 
     public URI getUri() {
-        if (mTechnology == null) {
-            throw new TechnologyRuntimeException("SectionResourceLink has no technology, can't get URI");
+        if (mUri == null) {
+            throw new TechnologyRuntimeException("No URI");
         }
-        return mTechnology.getNativeUriForSection(mFe, mSection);
+        return mUri;
     }
 
     @Override
