@@ -31,7 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.iot.m2m.base.Modifier.convertFromQuery;
-import static com.google.iot.m2m.base.Splot.*;
 
 /**
  * A {@link Technology} class that allows for dumb, non-multicast-optimized groups and (eventually)

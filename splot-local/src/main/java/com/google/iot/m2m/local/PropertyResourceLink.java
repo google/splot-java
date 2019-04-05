@@ -3,7 +3,6 @@ package com.google.iot.m2m.local;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.trait.TransitionTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.URI;

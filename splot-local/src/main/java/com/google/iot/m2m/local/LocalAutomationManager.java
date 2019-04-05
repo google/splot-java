@@ -16,7 +16,6 @@
 package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.trait.AutomationPairingManagerTrait;
 import com.google.iot.m2m.trait.BaseTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

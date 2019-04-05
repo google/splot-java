@@ -15,21 +15,14 @@
  */
 package com.google.iot.m2m.local;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.rpn.RPNContext;
 import com.google.iot.m2m.local.rpn.RPNException;
-import com.google.iot.m2m.trait.AutomationPairingTrait;
 import com.google.iot.m2m.trait.AutomationTimerTrait;
 import com.google.iot.m2m.trait.BaseTrait;
 import com.google.iot.m2m.trait.EnabledDisabledTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.URI;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;

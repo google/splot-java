@@ -15,8 +15,6 @@
  */
 package com.google.iot.m2m.local;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.rpn.RPNContext;
 import com.google.iot.m2m.local.rpn.RPNException;
