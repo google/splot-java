@@ -117,6 +117,8 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
         mRootResource.addChild("g", mGroupsResource);
 
+        mWellKnownCoreResource.addResource("/g/", mGroupsResource);
+
         mLocalTechnology = new LocalTechnology(mLocalEndpointManager.getExecutor());
     }
 
