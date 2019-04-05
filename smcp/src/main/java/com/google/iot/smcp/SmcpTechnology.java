@@ -20,6 +20,8 @@ import com.google.common.util.concurrent.ListenableFutureTask;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.LocalTechnology;
+import com.google.iot.m2m.local.ResourceLink;
+import com.google.iot.m2m.local.ResourceLinkManager;
 import com.google.iot.m2m.util.NestedPersistentStateManager;
 import java.io.IOException;
 import java.lang.ref.WeakReference;

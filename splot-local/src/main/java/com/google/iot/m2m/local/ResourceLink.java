@@ -1,12 +1,13 @@
-package com.google.iot.m2m.base;
+package com.google.iot.m2m.local;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.iot.m2m.base.InvalidPropertyValueException;
+import com.google.iot.m2m.base.Technology;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -20,9 +21,10 @@ import java.util.concurrent.Executor;
  * directly: they are usually only used by local functional endpoints that need to
  * perform RESTful operations.
  *
- * <p>{@code ResourceLink}s are managed by {@link Technology} instances, which provide methods
- * for converting a {@link URI} to a {@code ResourceLink}, and vice-versa. Thus, a
- * given {@code ResourceLink} instance is always tied to a specific {@link Technology} instance.
+ * <p>{@code ResourceLink}s are managed by {@link ResourceLinkManager} instances, which provides
+ * a method for looking up a {@link URI} to a {@code ResourceLink}. Thus, a
+ * given {@code ResourceLink} instance is always tied to a specific {@link ResourceLinkManager}
+ * instance (which is typically also a {@link Technology} instance).
  *
  * <p>Local functional endpoints which need to perform RESTful operations on arbitrary
  * URIs should expose a property which takes a URI as an argument. That URI can then
@@ -30,7 +32,7 @@ import java.util.concurrent.Executor;
  * on it. Because of this, Local functional endpoints which use ResourceLinks need to
  * have a reference to the {@link Technology} that is hosting it.
  *
- * @see Technology#getResourceLinkForNativeUri(URI)
+ * @see ResourceLinkManager#getResourceLinkForNativeUri(URI)
  */
 public abstract class ResourceLink<T> {
 

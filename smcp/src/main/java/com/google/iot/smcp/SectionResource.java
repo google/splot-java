@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.iot.cbor.*;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.*;
+import com.google.iot.m2m.local.ResourceLink;
 import com.google.iot.m2m.local.SectionResourceLink;
 import com.google.iot.m2m.trait.TransitionTrait;
 import java.net.URI;

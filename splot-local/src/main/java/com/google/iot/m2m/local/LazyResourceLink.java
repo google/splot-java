@@ -19,22 +19,33 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.trait.TransitionTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
+/**
+ * Abstract class for implementing lazily-resolved ResourceLinks.
+ */
 public abstract class LazyResourceLink<T> extends ResourceLink<T> {
     private final Map<Listener<T>, Executor> mListenerMap = new HashMap<>();
     private volatile ResourceLink<T> mResourceLink = null;
     private volatile boolean mLastInvokedValueValid = false;
     private volatile T mLastInvokedValue = null;
 
-    protected synchronized final void setContainedResourceLink(@Nullable ResourceLink<T> resourceLink) {
+    /**
+     * Changes the underlying ResourceLink.
+     *
+     * <p>This method called as a result of a call to {@link #resolve()}. If a ResourceLink
+     * previously set by this method becomes suddenly unavailable, then this method can be
+     * called with a {@code null} argument.
+     *
+     * @param resourceLink the resolved ResourceLink, or {@code null} if a previously-resolved
+     *                     ResourceLink is no longer available.
+     */
+    protected synchronized final void setResolvedResourceLink(@Nullable ResourceLink<T> resourceLink) {
         if (Objects.equals(mResourceLink, resourceLink)) {
             return;
         }
@@ -64,14 +75,34 @@ public abstract class LazyResourceLink<T> extends ResourceLink<T> {
         }
     }
 
-    protected final ResourceLink<T> getContainedResourceLink() {
+    protected final ResourceLink<T> getResolvedResourceLink() {
         return mResourceLink;
     }
 
+    /**
+     * Determines if this LazyResourceLink has been successfully resolved and is ready to use.
+     * @return true if this instance has been successfully resolved, false otherwise.
+     */
     public final boolean hasResolved() {
         return mResourceLink != null;
     }
 
+    /**
+     * Registers an external request to (re-)resolve the resource.
+     *
+     * <p>This method is implemented by subclasses of this class.
+     *
+     * <p>If the resolution was immediately successful, this method should return true.
+     * Otherwise, it should return false. Invoking this method may optionally trigger
+     * resolution asynchronously, in which case it should return false.
+     *
+     * <p>Once the resource has been resolved, the implementation of this method should call
+     * {@link #setResolvedResourceLink(ResourceLink)} with the resolved ResourceLink instance.
+     *
+     * @return true if the resolution was immediately successful, false otherwise.
+     * @see #setResolvedResourceLink(ResourceLink)
+     * @see #getResolvedResourceLink()
+     */
     @CanIgnoreReturnValue
     abstract public boolean resolve();
 

@@ -6,6 +6,7 @@ import com.google.iot.cbor.CborConversionException;
 import com.google.iot.cbor.CborObject;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.*;
+import com.google.iot.m2m.local.AbstractResourceLink;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.URI;

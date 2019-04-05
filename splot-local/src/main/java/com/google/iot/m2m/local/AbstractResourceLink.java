@@ -1,4 +1,4 @@
-package com.google.iot.m2m.base;
+package com.google.iot.m2m.local;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.HashMap;

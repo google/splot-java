@@ -352,7 +352,7 @@ public final class LocalTechnology
                     @Override
                     public boolean resolve() {
                         try {
-                            setContainedResourceLink(internalGetResourceLinkForNativeUri(uri));
+                            setResolvedResourceLink(internalGetResourceLinkForNativeUri(uri));
                         } catch (UnknownResourceException e) {
                             return false;
                         }
