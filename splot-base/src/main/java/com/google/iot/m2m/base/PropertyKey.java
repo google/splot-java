@@ -88,6 +88,10 @@ public final class PropertyKey<T> extends TypedKey<T> {
         this(section + "/" + trait + "/" + shortName, type);
     }
 
+    public PropertyKey(Splot.Section section, String trait, String shortName, Class<T> type) {
+        this(section.name + "/" + trait + "/" + shortName, type);
+    }
+
     /**
      * Returns the name of this property, in the form <code>
      * &lt;SECTION&gt;/&lt;TRAIT-ID&gt;/&lt;PROP-ID&gt;</code>.
@@ -105,7 +109,17 @@ public final class PropertyKey<T> extends TypedKey<T> {
     }
 
     /**
-     * Method for determining if this property is in the state section.
+     * Method for determining if this property is in a given section.
+     *
+     * @return true if the property is in the state section, false otherwise.
+     * @see #isSectionState(String)
+     */
+    public boolean isInSection(Splot.Section section) {
+        return mName.startsWith(section.name + "/");
+    }
+
+    /**
+     * @hide Method for determining if this property is in the state section.
      *
      * @return true if the property is in the state section, false otherwise.
      * @see #isSectionState(String)
@@ -115,7 +129,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
     }
 
     /**
-     * Method for determining if this property is in the config section.
+     * @hide Method for determining if this property is in the config section.
      *
      * @return true if the property is in the config section, false otherwise.
      * @see #isSectionConfig(String)
@@ -125,7 +139,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
     }
 
     /**
-     * Method for determining if this property is in the metadata section.
+     * @hide Method for determining if this property is in the metadata section.
      *
      * @return true if the property is in the metadata section, false otherwise.
      * @see #isSectionMetadata(String)

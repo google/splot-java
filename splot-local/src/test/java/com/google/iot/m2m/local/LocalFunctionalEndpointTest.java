@@ -20,10 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import com.google.iot.m2m.base.ChildListener;
-import com.google.iot.m2m.base.FunctionalEndpoint;
-import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.PropertyListener;
+import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.trait.*;
 import com.google.iot.m2m.util.NestedPersistentStateManager;
 import java.util.*;
@@ -55,15 +52,15 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
         Map<String, Object> map;
 
-        map = fe.fetchState().get();
+        map = fe.fetchSection(Splot.Section.STATE).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("State: " + map);
 
-        map = fe.fetchConfig().get();
+        map = fe.fetchSection(Splot.Section.CONFIG).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("Config: " + map);
 
-        map = fe.fetchMetadata().get();
+        map = fe.fetchSection(Splot.Section.METADATA).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("Metadata: " + map);
     }

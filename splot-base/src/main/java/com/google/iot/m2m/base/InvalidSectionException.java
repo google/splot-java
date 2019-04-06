@@ -16,20 +16,19 @@
 package com.google.iot.m2m.base;
 
 import java.util.Map;
-import java.util.concurrent.Executor;
 
-/**
- * Interface for notifications of changes to a {@link FunctionalEndpoint}'s state properties.
- *
- * @see FunctionalEndpoint#registerStateListener(Executor, StateListener)
- * @see FunctionalEndpoint#unregisterStateListener(StateListener)
- */
-public interface StateListener {
-    /**
-     * Called whenever the "state" of a {@link FunctionalEndpoint} has changed.
-     *
-     * @param fe the functional endpoint that is reporting the change of state
-     * @param state the current values of all of the properties in the state
-     */
-    void onStateChanged(FunctionalEndpoint fe, Map<String, Object> state);
+public class InvalidSectionException extends TechnologyException {
+    public InvalidSectionException() {}
+
+    public InvalidSectionException(String reason) {
+        super(reason);
+    }
+
+    public InvalidSectionException(String reason, Throwable t) {
+        super(reason, t);
+    }
+
+    public InvalidSectionException(Throwable t) {
+        super(t);
+    }
 }

@@ -53,14 +53,14 @@ public abstract class LocalFunctionalEndpoint
             Logger.getLogger(LocalFunctionalEndpoint.class.getCanonicalName());
 
     private final Map<String, LocalTrait> mTraits = new HashMap<>();
-    private final Map<PropertyKey, LocalTrait> mPropertyMap = new HashMap<>();
+    private final Map<PropertyKey<?>, LocalTrait> mPropertyMap = new HashMap<>();
     private final Map<MethodKey, LocalTrait> mMethodMap = new HashMap<>();
 
     private final Map<PropertyKey, Set<PropertyListenerEntry>> mPropertyListenerMap =
             new ConcurrentHashMap<>();
-    private final Map<StateListener, Executor> mStateListenerMap = new ConcurrentHashMap<>();
-    private final Map<ConfigListener, Executor> mConfigListenerMap = new ConcurrentHashMap<>();
-    private final Map<MetadataListener, Executor> mMetadataListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mStateListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mConfigListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mMetadataListenerMap = new ConcurrentHashMap<>();
     private final Map<String, Set<ChildListenerEntry>> mChildListenerMap =
             new ConcurrentHashMap<>();
 
@@ -173,7 +173,7 @@ public abstract class LocalFunctionalEndpoint
                     }
                 });
 
-        for (PropertyKey key : trait.getSupportedPropertyKeys()) {
+        for (PropertyKey<?> key : trait.getSupportedPropertyKeys()) {
             if (mPropertyMap.containsKey(key)) {
                 // This should never happen
                 throw new TechnologyRuntimeException(
@@ -246,22 +246,22 @@ public abstract class LocalFunctionalEndpoint
         }
 
         if (key.isSectionState()) {
-            Map<String, Object> map = copyCachedState();
+            Map<String, Object> map = copyCachedSection(Splot.Section.STATE);
             key.putInMap(map, value);
             mStateListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onStateChanged(this, map)));
+                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
 
         } else if (key.isSectionConfig()) {
-            Map<String, Object> map = copyCachedConfig();
+            Map<String, Object> map = copyCachedSection(Splot.Section.CONFIG);
             key.putInMap(map, value);
             mConfigListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onConfigChanged(this, map)));
+                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
 
         } else if (key.isSectionMetadata()) {
-            Map<String, Object> map = copyCachedMetadata();
+            Map<String, Object> map = copyCachedSection(Splot.Section.METADATA);
             key.putInMap(map, value);
             mMetadataListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onMetadataChanged(this, map)));
+                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
         }
     }
 
@@ -472,11 +472,7 @@ public abstract class LocalFunctionalEndpoint
      *     endpoint.
      */
     public Set<PropertyKey<?>> getSupportedPropertyKeys() {
-        Set<PropertyKey<?>> ret = new HashSet<>();
-        for (LocalTrait trait : mTraits.values()) {
-            ret.addAll(trait.getSupportedPropertyKeys());
-        }
-        return ret;
+        return new HashSet<>(mPropertyMap.keySet());
     }
 
     @Override
@@ -485,66 +481,53 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
-        for (Modifier mod : modifiers) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section,
+                                                              Modifier... mods) {
+        boolean getAllKeys = false;
+
+        for (Modifier mod : mods) {
             if (mod instanceof Modifier.All) {
-                return submit(() -> {
-                    Map<String, Object> state = copyCachedState();
-                    for (PropertyKey<?> key : getSupportedPropertyKeys()) {
-                        if (!state.containsKey(key.getName())) {
-                            state.put(key.getName(), null);
-                        }
-                    }
-                    return state;
-                });
+                getAllKeys = true;
             }
         }
-        return submit(this::copyCachedState);
-    }
 
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchConfig() {
-        return submit(this::copyCachedConfig);
-    }
+        if (!getAllKeys) {
+            return submit(() -> copyCachedSection(section));
+        }
 
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchMetadata() {
-        return submit(this::copyCachedMetadata);
-    }
+        return submit(() -> {
+            Map<String, Object> ret = new LinkedHashMap<>();
+            for (Map.Entry<PropertyKey<?>, LocalTrait> entry : mPropertyMap.entrySet()) {
+                PropertyKey<?> key = entry.getKey();
 
-    @Override
-    public Map<String, Object> copyCachedState() {
-        Map<String, Object> ret = new LinkedHashMap<>();
-        for (Map.Entry<PropertyKey, LocalTrait> entry : mPropertyMap.entrySet()) {
-            PropertyKey<?> key = entry.getKey();
+                if (!key.isInSection(section)) {
+                    continue;
+                }
 
-            if (!key.isSectionState()) {
-                continue;
-            }
+                final LocalTrait trait = entry.getValue();
 
-            LocalTrait trait = entry.getValue();
+                Object value = null;
 
-            Object value = null;
+                try {
+                    value = trait.getValueForPropertyKey(key);
+                } catch (PropertyException | TechnologyException ignored) {
+                }
 
-            try {
-                value = trait.getValueForPropertyKey(key);
-            } catch (PropertyException | TechnologyException ignored) {
-            }
-
-            if (value != null) {
+                // In this case we put the value in the map whether
+                // it is null or not.
                 ret.put(key.getName(), value);
             }
-        }
-        return ret;
+            return ret;
+        });
     }
 
     @Override
-    public Map<String, Object> copyCachedConfig() {
+    public Map<String, Object> copyCachedSection(Splot.Section section) {
         Map<String, Object> ret = new LinkedHashMap<>();
-        for (Map.Entry<PropertyKey, LocalTrait> entry : mPropertyMap.entrySet()) {
+        for (Map.Entry<PropertyKey<?>, LocalTrait> entry : mPropertyMap.entrySet()) {
             PropertyKey<?> key = entry.getKey();
 
-            if (!key.isSectionConfig()) {
+            if (!key.isInSection(section)) {
                 continue;
             }
 
@@ -557,32 +540,7 @@ public abstract class LocalFunctionalEndpoint
             } catch (PropertyException | TechnologyException ignored) {
             }
 
-            if (value != null) {
-                ret.put(key.getName(), value);
-            }
-        }
-        return ret;
-    }
-
-    @Override
-    public Map<String, Object> copyCachedMetadata() {
-        Map<String, Object> ret = new LinkedHashMap<>();
-        for (Map.Entry<PropertyKey, LocalTrait> entry : mPropertyMap.entrySet()) {
-            PropertyKey<?> key = entry.getKey();
-
-            if (!key.isSectionMetadata()) {
-                continue;
-            }
-
-            LocalTrait trait = entry.getValue();
-
-            Object value = null;
-
-            try {
-                value = trait.getValueForPropertyKey(key);
-            } catch (PropertyException | TechnologyException ignored) {
-            }
-
+            // We only return values that aren't null
             if (value != null) {
                 ret.put(key.getName(), value);
             }
@@ -784,38 +742,29 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public final synchronized void registerStateListener(Executor executor,
-                                                         StateListener listener) {
-        mStateListenerMap.put(listener, executor);
-        executor.execute(()->listener.onStateChanged(this, copyCachedState()));
+    public final synchronized void registerSectionListener(Executor executor,
+                                                           Splot.Section section,
+                                                           SectionListener listener) {
+        switch (section) {
+            case STATE:
+                mStateListenerMap.put(listener, executor);
+                break;
+
+            case CONFIG:
+                mConfigListenerMap.put(listener, executor);
+                break;
+
+            case METADATA:
+                mMetadataListenerMap.put(listener, executor);
+                break;
+        }
+        executor.execute(()->listener.onSectionChanged(this, copyCachedSection(section)));
     }
 
     @Override
-    public final synchronized void unregisterStateListener(StateListener listener) {
+    public final synchronized void unregisterSectionListener(SectionListener listener) {
         mStateListenerMap.remove(listener);
-    }
-
-    @Override
-    public final synchronized void registerConfigListener(
-            Executor executor, ConfigListener listener) {
-        mConfigListenerMap.put(listener, executor);
-        executor.execute(()->listener.onConfigChanged(this, copyCachedConfig()));
-    }
-
-    @Override
-    public final synchronized void unregisterConfigListener(ConfigListener listener) {
         mConfigListenerMap.remove(listener);
-    }
-
-    @Override
-    public final synchronized void registerMetadataListener(
-            Executor executor, MetadataListener listener) {
-        mMetadataListenerMap.put(listener, executor);
-        executor.execute(()->listener.onMetadataChanged(this, copyCachedMetadata()));
-    }
-
-    @Override
-    public final synchronized void unregisterMetadataListener(MetadataListener listener) {
         mMetadataListenerMap.remove(listener);
     }
 
@@ -939,7 +888,7 @@ public abstract class LocalFunctionalEndpoint
     public Map<String, Object> copyPersistentState() {
         Map<String, Object> ret = new HashMap<>();
 
-        for (Map.Entry<PropertyKey, LocalTrait> entry : mPropertyMap.entrySet()) {
+        for (Map.Entry<PropertyKey<?>, LocalTrait> entry : mPropertyMap.entrySet()) {
             final PropertyKey<?> key = entry.getKey();
             final LocalTrait trait = entry.getValue();
 

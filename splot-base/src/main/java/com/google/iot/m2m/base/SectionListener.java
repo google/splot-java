@@ -19,17 +19,17 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
- * Interface for handling changes to a {@link FunctionalEndpoint}'s config properties.
+ * Interface for notifications of changes to a {@link FunctionalEndpoint}'s state properties.
  *
- * @see FunctionalEndpoint#registerConfigListener(Executor, ConfigListener)
- * @see FunctionalEndpoint#unregisterConfigListener(ConfigListener)
+ * @see FunctionalEndpoint#registerSectionListener(Executor, Splot.Section, SectionListener)
+ * @see FunctionalEndpoint#unregisterSectionListener(SectionListener)
  */
-public interface ConfigListener {
+public interface SectionListener {
     /**
-     * Called whenever the "configuration" of a {@link FunctionalEndpoint} has changed.
+     * Called whenever the "state" of a {@link FunctionalEndpoint} has changed.
      *
-     * @param fe the functional endpoint that is reporting the change of configuration
-     * @param config the current values of all of the config properties
+     * @param fe the functional endpoint that is reporting the change of state
+     * @param state the current values of all of the properties in the state
      */
-    void onConfigChanged(FunctionalEndpoint fe, Map<String, Object> config);
+    void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> state);
 }

@@ -10,32 +10,20 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements StateListener, MetadataListener, ConfigListener {
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section, URI uri) {
+public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements SectionListener {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Splot.Section section, URI uri) {
         return new SectionResourceLink(fe, section, uri);
     }
 
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, String section) {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Splot.Section section) {
         return new SectionResourceLink(fe, section, null);
     }
 
-    private enum Section {
-        STATE(Splot.SECTION_STATE),
-        CONFIG(Splot.SECTION_CONFIG),
-        METADATA(Splot.SECTION_METADATA);
-
-        String prefix;
-
-        Section(String x) {
-            prefix = Splot.SECTION_CONFIG;
-        }
-    }
-
     private final FunctionalEndpoint mFe;
-    private final String mSection;
+    private final Splot.Section mSection;
     @Nullable private final URI mUri;
 
-    private SectionResourceLink(FunctionalEndpoint fe, String section, @Nullable URI uri) {
+    private SectionResourceLink(FunctionalEndpoint fe, Splot.Section section, @Nullable URI uri) {
         mFe = fe;
         mSection = section;
         mUri = uri;
@@ -52,26 +40,11 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     public ListenableFuture<Map<String,Map<String,Object>>> fetchValue() {
         ListenableFuture<Map<String,Object>> future;
 
-        switch (mSection) {
-            case Splot.SECTION_STATE:
-                future = mFe.fetchState();
-                break;
-
-            case Splot.SECTION_CONFIG:
-                future = mFe.fetchConfig();
-                break;
-
-            case Splot.SECTION_METADATA:
-                future = mFe.fetchMetadata();
-                break;
-
-            default:
-                throw new AssertionError("Invalid section enum");
-        }
+        future = mFe.fetchSection(mSection);
 
         ListenableFutureTask<Map<String,Map<String,Object>>> uncollapser =
                 ListenableFutureTask.create(
-                        ()->uncollapseSectionFromOneLevelMap(future.get(), mSection));
+                        ()->uncollapseSectionFromOneLevelMap(future.get(), mSection.name));
 
         future.addListener(uncollapser, Runnable::run);
 
@@ -87,7 +60,7 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
         }
 
         try {
-            return mFe.applyProperties(collapseSectionToOneLevelMap(value, mSection));
+            return mFe.applyProperties(collapseSectionToOneLevelMap(value, mSection.name));
 
         } catch (InvalidValueException e) {
             return Futures.immediateFailedFuture(new InvalidPropertyValueException(e));
@@ -97,62 +70,16 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     @Override
     protected void onListenerCountChanged(int listeners) {
         if (listeners == 0) {
-            switch (mSection) {
-                case Splot.SECTION_STATE:
-                    mFe.unregisterStateListener(this);
-                    break;
-
-                case Splot.SECTION_CONFIG:
-                    mFe.unregisterConfigListener(this);
-                    break;
-
-                case Splot.SECTION_METADATA:
-                    mFe.unregisterMetadataListener(this);
-                    break;
-
-                default:
-                    throw new AssertionError("Invalid section enum");
-            }
+            mFe.unregisterSectionListener(this);
         } else if (listeners == 1) {
-            switch (mSection) {
-                case Splot.SECTION_STATE:
-                    mFe.registerStateListener(Runnable::run, this);
-                    break;
-
-                case Splot.SECTION_CONFIG:
-                    mFe.registerConfigListener(Runnable::run, this);
-                    break;
-
-                case Splot.SECTION_METADATA:
-                    mFe.registerMetadataListener(Runnable::run, this);
-                    break;
-
-                default:
-                    throw new AssertionError("Invalid section enum");
-            }
-        }
-    }
-
-    public void onConfigChanged(FunctionalEndpoint fe, Map<String, Object> config) {
-        try {
-            didChangeValue(uncollapseSectionFromOneLevelMap(config, mSection));
-        } catch (InvalidValueException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    public void onStateChanged(FunctionalEndpoint fe, Map<String, Object> state) {
-        try {
-            didChangeValue(uncollapseSectionFromOneLevelMap(state, mSection));
-        } catch (InvalidValueException e) {
-            throw new AssertionError(e);
+            mFe.registerSectionListener(Runnable::run, mSection, this);
         }
     }
 
     @Override
-    public void onMetadataChanged(FunctionalEndpoint fe, Map<String, Object> metadata) {
+    public void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> state) {
         try {
-            didChangeValue(uncollapseSectionFromOneLevelMap(metadata, mSection));
+            didChangeValue(uncollapseSectionFromOneLevelMap(state, mSection.name));
         } catch (InvalidValueException e) {
             throw new AssertionError(e);
         }

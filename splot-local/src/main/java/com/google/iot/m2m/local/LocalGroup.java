@@ -335,11 +335,16 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier... mods) {
+        if (!Splot.Section.STATE.equals(section)) {
+            // Treat every section other than STATE normally.
+            return super.fetchSection(section, mods);
+        }
+
         LinkedList<ListenableFuture<Map<String, Object>>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.fetchState(modifiers)));
+            mMembers.forEach((fe) -> futures.add(fe.fetchSection(section, mods)));
         }
 
         Futures.FutureCombiner<Map<String, Object>> combiner;

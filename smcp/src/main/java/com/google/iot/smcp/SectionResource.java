@@ -47,12 +47,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
     private static final Logger LOGGER = Logger.getLogger(SectionResource.class.getCanonicalName());
 
     private final FunctionalEndpoint mFe;
-    private final String mSection;
+    private final Splot.Section mSection;
     private final ResourceLink<Map<String,Map<String,Object>>> mResourceLink;
     private final Executor mExecutor;
     private int mMaxAge = 30;
 
-    SectionResource(FunctionalEndpoint fe, String section, Executor executor) {
+    SectionResource(FunctionalEndpoint fe, Splot.Section section, Executor executor) {
         mFe = fe;
         mSection = section;
         mExecutor = executor;
@@ -70,13 +70,13 @@ class SectionResource extends Resource<InboundRequestHandler> {
                     }
         });
 
-        if (Splot.SECTION_STATE.equals(mSection)) {
+        if (Splot.Section.STATE.equals(mSection)) {
             mMaxAge = 30;
 
-        } else if (Splot.SECTION_METADATA.equals(mSection)) {
+        } else if (Splot.Section.METADATA.equals(mSection)) {
             mMaxAge = 60 * 10;
 
-        } else if (Splot.SECTION_CONFIG.equals(mSection)) {
+        } else if (Splot.Section.CONFIG.equals(mSection)) {
             mMaxAge = 60 * 60;
         }
     }
@@ -234,7 +234,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
             for (Modifier modifier : modifierList) {
                 if ((modifier instanceof Modifier.Duration)
-                        && Splot.SECTION_STATE.equals(mSection)) {
+                        && Splot.Section.STATE.equals(mSection)) {
                     // Duration modifier basically collapses to an additional parameter
                     // if we are the state section. It is ignored (like all other modifiers)
                     // if this is applied to any other section.
@@ -324,7 +324,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
                                     if (trailingSlash) {
                                         prefix = "";
                                     } else {
-                                        prefix = mSection + "/";
+                                        prefix = mSection.name + "/";
                                     }
 
                                     for (String traitKey : value.keySetAsStrings()) {
@@ -416,7 +416,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
     private void onTraitRequest(
             InboundRequest inboundRequest,
-            @SuppressWarnings("unused") String section,
+            @SuppressWarnings("unused") Splot.Section section,
             @SuppressWarnings("unused") String trait) {
         if (DEBUG) LOGGER.info("onTraitRequest " + inboundRequest.getMessage());
         // TODO: Writeme!
@@ -426,8 +426,8 @@ class SectionResource extends Resource<InboundRequestHandler> {
     private final ConcurrentMap<String, Observable> mPropertyObservables =
             new ConcurrentHashMap<>();
 
-    private Observable getObservableForProp(String section, String trait, String prop) {
-        String propString = section + "/" + trait + "/" + prop;
+    private Observable getObservableForProp(Splot.Section section, String trait, String prop) {
+        String propString = section.name + "/" + trait + "/" + prop;
 
         return mPropertyObservables.computeIfAbsent(
                 propString,
@@ -462,12 +462,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private boolean handleObservable(
-            InboundRequest inboundRequest, String section, String trait, String prop) {
+            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
         return getObservableForProp(section, trait, prop).handleInboundRequest(inboundRequest);
     }
 
     private void onPropRequest(
-            InboundRequest inboundRequest, String section, String trait, String prop) {
+            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropRequest " + request);
 
@@ -487,7 +487,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private void onPropPostRequest(
-            InboundRequest inboundRequest, String section, String trait, String prop) {
+            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropPostRequest " + request);
 
@@ -569,7 +569,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
     private void onPropPutRequest(
             InboundRequest inboundRequest,
-            @SuppressWarnings("unused") String section,
+            @SuppressWarnings("unused") Splot.Section section,
             @SuppressWarnings("unused") String trait,
             @SuppressWarnings("unused") String prop) {
         if (DEBUG) LOGGER.info("onPropPutRequest " + inboundRequest.getMessage());
@@ -580,7 +580,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private void onPropGetRequest(
-            InboundRequest inboundRequest, String section, String trait, String prop) {
+            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropGetRequest " + request);
 
@@ -606,7 +606,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
         ListenableFuture<Object> future =
                 mFe.fetchProperty(
-                        new PropertyKey<>(section + "/" + trait + "/" + prop, Object.class),
+                        new PropertyKey<>(section, trait, prop, Object.class),
                         modifierList);
 
         future.addListener(

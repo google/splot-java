@@ -253,7 +253,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 }
 
                 // Go ahead and fetch to cache.
-                fe.fetchMetadata();
+                fe.fetchSection(Splot.Section.METADATA);
             }
         }
     }

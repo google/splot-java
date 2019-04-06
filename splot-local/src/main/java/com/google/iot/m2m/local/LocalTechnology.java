@@ -130,7 +130,7 @@ public final class LocalTechnology
                         }
                         mHostedPathLookup.put(fe, Integer.toString(index));
 
-                        fe.fetchMetadata();
+                        fe.fetchSection(Splot.Section.METADATA);
 
                         synchronized (mGroups) {
                             mGroups.values()
@@ -443,7 +443,14 @@ public final class LocalTechnology
 
         // Resource link tracking a section
         if (parser.remainingComponents() == 2) {
-            final String section = parser.getRelativeComponent(1);
+            final Splot.Section section;
+
+            try {
+                section = Splot.Section.fromName(parser.getRelativeComponent(1));
+
+            } catch (InvalidSectionException e) {
+                throw new UnknownResourceException(e);
+            }
 
             @SuppressWarnings("unchecked")
             ResourceLink<Object> ret = ResourceLink.stripType(

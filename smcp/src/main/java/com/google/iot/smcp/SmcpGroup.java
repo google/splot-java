@@ -273,27 +273,11 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.fetchState(modifiers);
+            return mLocalGroup.fetchSection(section, modifiers);
         }
-        return super.fetchState(modifiers);
-    }
-
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchConfig() {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.fetchConfig();
-        }
-        return super.fetchConfig();
-    }
-
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchMetadata() {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.fetchMetadata();
-        }
-        return super.fetchMetadata();
+        return super.fetchSection(section, modifiers);
     }
 
     @Nullable
@@ -312,34 +296,24 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public Map<String, Object> copyCachedState() {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.copyCachedState();
-        }
-
-        return super.copyCachedState();
-    }
-
-    @Override
-    public Map<String, Object> copyCachedConfig() {
-        if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
-            return mLocalGroup.copyCachedConfig();
-        }
-
-        return super.copyCachedConfig();
-    }
-
-    @Override
-    public Map<String, Object> copyCachedMetadata() {
-        final Map<String, Object> ret;
+    public Map<String, Object> copyCachedSection(Splot.Section section) {
+        final Map<String, Object> ret = super.copyCachedSection(section);
 
         if (mTechnology.isHosted(this)) {
-            ret = mLocalGroup.copyCachedMetadata();
-        } else {
-            ret = super.copyCachedMetadata();
-        }
+            switch (section) {
+                case STATE:
+                case CONFIG:
+                    if (mLocalGroup.hasLocalMembers()) {
+                        ret.putAll(mLocalGroup.copyCachedSection(section));
+                    }
+                    break;
 
-        BaseTrait.META_UID.putInMap(ret, mGroupId);
+                case METADATA:
+                    ret.putAll(mLocalGroup.copyCachedSection(section));
+                    BaseTrait.META_UID.putInMap(ret, mGroupId);
+                    break;
+            }
+        }
 
         return ret;
     }
@@ -365,23 +339,13 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public void registerStateListener(Executor executor, StateListener listener) {
-        mLocalGroup.registerStateListener(executor, listener);
+    public void registerSectionListener(Executor executor, Splot.Section section, SectionListener listener) {
+        mLocalGroup.registerSectionListener(executor, section, listener);
     }
 
     @Override
-    public void unregisterStateListener(StateListener listener) {
-        mLocalGroup.unregisterStateListener(listener);
-    }
-
-    @Override
-    public void registerMetadataListener(Executor executor, MetadataListener listener) {
-        mLocalGroup.registerMetadataListener(executor, listener);
-    }
-
-    @Override
-    public void unregisterMetadataListener(MetadataListener listener) {
-        mLocalGroup.unregisterMetadataListener(listener);
+    public void unregisterSectionListener(SectionListener listener) {
+        mLocalGroup.unregisterSectionListener(listener);
     }
 
     @Override

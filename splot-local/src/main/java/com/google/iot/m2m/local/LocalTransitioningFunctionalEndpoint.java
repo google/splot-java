@@ -228,7 +228,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     private synchronized void updateTransition(
             float duration, Map<String, Object> finalState, boolean isDefault)
             throws PropertyException, TechnologyException {
-        final Map<String, Object> currentState = copyCachedState();
+        final Map<String, Object> currentState = copyCachedSection(Splot.Section.STATE);
         boolean inProgress = isTransitionInProgress();
 
         currentState.remove(TransitionTrait.STAT_DURATION.getName());
@@ -372,17 +372,27 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
-        for (Modifier mod : modifiers) {
-            if (mod instanceof Modifier.Duration || mod instanceof Modifier.TransitionTarget) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier... mods) {
+        if (Splot.Section.STATE.equals(section)) {
+            boolean needsFinalTargetState = false;
+
+            for (Modifier mod : mods) {
+                if (mod instanceof Modifier.Duration || mod instanceof Modifier.TransitionTarget) {
+                    needsFinalTargetState = true;
+                    break;
+                }
+            }
+
+            if (needsFinalTargetState) {
                 return submit(() -> {
-                    Map<String, Object> state = copyCachedState();
+                    Map<String, Object> state = copyCachedSection(Splot.Section.STATE);
                     state.putAll(mTransitionFinal);
                     return state;
                 });
             }
         }
-        return super.fetchState(modifiers);
+
+        return super.fetchSection(section, mods);
     }
 
     /**

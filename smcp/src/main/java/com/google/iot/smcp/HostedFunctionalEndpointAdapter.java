@@ -51,15 +51,15 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
 
         addChild(
                 Splot.SECTION_STATE,
-                new SectionResource(mFe, Splot.SECTION_STATE, mExecutor));
+                new SectionResource(mFe, Splot.Section.STATE, mExecutor));
         addChild(
                 Splot.SECTION_CONFIG,
-                new SectionResource(mFe, Splot.SECTION_CONFIG, mExecutor));
+                new SectionResource(mFe, Splot.Section.CONFIG, mExecutor));
         addChild(
                 Splot.SECTION_METADATA,
-                new SectionResource(mFe, Splot.SECTION_METADATA, mExecutor));
+                new SectionResource(mFe, Splot.Section.METADATA, mExecutor));
 
-        addChild("f", new FuncResource(mTechnology, mFe));
+        addChild(Splot.SECTION_FUNC, new FuncResource(mTechnology, mFe));
     }
 
     FunctionalEndpoint getFunctionalEndpoint() {
@@ -117,7 +117,7 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
     public void onBuildLinkParams(LinkFormat.LinkBuilder builder) {
         super.onBuildLinkParams(builder);
 
-        Map<String, Object> metadata = mFe.copyCachedMetadata();
+        Map<String, Object> metadata = mFe.copyCachedSection(Splot.Section.METADATA);
 
         String uid = BaseTrait.META_UID.getFromMapNoThrow(metadata);
 

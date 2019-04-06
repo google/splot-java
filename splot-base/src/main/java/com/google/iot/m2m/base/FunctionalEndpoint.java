@@ -15,7 +15,6 @@
  */
 package com.google.iot.m2m.base;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.SecureRandom;
@@ -375,89 +374,6 @@ public interface FunctionalEndpoint {
     <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers);
 
     /**
-     * Asynchronously fetch the set property keys that are supported by this functional endpoint.
-     * Note that this method will only work reliably if {@link #isLocal()} returns {@code true}.
-     * Otherwise, it makes a best-effort but may not list all supported properties.
-     *
-     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
-     * {@link java.util.concurrent.ExecutionException}) when completed:
-     *
-     * <ul>
-     *   <li>{@link TechnologyException} if there was a technology-specific problem
-     * </ul>
-     *
-     * @return a future to retrieve fetched set of property keys (Can also be cancelled or monitored
-     *     asynchronously for completion)
-     */
-    @CanIgnoreReturnValue
-    ListenableFuture<Set<PropertyKey<?>>> fetchSupportedPropertyKeys();
-
-    /**
-     * Asynchronously fetch a Map containing the values of all of the "state" properties on this
-     * functional endpoint.
-     *
-     * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
-     * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
-     * {@link PropertyKey#coerceFromMap(Map)}.
-     *
-     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
-     * {@link java.util.concurrent.ExecutionException}) when completed:
-     *
-     * <ul>
-     *   <li>{@link TechnologyException} if there was a technology-specific problem
-     * </ul>
-     *
-     * @param modifiers The modifiers to apply to this operation, like
-     *                  {@link Modifier#transitionTarget()}.
-     * @return a future to retrieve a map containing all "state" property values (Can also be
-     *     cancelled or monitored asynchronously for completion)
-     */
-    @CanIgnoreReturnValue
-    ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers);
-
-    /**
-     * Asynchronously fetch a Map containing the values of all of the "config" properties on this
-     * functional endpoint.
-     *
-     * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
-     * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
-     * {@link PropertyKey#coerceFromMap(Map)}.
-     *
-     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
-     * {@link java.util.concurrent.ExecutionException}) when completed:
-     *
-     * <ul>
-     *   <li>{@link TechnologyException} if there was a technology-specific problem
-     * </ul>
-     *
-     * @return a future to retrieve a map containing all "config" property values (Can also be
-     *     cancelled or monitored asynchronously for completion)
-     */
-    @CanIgnoreReturnValue
-    ListenableFuture<Map<String, Object>> fetchConfig();
-
-    /**
-     * Asynchronously fetch a Map containing the values of all of the "metadata" properties on this
-     * functional endpoint.
-     *
-     * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
-     * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
-     * {@link PropertyKey#coerceFromMap(Map)}.
-     *
-     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
-     * {@link java.util.concurrent.ExecutionException}) when completed:
-     *
-     * <ul>
-     *   <li>{@link TechnologyException} if there was a technology-specific problem
-     * </ul>
-     *
-     * @return a future to retrieve a map containing all "metadata" property values (Can also be
-     *     cancelled or monitored asynchronously for completion)
-     */
-    @CanIgnoreReturnValue
-    ListenableFuture<Map<String, Object>> fetchMetadata();
-
-    /**
      * Synchronously return the most recent cached value of a specific property.
      *
      * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
@@ -485,40 +401,49 @@ public interface FunctionalEndpoint {
     <T> T getCachedProperty(PropertyKey<T> key);
 
     /**
-     * Synchronously return a {@link Map} containing the cached values of all of the "state"
-     * properties on this functional endpoint.
+     * Asynchronously fetch the set property keys that are supported by this functional endpoint.
+     * Note that this method will only work reliably if {@link #isLocal()} returns {@code true}.
+     * Otherwise, it makes a best-effort but may not list all supported properties.
      *
-     * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
-     * </code>), then the returned values are the actual values of the properties instead of cached
-     * values.
+     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
+     * {@link java.util.concurrent.ExecutionException}) when completed:
      *
-     * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
-     * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
-     * {@link PropertyKey#coerceFromMap(Map)}.
+     * <ul>
+     *   <li>{@link TechnologyException} if there was a technology-specific problem
+     * </ul>
      *
-     * @return a {@link Map} containing the cached values of all of the "state" properties
+     * @return a future to retrieve fetched set of property keys (Can also be cancelled or monitored
+     *     asynchronously for completion)
      */
-    Map<String, Object> copyCachedState();
+    @CanIgnoreReturnValue
+    ListenableFuture<Set<PropertyKey<?>>> fetchSupportedPropertyKeys();
 
     /**
-     * Synchronously return a {@link Map} containing the cached values of all of the "config"
-     * properties on this functional endpoint.
-     *
-     * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
-     * </code>), then the returned values are the actual values of the properties instead of cached
-     * values.
+     * Asynchronously fetch a Map containing the values of all of the properties in the given
+     * section on this functional endpoint.
      *
      * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
      * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
      * {@link PropertyKey#coerceFromMap(Map)}.
      *
-     * @return a {@link Map} containing the cached values of all of the "config" properties
+     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
+     * {@link java.util.concurrent.ExecutionException}) when completed:
+     *
+     * <ul>
+     *   <li>{@link TechnologyException} if there was a technology-specific problem.
+     * </ul>
+     *
+     * @param mods The modifiers to apply to this operation, like
+     *             {@link Modifier#transitionTarget()}.
+     * @return a future to retrieve a map containing all reported property values in a given
+     *     section (Can also be cancelled or monitored asynchronously for completion)
      */
-    Map<String, Object> copyCachedConfig();
+    @CanIgnoreReturnValue
+    ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier ... mods);
 
     /**
-     * Synchronously return a {@link Map} containing the cached values of all of the "metadata"
-     * properties on this functional endpoint.
+     * Synchronously return a {@link Map} containing the cached values of all of the properties
+     * in the given section on this functional endpoint.
      *
      * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
      * </code>), then the returned values are the actual values of the properties instead of cached
@@ -528,9 +453,10 @@ public interface FunctionalEndpoint {
      * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
      * {@link PropertyKey#coerceFromMap(Map)}.
      *
-     * @return a {@link Map} containing the cached values of all of the "metadata" properties
+     * @return a {@link Map} containing the cached values of all of the properties in the given
+     *         section
      */
-    Map<String, Object> copyCachedMetadata();
+    Map<String, Object> copyCachedSection(Splot.Section section);
 
     /**
      * Asynchronously change the value of multiple properties at once.
@@ -590,36 +516,6 @@ public interface FunctionalEndpoint {
      */
     @CanIgnoreReturnValue
     ListenableFuture<Boolean> delete();
-
-    /**
-     * Invokes a given method without arguments. Note to implementors: This method has a default
-     * convenience implementation that invokes {@link #invokeMethod(MethodKey, Map)} with a null
-     * argument map.
-     *
-     * <p>The returned future may throw one of the following checked exceptions (as the cause to a
-     * {@link java.util.concurrent.ExecutionException}) when completed:
-     *
-     * <ul>
-     *   <li>{@link MethodException}, or one of its subclasses:
-     *       <ul>
-     *         <li>{@link InvalidMethodArgumentsException}: The supplied arguments are invalid. This
-     *             could be due to a missing required argument or an argument containing an illegal
-     *             value.
-     *         <li>{@link MethodNotFoundException}: This method is not supported on this functional
-     *             endpoint.
-     *       </ul>
-     *   <li>{@link TechnologyException} if there was a technology-specific problem
-     * </ul>
-     *
-     * <p>
-     *
-     * @param methodKey The {@link MethodKey} object associated with the method to invoke.
-     * @return A future capable of retrieving the return value of the method, if any.
-     */
-    @CanIgnoreReturnValue
-    default <T> ListenableFuture<T> invokeMethod(MethodKey<T> methodKey) {
-        return invokeMethod(methodKey, ImmutableMap.of());
-    }
 
     /**
      * Invokes a given method with named arguments specified in a {@link Map}.
@@ -760,76 +656,30 @@ public interface FunctionalEndpoint {
     <T> void unregisterPropertyListener(PropertyKey<T> key, PropertyListener<T> listener);
 
     /**
-     * Registers a {@link StateListener} to receive asynchronous notifications when any "state"
-     * property has changed.
+     * Registers a {@link SectionListener} to receive asynchronous notifications when any
+     * property in the given section has changed.
      *
      * @param executor the executor to use when making calls to the listener
+     * @param section the section to monitor for changes.
      * @param listener the listener to call when the "state" has changed
-     * @see #unregisterStateListener(StateListener)
+     * @see #unregisterSectionListener(SectionListener)
      * @see #unregisterAllListeners()
      */
-    void registerStateListener(Executor executor, StateListener listener);
+    void registerSectionListener(Executor executor, Splot.Section section, SectionListener listener);
 
     /**
-     * Unregisters a previously registered {@link StateListener}. Once unregistered, changes to
-     * "state" property values will no longer result in calls to the given listener.
+     * Unregisters a previously registered {@link SectionListener}. Once unregistered, changes to
+     * property values in the section the lister was registered in will no longer result in calls
+     * to the given listener.
      *
-     * <p>If the listener is not currently registered for the given key or the listener is <code>
-     * null</code>, then calling this method will do nothing.
+     * <p>If the listener is not currently registered or the listener is <code>null</code>, then
+     * calling this method will do nothing.
      *
      * @param listener the listener to unregister
-     * @see #registerStateListener(Executor, StateListener)
+     * @see #registerSectionListener(Executor, Splot.Section, SectionListener)
      * @see #unregisterAllListeners()
      */
-    void unregisterStateListener(StateListener listener);
-
-    /**
-     * Registers a {@link ConfigListener} to receive asynchronous notifications when any "config"
-     * property has changed.
-     *
-     * @param executor the executor to use when making calls to the listener
-     * @param listener the listener to call when the "config" has changed
-     * @see #unregisterConfigListener(ConfigListener)
-     * @see #unregisterAllListeners()
-     */
-    void registerConfigListener(Executor executor, ConfigListener listener);
-
-    /**
-     * Unregisters a previously registered {@link ConfigListener}. Once unregistered, changes to
-     * "config" property values will no longer result in calls to the given listener.
-     *
-     * <p>If the listener is not currently registered for the given key or the listener is <code>
-     * null</code>, then calling this method will do nothing.
-     *
-     * @param listener the listener to unregister
-     * @see #registerConfigListener(Executor, ConfigListener)
-     * @see #unregisterAllListeners()
-     */
-    void unregisterConfigListener(ConfigListener listener);
-
-    /**
-     * Registers a {@link MetadataListener} to receive asynchronous notifications when any
-     * "metadata" property has changed.
-     *
-     * @param executor the executor to use when making calls to the listener
-     * @param listener the listener to call when the "metadata" has changed
-     * @see #unregisterMetadataListener(MetadataListener)
-     * @see #unregisterAllListeners()
-     */
-    void registerMetadataListener(Executor executor, MetadataListener listener);
-
-    /**
-     * Unregisters a previously registered {@link MetadataListener}. Once unregistered, changes to
-     * "metadata" property values will no longer result in calls to the given listener.
-     *
-     * <p>If the listener is not currently registered for the given key or the listener is <code>
-     * null</code>, then calling this method will do nothing.
-     *
-     * @param listener the listener to unregister
-     * @see #registerMetadataListener(Executor,MetadataListener)
-     * @see #unregisterAllListeners()
-     */
-    void unregisterMetadataListener(MetadataListener listener);
+    void unregisterSectionListener(SectionListener listener);
 
     /**
      * Registers a listener for children being added or removed.
@@ -861,9 +711,7 @@ public interface FunctionalEndpoint {
      *
      * @see #registerChildListener(Executor, ChildListener, String)
      * @see #registerPropertyListener(Executor, PropertyKey, PropertyListener)
-     * @see #registerMetadataListener(Executor, MetadataListener)
-     * @see #registerStateListener(Executor, StateListener)
-     * @see #registerConfigListener(Executor, ConfigListener)
+     * @see #registerSectionListener(Executor, Splot.Section, SectionListener)
      */
     void unregisterAllListeners();
 

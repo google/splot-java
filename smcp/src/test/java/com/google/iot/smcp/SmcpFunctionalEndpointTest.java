@@ -145,34 +145,34 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
                             URI.create("loop://localhost/1/"));
 
             assertEquals(
-                    localFe.fetchState().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchState().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchConfig().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchConfig().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS));
 
             assertEquals(
-                    localFe.fetchState().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchState().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchConfig().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchConfig().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS));
 
             assertEquals(
-                    localFe.fetchState().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchState().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.STATE).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchMetadata().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.METADATA).get(500, TimeUnit.MILLISECONDS));
             assertEquals(
-                    localFe.fetchConfig().get(500, TimeUnit.MILLISECONDS),
-                    remoteFe.fetchConfig().get(500, TimeUnit.MILLISECONDS));
+                    localFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS),
+                    remoteFe.fetchSection(Splot.Section.CONFIG).get(500, TimeUnit.MILLISECONDS));
         } catch (Throwable x) {
             dumpLogs();
             throw x;
@@ -650,12 +650,12 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         assertNotNull(remoteFe);
 
-        StateListener stateListener = mock(StateListener.class);
+        SectionListener stateListener = mock(SectionListener.class);
 
-        remoteFe.registerStateListener(mExecutor, stateListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.STATE, stateListener);
 
         // Multiple invocations with the same listener shouldn't cause problems.
-        remoteFe.registerStateListener(mExecutor, stateListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.STATE, stateListener);
 
         tick(10);
 
@@ -666,10 +666,10 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         tick(500);
 
-        verify(stateListener, times(1)).onStateChanged(remoteFe, localFe.copyCachedState());
+        verify(stateListener, times(1)).onSectionChanged(remoteFe, localFe.copyCachedSection(Splot.Section.STATE));
         clearInvocations(stateListener);
 
-        remoteFe.unregisterStateListener(stateListener);
+        remoteFe.unregisterSectionListener(stateListener);
 
         tick(10);
 
@@ -677,7 +677,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         tick(500);
 
-        verify(stateListener, never()).onStateChanged(remoteFe, localFe.copyCachedState());
+        verify(stateListener, never()).onSectionChanged(remoteFe, localFe.copyCachedSection(Splot.Section.STATE));
 
         tick(10);
     }
@@ -702,12 +702,12 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         assertNotNull(remoteFe);
 
-        MetadataListener metadataListener = mock(MetadataListener.class);
+        SectionListener metadataListener = mock(SectionListener.class);
 
-        remoteFe.registerMetadataListener(mExecutor, metadataListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.METADATA, metadataListener);
 
         // Multiple invocations with the same listener shouldn't cause problems.
-        remoteFe.registerMetadataListener(mExecutor, metadataListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.METADATA, metadataListener);
 
         tick(10);
 
@@ -719,10 +719,10 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
         tick(10);
 
         verify(metadataListener, times(1))
-                .onMetadataChanged(remoteFe, localFe.copyCachedMetadata());
+                .onSectionChanged(remoteFe, localFe.copyCachedSection(Splot.Section.METADATA));
         clearInvocations(metadataListener);
 
-        remoteFe.unregisterMetadataListener(metadataListener);
+        remoteFe.unregisterSectionListener(metadataListener);
 
         tick(10);
 
@@ -730,7 +730,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         tick(10);
 
-        verify(metadataListener, never()).onMetadataChanged(remoteFe, localFe.copyCachedMetadata());
+        verify(metadataListener, never()).onSectionChanged(remoteFe, localFe.copyCachedSection(Splot.Section.METADATA));
 
         tick(10);
     }
@@ -755,12 +755,12 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         assertNotNull(remoteFe);
 
-        ConfigListener configListener = mock(ConfigListener.class);
+        SectionListener configListener = mock(SectionListener.class);
 
-        remoteFe.registerConfigListener(mExecutor, configListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.CONFIG, configListener);
 
         // Multiple invocations with the same listener shouldn't cause problems.
-        remoteFe.registerConfigListener(mExecutor, configListener);
+        remoteFe.registerSectionListener(mExecutor, Splot.Section.CONFIG, configListener);
 
         final PropertyKey<Float> propertyKey = OnOffTrait.CONF_DURATION_ON;
 
@@ -773,10 +773,10 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         tick(10);
 
-        verify(configListener, times(1)).onConfigChanged(remoteFe, localFe.copyCachedConfig());
+        verify(configListener, times(1)).onSectionChanged(remoteFe, localFe.copyCachedSection(Splot.Section.CONFIG));
         clearInvocations(configListener);
 
-        remoteFe.unregisterConfigListener(configListener);
+        remoteFe.unregisterSectionListener(configListener);
 
         tick(10);
 
@@ -784,7 +784,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         tick(10);
 
-        verify(configListener, never()).onConfigChanged(any(), any());
+        verify(configListener, never()).onSectionChanged(any(), any());
 
         tick(10);
     }

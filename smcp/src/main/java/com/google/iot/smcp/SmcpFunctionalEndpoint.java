@@ -40,9 +40,9 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     private final Client mClient;
     final SmcpTechnology mTechnology;
-    private final Map<StateListener, Executor> mStateListenerMap = new ConcurrentHashMap<>();
-    private final Map<ConfigListener, Executor> mConfigListenerMap = new ConcurrentHashMap<>();
-    private final Map<MetadataListener, Executor> mMetadataListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mStateListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mConfigListenerMap = new ConcurrentHashMap<>();
+    private final Map<SectionListener, Executor> mMetadataListenerMap = new ConcurrentHashMap<>();
     private final Map<PropertyKey, Transaction> mPropertyObserverMap = new ConcurrentHashMap<>();
     private final Map<PropertyKey, Set<PropertyListenerEntry>> mPropertyListenerMap =
             new ConcurrentHashMap<>();
@@ -230,7 +230,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     }
 
                     if (response.getCode() == Code.RESPONSE_NOT_FOUND) {
-                        throw new PropertyNotFoundException(content);
+                        throw new PropertyNotFoundException(content + " " + key);
                     } else if (response.getCode() == Code.RESPONSE_METHOD_NOT_ALLOWED) {
                         throw new PropertyReadOnlyException(content);
                     } else {
@@ -261,11 +261,12 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         return Futures.immediateFailedFuture(new SmcpRuntimeException("Method not implemented"));
     }
 
-    private ListenableFuture<Map<String, Object>> fetchSection(String section, Modifier ... modifiers) {
+    @Override
+    public ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier... mods) {
         final Transaction transaction;
-        String path = section + "/";
-        if (modifiers.length > 0) {
-            path += "?" + Modifier.convertToQuery(modifiers);
+        String path = section.name + "/";
+        if (mods.length > 0) {
+            path += "?" + Modifier.convertToQuery(mods);
         }
         RequestBuilder requestBuilder =
                 mClient.newRequestBuilder()
@@ -285,7 +286,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     try {
                         collapsed =
                                 Utils.collapseSectionToOneLevelMap(
-                                        Utils.getMapFromPayload(response), section);
+                                        Utils.getMapFromPayload(response), section.name);
 
                     } catch (BadRequestException e) {
                         throw new SmcpException("Invalid response", e.getCause());
@@ -294,17 +295,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                         throw new SmcpException("Unexpected ContentType in response", e);
                     }
 
-                    switch (section) {
-                        case Splot.SECTION_STATE:
-                            receivedUpdateForState(collapsed);
-                            break;
-                        case Splot.SECTION_METADATA:
-                            receivedUpdateForMetadata(collapsed);
-                            break;
-                        case Splot.SECTION_CONFIG:
-                            receivedUpdateForConfig(collapsed);
-                            break;
-                    }
+                    receivedUpdateForSection(section, collapsed);
                     set(collapsed);
 
                 } else {
@@ -313,21 +304,6 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 }
             }
         };
-    }
-
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchState(Modifier ... modifiers) {
-        return fetchSection(Splot.SECTION_STATE, modifiers);
-    }
-
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchConfig() {
-        return fetchSection(Splot.SECTION_CONFIG, Modifier.EMPTY_LIST);
-    }
-
-    @Override
-    public ListenableFuture<Map<String, Object>> fetchMetadata() {
-        return fetchSection(Splot.SECTION_METADATA, Modifier.EMPTY_LIST);
     }
 
     <T> void updateCachedPropertyValue(PropertyKey<T> key, @Nullable T value) {
@@ -384,32 +360,26 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public Map<String, Object> copyCachedState() {
-        final HashMap<String, Object> map = mStateCache;
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (map) {
-            // We synchronize here because there may be smaller
-            // updates to the cache that don't replace the entire
-            // map.
-            return new HashMap<>(map);
-        }
-    }
+    public Map<String, Object> copyCachedSection(Section section) {
+        final HashMap<String, Object> map;
 
-    @Override
-    public Map<String, Object> copyCachedConfig() {
-        final HashMap<String, Object> map = mConfigCache;
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (map) {
-            // We synchronize here because there may be smaller
-            // updates to the cache that don't replace the entire
-            // map.
-            return new HashMap<>(map);
-        }
-    }
+        switch (section) {
+            case STATE:
+                map = mStateCache;
+                break;
 
-    @Override
-    public Map<String, Object> copyCachedMetadata() {
-        final HashMap<String, Object> map = mMetadataCache;
+            case CONFIG:
+                map = mConfigCache;
+                break;
+
+            case METADATA:
+                map = mMetadataCache;
+                break;
+
+            default:
+                throw new AssertionError("Bad section " + section);
+        }
+
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (map) {
             // We synchronize here because there may be smaller
@@ -749,52 +719,80 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
     }
 
-    private void receivedUpdateForState(Map<String, Object> collapsed) {
-        mStateCache = new HashMap<>(collapsed);
+    private void receivedUpdateForSection(Splot.Section section, Map<String, Object> collapsed) {
+        switch (section) {
+            case STATE:
+                mStateCache = new HashMap<>(collapsed);
 
-        mStateListenerMap.forEach(
-                (listener, exec) -> exec.execute(() -> listener.onStateChanged(this, collapsed)));
-    }
+                mStateListenerMap.forEach(
+                        (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, collapsed)));
+                break;
 
-    private void receivedUpdateForConfig(Map<String, Object> collapsed) {
-        mConfigCache = new HashMap<>(collapsed);
+            case CONFIG:
+                mConfigCache = new HashMap<>(collapsed);
 
-        mConfigListenerMap.forEach(
-                (listener, exec) -> exec.execute(() -> listener.onConfigChanged(this, collapsed)));
-    }
+                mConfigListenerMap.forEach(
+                        (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, collapsed)));
+                break;
 
-    private void receivedUpdateForMetadata(Map<String, Object> collapsed) {
-        mMetadataCache = new HashMap<>(collapsed);
+            case METADATA:
+                mMetadataCache = new HashMap<>(collapsed);
 
-        mMetadataListenerMap.forEach(
-                (listener, exec) ->
-                        exec.execute(() -> listener.onMetadataChanged(this, collapsed)));
+                mMetadataListenerMap.forEach(
+                        (listener, exec) ->
+                                exec.execute(() -> listener.onSectionChanged(this, collapsed)));
+                break;
+        }
     }
 
     @Override
-    public void registerStateListener(Executor executor, StateListener listener) {
-        synchronized (mStateListenerMap) {
-            mStateListenerMap.put(listener, executor);
+    public void registerSectionListener(Executor executor, Section section, SectionListener listener) {
+        final Map<SectionListener, Executor> listenerMap;
+        Transaction observer;
 
-            if (mStateListenerMap.size() == 1) {
+        switch (section) {
+            case STATE:
+                listenerMap = mStateListenerMap;
+                observer = mStateObserver;
+                break;
+
+            case CONFIG:
+                listenerMap = mConfigListenerMap;
+                observer = mConfigObserver;
+                break;
+
+            case METADATA:
+                listenerMap = mMetadataListenerMap;
+                observer = mMetadataObserver;
+                break;
+
+            default:
+                throw new AssertionError("Bad section " + section);
+        }
+
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (listenerMap) {
+            listenerMap.put(listener, executor);
+
+            if (listenerMap.size() == 1) {
                 // This was the first state listener, so we need to
                 // set up a new observer.
 
-                if (mStateObserver != null) {
+                if (observer != null) {
                     // Cancel any stale observer.
-                    mStateObserver.cancel();
-                    mStateObserver = null;
+                    observer.cancel();
+                    observer = null;
                 }
 
-                mStateObserver =
+                observer =
                         mClient.newRequestBuilder()
-                                .changePath(Splot.SECTION_STATE + "/")
+                                .changePath(section.name + "/")
                                 .addOption(Option.OBSERVE)
                                 .setOmitUriHostPortOptions(true)
                                 .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
                                 .send();
 
-                mStateObserver.registerCallback(
+                observer.registerCallback(
                         new Transaction.Callback() {
                             @Override
                             public void onTransactionResponse(
@@ -808,8 +806,8 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                     collapsed =
                                             Utils.collapseSectionToOneLevelMap(
                                                     Utils.getMapFromPayload(response),
-                                                    Splot.SECTION_STATE);
-                                    receivedUpdateForState(collapsed);
+                                                    section.name);
+                                    receivedUpdateForSection(section, collapsed);
 
                                 } catch (ResponseException | SmcpException e) {
                                     LOGGER.warning(
@@ -820,12 +818,29 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                 }
                             }
                         });
+
+                switch (section) {
+                    case STATE:
+                        mStateObserver = observer;
+                        break;
+
+                    case CONFIG:
+                        mConfigObserver = observer;
+                        break;
+
+                    case METADATA:
+                        mMetadataObserver = observer;
+                        break;
+
+                    default:
+                        throw new AssertionError("Bad section " + section);
+                }
             }
         }
     }
 
     @Override
-    public void unregisterStateListener(StateListener listener) {
+    public void unregisterSectionListener(SectionListener listener) {
         synchronized (mStateListenerMap) {
             mStateListenerMap.remove(listener);
 
@@ -834,62 +849,6 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 mStateObserver = null;
             }
         }
-    }
-
-    @Override
-    public void registerConfigListener(Executor executor, ConfigListener listener) {
-        synchronized (mConfigListenerMap) {
-            mConfigListenerMap.put(listener, executor);
-
-            if (mConfigListenerMap.size() == 1) {
-                // This was the first Config listener, so we need to
-                // set up a new observer.
-
-                if (mConfigObserver != null) {
-                    // Cancel any stale observer.
-                    mConfigObserver.cancel();
-                    mConfigObserver = null;
-                }
-
-                mConfigObserver =
-                        mClient.newRequestBuilder()
-                                .changePath(Splot.SECTION_CONFIG + "/")
-                                .addOption(Option.OBSERVE)
-                                .setOmitUriHostPortOptions(true)
-                                .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
-                                .send();
-
-                mConfigObserver.registerCallback(
-                        new Transaction.Callback() {
-                            @Override
-                            public void onTransactionResponse(
-                                    LocalEndpoint endpoint, Message response) {
-                                if (response.getCode() != Code.RESPONSE_CONTENT) {
-                                    LOGGER.warning("Unexpected message code: " + response);
-                                    return;
-                                }
-                                try {
-                                    final Map<String, Object> collapsed;
-                                    collapsed =
-                                            Utils.collapseSectionToOneLevelMap(
-                                                    Utils.getMapFromPayload(response),
-                                                    Splot.SECTION_CONFIG);
-                                    receivedUpdateForConfig(collapsed);
-                                } catch (ResponseException | SmcpException e) {
-                                    LOGGER.warning(
-                                            "Unable to parse message: "
-                                                    + response
-                                                    + ", threw exception "
-                                                    + e);
-                                }
-                            }
-                        });
-            }
-        }
-    }
-
-    @Override
-    public void unregisterConfigListener(ConfigListener listener) {
         synchronized (mConfigListenerMap) {
             mConfigListenerMap.remove(listener);
 
@@ -898,62 +857,6 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 mConfigObserver = null;
             }
         }
-    }
-
-    @Override
-    public void registerMetadataListener(Executor executor, MetadataListener listener) {
-        synchronized (mMetadataListenerMap) {
-            mMetadataListenerMap.put(listener, executor);
-
-            if (mMetadataListenerMap.size() == 1) {
-                // This was the first Metadata listener, so we need to
-                // set up a new observer.
-
-                if (mMetadataObserver != null) {
-                    // Cancel any stale observer.
-                    mMetadataObserver.cancel();
-                    mMetadataObserver = null;
-                }
-
-                mMetadataObserver =
-                        mClient.newRequestBuilder()
-                                .changePath(Splot.SECTION_METADATA + "/")
-                                .addOption(Option.OBSERVE)
-                                .setOmitUriHostPortOptions(true)
-                                .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
-                                .send();
-
-                mMetadataObserver.registerCallback(
-                        new Transaction.Callback() {
-                            @Override
-                            public void onTransactionResponse(
-                                    LocalEndpoint endpoint, Message response) {
-                                if (response.getCode() != Code.RESPONSE_CONTENT) {
-                                    LOGGER.warning("Unexpected message code: " + response);
-                                    return;
-                                }
-                                try {
-                                    final Map<String, Object> collapsed;
-                                    collapsed =
-                                            Utils.collapseSectionToOneLevelMap(
-                                                    Utils.getMapFromPayload(response),
-                                                    Splot.SECTION_METADATA);
-                                    receivedUpdateForMetadata(collapsed);
-                                } catch (ResponseException | SmcpException e) {
-                                    LOGGER.warning(
-                                            "Unable to parse message: "
-                                                    + response
-                                                    + ", threw exception "
-                                                    + e);
-                                }
-                            }
-                        });
-            }
-        }
-    }
-
-    @Override
-    public void unregisterMetadataListener(MetadataListener listener) {
         synchronized (mMetadataListenerMap) {
             mMetadataListenerMap.remove(listener);
 
@@ -1003,6 +906,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
             protected void onTransactionResponse(LocalEndpoint endpoint, Message response) {
                 if (response.getCode() == Code.RESPONSE_DELETED) {
                     set(true);
+                    unregisterAllListeners();
                 } else {
                     String content = Code.toString(response.getCode());
                     if (response.isPayloadAscii()) {
