@@ -58,7 +58,7 @@ public final class AutomationTimerTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * The number of seconds until the timer fires next. This value is not cacheable.
@@ -66,7 +66,7 @@ public final class AutomationTimerTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_NEXT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "next", Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "next", Float.class);
 
     /**
      * Flag indicating if the timer is running or not. Setting this to false will disarm the timer.
@@ -80,7 +80,7 @@ public final class AutomationTimerTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Boolean> STAT_RUNNING =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "run", Boolean.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "run", Boolean.class);
 
     /**
      * Schedule program. This RPN expression is used to calculate the number of seconds until
@@ -129,7 +129,7 @@ public final class AutomationTimerTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<String> CONF_SCHEDULE_PROGRAM =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "schd", String.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "schd", String.class);
 
     /**
      * Predicate program. This program is evaluated whenever the timer expires. If the
@@ -182,7 +182,7 @@ public final class AutomationTimerTrait {
      */
     @Property
     public static final PropertyKey<String> CONF_PREDICATE_PROGRAM =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "pred", String.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "pred", String.class);
 
     /**
      * Auto restart flag. If this flag is true, then the timer will automatically restart after
@@ -192,7 +192,7 @@ public final class AutomationTimerTrait {
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Boolean> CONF_AUTO_RESET =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "arst", Boolean.class);
+                    Section.CONFIG, TRAIT_ID, "arst", Boolean.class);
 
     /**
      * Auto delete flag.
@@ -208,7 +208,7 @@ public final class AutomationTimerTrait {
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Boolean> CONF_AUTO_DELETE =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "adel", Boolean.class);
+                    Section.CONFIG, TRAIT_ID, "adel", Boolean.class);
 
     /**
      * Method for resetting the timer. Calling this method will always restart the timer,

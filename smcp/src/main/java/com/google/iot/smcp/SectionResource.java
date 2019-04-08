@@ -25,7 +25,6 @@ import com.google.iot.m2m.local.SectionResourceLink;
 import com.google.iot.m2m.trait.TransitionTrait;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,12 +46,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
     private static final Logger LOGGER = Logger.getLogger(SectionResource.class.getCanonicalName());
 
     private final FunctionalEndpoint mFe;
-    private final Splot.Section mSection;
+    private final Section mSection;
     private final ResourceLink<Map<String,Map<String,Object>>> mResourceLink;
     private final Executor mExecutor;
-    private int mMaxAge = 30;
+    private int mMaxAge;
 
-    SectionResource(FunctionalEndpoint fe, Splot.Section section, Executor executor) {
+    SectionResource(FunctionalEndpoint fe, Section section, Executor executor) {
         mFe = fe;
         mSection = section;
         mExecutor = executor;
@@ -70,14 +69,16 @@ class SectionResource extends Resource<InboundRequestHandler> {
                     }
         });
 
-        if (Splot.Section.STATE.equals(mSection)) {
-            mMaxAge = 30;
-
-        } else if (Splot.Section.METADATA.equals(mSection)) {
-            mMaxAge = 60 * 10;
-
-        } else if (Splot.Section.CONFIG.equals(mSection)) {
-            mMaxAge = 60 * 60;
+        switch (mSection) {
+            case STATE:
+                mMaxAge = 30;
+                break;
+            case METADATA:
+                mMaxAge = 60 * 10;
+                break;
+            case CONFIG:
+                mMaxAge = 60 * 60;
+                break;
         }
     }
 
@@ -234,7 +235,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
             for (Modifier modifier : modifierList) {
                 if ((modifier instanceof Modifier.Duration)
-                        && Splot.Section.STATE.equals(mSection)) {
+                        && Section.STATE.equals(mSection)) {
                     // Duration modifier basically collapses to an additional parameter
                     // if we are the state section. It is ignored (like all other modifiers)
                     // if this is applied to any other section.
@@ -324,7 +325,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
                                     if (trailingSlash) {
                                         prefix = "";
                                     } else {
-                                        prefix = mSection.name + "/";
+                                        prefix = mSection.id + "/";
                                     }
 
                                     for (String traitKey : value.keySetAsStrings()) {
@@ -416,7 +417,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
     private void onTraitRequest(
             InboundRequest inboundRequest,
-            @SuppressWarnings("unused") Splot.Section section,
+            @SuppressWarnings("unused") Section section,
             @SuppressWarnings("unused") String trait) {
         if (DEBUG) LOGGER.info("onTraitRequest " + inboundRequest.getMessage());
         // TODO: Writeme!
@@ -426,8 +427,8 @@ class SectionResource extends Resource<InboundRequestHandler> {
     private final ConcurrentMap<String, Observable> mPropertyObservables =
             new ConcurrentHashMap<>();
 
-    private Observable getObservableForProp(Splot.Section section, String trait, String prop) {
-        String propString = section.name + "/" + trait + "/" + prop;
+    private Observable getObservableForProp(Section section, String trait, String prop) {
+        String propString = section.id + "/" + trait + "/" + prop;
 
         return mPropertyObservables.computeIfAbsent(
                 propString,
@@ -462,12 +463,12 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private boolean handleObservable(
-            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
+            InboundRequest inboundRequest, Section section, String trait, String prop) {
         return getObservableForProp(section, trait, prop).handleInboundRequest(inboundRequest);
     }
 
     private void onPropRequest(
-            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
+            InboundRequest inboundRequest, Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropRequest " + request);
 
@@ -487,11 +488,10 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private void onPropPostRequest(
-            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
+            InboundRequest inboundRequest, Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropPostRequest " + request);
 
-        List<String> query = request.getOptionSet().getUriQueries();
         Object content;
 
         try {
@@ -544,7 +544,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
                 return;
             }
 
-            future = mFe.addValueToProperty(key, content, modifierList);
+            future = mFe.insertValueIntoProperty(key, content, modifierList);
 
         } else if (method instanceof Modifier.Remove) {
             PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
@@ -569,7 +569,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
     private void onPropPutRequest(
             InboundRequest inboundRequest,
-            @SuppressWarnings("unused") Splot.Section section,
+            @SuppressWarnings("unused") Section section,
             @SuppressWarnings("unused") String trait,
             @SuppressWarnings("unused") String prop) {
         if (DEBUG) LOGGER.info("onPropPutRequest " + inboundRequest.getMessage());
@@ -580,7 +580,7 @@ class SectionResource extends Resource<InboundRequestHandler> {
     }
 
     private void onPropGetRequest(
-            InboundRequest inboundRequest, Splot.Section section, String trait, String prop) {
+            InboundRequest inboundRequest, Section section, String trait, String prop) {
         Message request = inboundRequest.getMessage();
         if (DEBUG) LOGGER.info("onPropGetRequest " + request);
 

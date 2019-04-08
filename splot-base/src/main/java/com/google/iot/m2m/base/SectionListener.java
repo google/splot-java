@@ -19,17 +19,18 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
- * Interface for notifications of changes to a {@link FunctionalEndpoint}'s state properties.
+ * Interface for receiving notifications of changes to the properties of a {@link Section} in a
+ * {@link FunctionalEndpoint}.
  *
- * @see FunctionalEndpoint#registerSectionListener(Executor, Splot.Section, SectionListener)
+ * @see FunctionalEndpoint#registerSectionListener(Executor, Section, SectionListener)
  * @see FunctionalEndpoint#unregisterSectionListener(SectionListener)
  */
 public interface SectionListener {
     /**
-     * Called whenever the "state" of a {@link FunctionalEndpoint} has changed.
+     * Called whenever a section of a {@link FunctionalEndpoint} has changed.
      *
-     * @param fe the functional endpoint that is reporting the change of state
-     * @param state the current values of all of the properties in the state
+     * @param fe the functional endpoint that is reporting the change
+     * @param sectionValues the current values of all of the properties in the section
      */
-    void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> state);
+    void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> sectionValues);
 }

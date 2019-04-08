@@ -120,7 +120,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier[] modifiers) {
+        public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value, Modifier[] modifiers) {
             // Inserting values into properties in scenes isn't supported.
             return Futures.immediateFailedFuture(
                     new PropertyOperationUnsupportedException("Scenes only support get/set"));
@@ -155,7 +155,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier... mods) {
+        public ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier... mods) {
             return Futures.immediateFuture(copyCachedSection(section));
         }
 
@@ -174,12 +174,12 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public Map<String, Object> copyCachedSection(Splot.Section section) {
+        public Map<String, Object> copyCachedSection(Section section) {
             Map<String, Object> ret = new HashMap<>();
 
-            if (Splot.Section.STATE.equals(section)) {
+            if (Section.STATE.equals(section)) {
                 ret.putAll(mState);
-            } else if (Splot.Section.METADATA.equals(section)) {
+            } else if (Section.METADATA.equals(section)) {
                 BaseTrait.META_UID.putInMap(ret, mSceneId);
             }
             return ret;
@@ -219,7 +219,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public void registerSectionListener(Executor executor, Splot.Section section, SectionListener listener) {
+        public void registerSectionListener(Executor executor, Section section, SectionListener listener) {
             // We don't support section listeners.
         }
 
@@ -433,7 +433,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
      * @see #invokeMethod(MethodKey, TypedKeyValue[])
      */
     public final void saveCurrentStateToSceneId(String sceneId) {
-        Map<String, Object> state = copyCachedSection(Splot.Section.STATE);
+        Map<String, Object> state = copyCachedSection(Section.STATE);
 
         // Remove all properties that aren't persistent
         for (String keyName : new HashSet<>(state.keySet())) {

@@ -18,6 +18,7 @@ package com.google.iot.m2m.util;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -162,6 +163,24 @@ class IdentityTest {
     }
 
     @Test
+    void requireAny() {
+        assertEquals(Identity.DEFAULT, Identity.current());
+
+        Identity idFoobar = Identity.get("foobar");
+        Identity idBlah = Identity.get("blah");
+
+        idFoobar.execute(
+                () -> {
+                    assertThrows(SecurityException.class,
+                            ()->Identity.require(Arrays.asList(idBlah)));
+                    Identity.require(Arrays.asList(idBlah, idFoobar));
+                });
+
+        assertThrows(SecurityException.class,
+                ()->Identity.require(Arrays.asList(idBlah, idFoobar)));
+    }
+
+    @Test
     void exclude() {
         assertEquals(Identity.DEFAULT, Identity.current());
 
@@ -172,6 +191,7 @@ class IdentityTest {
                 () -> {
                     assertThrows(SecurityException.class, idFoobar::exclude);
                     idBlah.exclude();
+                    Identity.DEFAULT.exclude();
                 });
 
         idFoobar.exclude();
@@ -191,10 +211,66 @@ class IdentityTest {
                         () -> {
                             idFoobar.require();
                             idBlah.exclude();
+                            Identity.DEFAULT.exclude();
                             didRun.set(true);
                         });
 
         assertTrue(didRun.get());
+
+        assertEquals(Identity.DEFAULT, Identity.current());
+    }
+
+    @Test
+    void wrapScheduledExecutor() throws Exception {
+        assertEquals(Identity.DEFAULT, Identity.current());
+
+        Identity idFoobar = Identity.get("foobar");
+        Identity idBlah = Identity.get("blah");
+
+        AtomicBoolean didRun = new AtomicBoolean(false);
+
+        idFoobar.wrapExecutor(mExecutor)
+                .execute(
+                        () -> {
+                            idFoobar.require();
+                            idBlah.exclude();
+                            Identity.DEFAULT.exclude();
+                            didRun.set(true);
+                        });
+
+        assertTrue(didRun.get());
+
+        ScheduledExecutorService foobarExecutor = idFoobar.wrapExecutor(mExecutor);
+
+        foobarExecutor.submit(
+                () -> {
+                    idFoobar.require();
+                    idBlah.exclude();
+                    Identity.DEFAULT.exclude();
+                    didRun.set(true);
+                }).get();
+
+        foobarExecutor.schedule(
+                () -> {
+                    idFoobar.require();
+                    idBlah.exclude();
+                    Identity.DEFAULT.exclude();
+                    didRun.set(true);
+                },
+                10,
+                TimeUnit.MILLISECONDS).get();
+
+        assertEquals("yay",
+            foobarExecutor.schedule(
+                    () -> {
+                        idFoobar.require();
+                        idBlah.exclude();
+                        Identity.DEFAULT.exclude();
+                        didRun.set(true);
+                        return "yay";
+                    },
+                    10,
+                    TimeUnit.MILLISECONDS).get());
 
         assertEquals(Identity.DEFAULT, Identity.current());
     }

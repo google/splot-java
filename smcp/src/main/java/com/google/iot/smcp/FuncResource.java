@@ -50,7 +50,7 @@ class FuncResource extends Resource<TraitChildrenResource> {
     FuncResource(SmcpTechnology technology, FunctionalEndpoint fe) {
         mFe = fe;
         mTechnology = technology;
-        ListenableFuture<Map<String, Object>> future = mFe.fetchSection(Splot.Section.METADATA);
+        ListenableFuture<Map<String, Object>> future = mFe.fetchSection(Section.METADATA);
 
         future.addListener(
                 new Runnable() {

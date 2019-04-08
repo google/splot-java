@@ -20,7 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /**
  * The Transition trait describes a FE that supports smooth transitions for some of its state
@@ -52,7 +52,7 @@ public final class TransitionTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Transition duration, in seconds. When updated simultaneously with other state changes, it
@@ -65,7 +65,7 @@ public final class TransitionTrait {
      */
     @Property(READ_WRITE | REQUIRED | NO_SAVE)
     public static final PropertyKey<Float> STAT_DURATION =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "d", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "d", java.lang.Float.class);
 
     /**
      * Transition speed, in percentage of maximum speed. This is an alternative to specifying the
@@ -77,5 +77,5 @@ public final class TransitionTrait {
      */
     @Property(READ_WRITE | NO_SAVE)
     public static final PropertyKey<Float> STAT_SPEED =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "sp", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "sp", java.lang.Float.class);
 }

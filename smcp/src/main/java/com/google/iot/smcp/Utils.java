@@ -126,7 +126,7 @@ class Utils {
         return converted;
     }
 
-    static Map<String, Object> collapseSectionToOneLevelMap(Map<String, ?> payload, String section)
+    static Map<String, Object> collapseSectionToOneLevelMap(Map<String, ?> payload, String sectionId)
             throws SmcpException {
         final HashMap<String, Object> converted = new HashMap<>();
 
@@ -138,14 +138,14 @@ class Utils {
             }
             @SuppressWarnings("unchecked")
             Map<String, Object> traitMap = (Map<String, Object>) v;
-            traitMap.forEach((k2, v2) -> converted.put(section + "/" + k + "/" + k2, v2));
+            traitMap.forEach((k2, v2) -> converted.put(sectionId + "/" + k + "/" + k2, v2));
         }
 
         return converted;
     }
 
     static Map<String, Map<String, Object>> uncollapseSectionFromOneLevelMap(
-            Map<String, Object> properties, String section) throws SmcpException {
+            Map<String, Object> properties, String sectionId) throws SmcpException {
         Map<String, Map<String, Object>> ret = new HashMap<>();
 
         for (Map.Entry<String, ?> entry : properties.entrySet()) {
@@ -159,7 +159,7 @@ class Utils {
             }
 
             // Make sure the key is in the same section.
-            if (!section.equals(components[0])) {
+            if (!sectionId.equals(components[0])) {
                 throw new SmcpException("Key \"" + k + "\" is in the wrong section");
             }
 

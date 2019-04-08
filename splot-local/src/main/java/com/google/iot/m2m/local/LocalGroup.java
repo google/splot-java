@@ -335,8 +335,8 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier... mods) {
-        if (!Splot.Section.STATE.equals(section)) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier... mods) {
+        if (!Section.STATE.equals(section)) {
             // Treat every section other than STATE normally.
             return super.fetchSection(section, mods);
         }
@@ -452,16 +452,16 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value,
-                                                      Modifier ... modifiers) {
+    public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value,
+                                                           Modifier ... modifiers) {
         if (!key.isSectionState()) {
-            return super.addValueToProperty(key, value, modifiers);
+            return super.insertValueIntoProperty(key, value, modifiers);
         }
 
         LinkedList<ListenableFuture<?>> futures = new LinkedList<>();
 
         synchronized (mMembers) {
-            mMembers.forEach((fe) -> futures.add(fe.addValueToProperty(key, value, modifiers)));
+            mMembers.forEach((fe) -> futures.add(fe.insertValueIntoProperty(key, value, modifiers)));
         }
 
         return Futures.successfulAsList(futures);

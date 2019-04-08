@@ -23,11 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 class FilePersistentStateManagerTest {
+    private static final Logger LOGGER = Logger.getLogger(IdentityTest.class.getCanonicalName());
 
     private final ParamKey<String> PARAM_STRING_KEY =
             new ParamKey<>("PARAM_STRING_KEY", String.class);
@@ -529,6 +532,8 @@ class FilePersistentStateManagerTest {
     @Test
     void conversionFailure() throws Exception {
         File file = new File("temp.cbor");
+
+        LOGGER.info("The two \"SEVERE\" error lines below are expected for this test.");
 
         file.delete();
 

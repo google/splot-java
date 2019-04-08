@@ -19,8 +19,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Interface for discovering, interacting with, and hosting {@link FunctionalEndpoint
@@ -82,14 +82,14 @@ public interface Technology {
     /**
      * Prepares the technology to host local functional endpoints for use by other devices.
      *
-     * @throws IOException when there are problems opening the underlying sockets in preparation for
-     *     hosting.
+     * @throws IOException when there are problems opening the underlying sockets in preparation
+     *         for hosting.
      * @throws TechnologyCannotHostException if this technology does not support hosting
      */
     void prepareToHost() throws IOException, TechnologyCannotHostException;
 
     /**
-     * Get all functional endpoints hosted by this technology.
+     * Creates a new mutable set containing all functional endpoints hosted by this technology.
      *
      * @return a collection containing all of the functional endpoints hosted by this Technology
      *     instance.
@@ -114,10 +114,12 @@ public interface Technology {
             throws UnacceptableFunctionalEndpointException, TechnologyCannotHostException;
 
     /**
-     * Unhosts the given functional endpoint if it was previously hosted. If the given functional
-     * endpoint was not hosted by this technology, nothing happens. Calling this method will remove
-     * the functional endpoint from any groups associated with this technology. Any saved state
-     * about this functional endpoint that was stored by this technology will be forgotten.
+     * Unhosts the given functional endpoint if it was previously hosted.
+     *
+     * <p>If the given functional endpoint was not hosted by this technology, nothing happens.
+     * Calling this method will remove the functional endpoint from any groups associated with
+     * this technology. Any saved state about this functional endpoint that was stored by this
+     * technology will be forgotten.
      *
      * @param fe the functional endpoint to no longer host
      */
@@ -264,12 +266,129 @@ public interface Technology {
      * a absolute-path-only URL (No schema or authority). The format and scheme of the URI is native
      * (technology specific).
      *
+     * <p>Note that the returned URI is relative to this device/technology. If you intend to
+     * set this URI as a property value on a non-local FunctionalEndpoint, you must first
+     * change the URI to be relative to that FunctionalEndpoint using
+     * {@link #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)}.
+     *
      * @param fe The functional endpoint to obtain the URI of.
      * @return The URI for the given functional endpoint
      * @throws UnassociatedResourceException if the functional endpoint isn't associated with this
      *                                  technology
      */
     URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException;
+
+    /**
+     * Calculates the native URI that represents a specific property on the given
+     * {@link FunctionalEndpoint}, with optional {@link Modifier modifiers}.
+     *
+     * <p>The returned URI must be either an absolute URL (include schema and possibly authority) or
+     * a absolute-path-only URL (No schema or authority). The format and scheme of the URI is native
+     * (technology specific).
+     *
+     * <p>Note that the returned URI is relative to this device/technology. If you intend to
+     * set this URI as a property value on a non-local FunctionalEndpoint, you must first
+     * change the URI to be relative to that FunctionalEndpoint using
+     * {@link #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)}.
+     *
+     * @param fe the {@link FunctionalEndpoint} to generate the {@link URI} for.
+     * @param propertyKey the {@link PropertyKey} to generate the {@link URI} for.
+     * @param modifiers any {@link Modifier modifiers} to associate with this {@link URI}.
+     * @return a {@link URI} representing this specific property, including modifiers
+     * @throws UnassociatedResourceException If this FunctionalEndpoint isn't associated with this
+     *         technology.
+     * @see #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)
+     */
+    URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey,
+                                Modifier ... modifiers) throws UnassociatedResourceException;
+
+    /**
+     * Calculated the native URI that represents a {@link Section} on the given FunctionalEndpoint,
+     * with optional modifiers.
+     *
+     * <p>The returned URI must be either an absolute URL (include schema and possibly authority) or
+     * a absolute-path-only URL (No schema or authority). The format and scheme of the URI is native
+     * (technology specific).
+     *
+     * <p>Note that the returned URI is relative to this device/technology. If you intend to
+     * set this URI as a property value on a non-local FunctionalEndpoint, you must first
+     * change the URI to be relative to that FunctionalEndpoint using
+     * {@link #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)}.
+     *
+     * @param fe the {@link FunctionalEndpoint} to generate the {@link URI} for.
+     * @param section the {@link Section} to generate the {@link URI} for.
+     * @param modifiers any {@link Modifier modifiers} to associate with this {@link URI}.
+     * @return a {@link URI} representing this specific property, including modifiers
+     * @throws UnassociatedResourceException If this {@link FunctionalEndpoint} isn't associated
+     *         with this technology.
+     * @see #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)
+     */
+    URI getNativeUriForSection(FunctionalEndpoint fe, Section section,
+                               Modifier ... modifiers) throws UnassociatedResourceException;
+
+    /**
+     * Converts the given {@link URI} that is relative to this Technology to be relative to the
+     * given {@link FunctionalEndpoint}. The returned URI may then be set as a property value
+     * on the given {@link FunctionalEndpoint}.
+     *
+     * <h3>Default Implementation Details</h3>
+     *
+     * <p>The default implementation of this method will return the URI unchanged in either
+     * of the following two cases:
+     *
+     * <ul>
+     *     <li>URI is absolute, including scheme component</li>
+     *     <li>URI is a local absolute path AND {@link Technology#isHosted(FunctionalEndpoint)}
+     *     isHosted(fe)} returns {@code true}</li>
+     * </ul>
+     *
+     * <p>In the second case:
+     *
+     * <ul>
+     *     <li>If the URI is not a local absolute path with no scheme, {@link UnknownResourceException} is thrown.</li>
+     *     <li>If {@code isHosted(fe)} returns false, then {@link UnassociatedResourceException} is thrown.</li>
+     * </ul>
+     *
+     * @param fe The FunctionalEndpoint to convert the URI to be relative to.
+     * @param uri The URI to convert.
+     * @return a URI that is relative to the given FunctionalEndpoint.
+     * @throws UnassociatedResourceException if the given FunctionalEndpoint is not associated
+     *         with this Technology.
+     * @throws UnknownResourceException if the given URI can't be converted.
+     */
+    default URI getRelativeUriForFunctionalEndpoint(FunctionalEndpoint fe, URI uri)
+            throws UnknownResourceException, UnassociatedResourceException {
+        if (!uri.isAbsolute()) {
+            if (uri.getPath() != null && uri.getPath().charAt(0) != '/') {
+                throw new UnknownResourceException("Default implementation of " +
+                        "getRelativeUriForFunctionalEndpoint can not convert relative local paths");
+            }
+
+            if (!isHosted(fe)) {
+                throw new UnassociatedResourceException("Default implementation of " +
+                        "getRelativeUriForFunctionalEndpoint can only handle hosted " +
+                        "Functional Endpoints.");
+            }
+
+            return uri;
+        }
+
+        URI feUri = getNativeUriForFunctionalEndpoint(fe);
+
+        try {
+            if (Objects.equals(uri.getScheme(), feUri.getScheme())
+                    && Objects.equals(uri.getAuthority(), feUri.getAuthority())) {
+                return new URI(null, null,
+                        uri.getPath(), uri.getQuery(), uri.getFragment());
+            }
+
+        } catch (URISyntaxException e) {
+            // This shouldn't really happen.
+            throw new TechnologyRuntimeException(e);
+        }
+
+        return uri;
+    }
 
     /** Returns a new instance of a builder object for constructing DiscoveryTask objects. */
     DiscoveryBuilder createDiscoveryQueryBuilder();
@@ -314,8 +433,4 @@ public interface Technology {
     default Collection<Group> copyHostedGroups() {
         return new LinkedList<>();
     }
-
-    URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException;
-
-    URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException;
 }

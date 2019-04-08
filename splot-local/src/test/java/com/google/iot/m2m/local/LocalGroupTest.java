@@ -255,7 +255,7 @@ public class LocalGroupTest extends TestBase {
         livingRoom.addMember(bulb1).get();
         livingRoom.addMember(bulb2).get();
         livingRoom
-                .addValueToProperty(
+                .insertValueIntoProperty(
                         GroupTrait.CONF_LOCAL_MEMBERS, bulb3.getCachedProperty(BaseTrait.META_UID))
                 .get();
 

@@ -130,7 +130,7 @@ public final class LocalTechnology
                         }
                         mHostedPathLookup.put(fe, Integer.toString(index));
 
-                        fe.fetchSection(Splot.Section.METADATA);
+                        fe.fetchSection(Section.METADATA);
 
                         synchronized (mGroups) {
                             mGroups.values()
@@ -331,7 +331,7 @@ public final class LocalTechnology
         }
     }
 
-    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+    public ResourceLink<Object> getResourceLinkForUri(URI uri) throws UnknownResourceException {
         synchronized (mResourceLinkCache) {
             WeakReference<ResourceLink<Object>> ref = mResourceLinkCache.get(uri);
             ResourceLink<Object> ret = ref != null ? ref.get() : null;
@@ -377,17 +377,18 @@ public final class LocalTechnology
         final FEParser parser = new FEParser(uri);
 
         if (parser.remainingComponents() == 4) {
-            final String section = parser.getRelativeComponent(1);
             final String trait = parser.getRelativeComponent(2);
             final String name = parser.getRelativeComponent(3);
+            final Section section;
 
             Modifier.Mutation method = null;
             ResourceLink<Object> ret;
             Modifier[] modifierList;
 
             try {
+                section = Section.fromId(parser.getRelativeComponent(1));
                 modifierList = convertFromQuery(uri.getQuery());
-            } catch(InvalidModifierListException x) {
+            } catch(InvalidModifierListException|InvalidSectionException x) {
                 throw new UnknownResourceException(x);
             }
 
@@ -443,10 +444,10 @@ public final class LocalTechnology
 
         // Resource link tracking a section
         if (parser.remainingComponents() == 2) {
-            final Splot.Section section;
+            final Section sectionId;
 
             try {
-                section = Splot.Section.fromName(parser.getRelativeComponent(1));
+                sectionId = Section.fromId(parser.getRelativeComponent(1));
 
             } catch (InvalidSectionException e) {
                 throw new UnknownResourceException(e);
@@ -454,7 +455,7 @@ public final class LocalTechnology
 
             @SuppressWarnings("unchecked")
             ResourceLink<Object> ret = ResourceLink.stripType(
-                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, section, uri),
+                    (ResourceLink) SectionResourceLink.createForSection(parser.mFe, sectionId, uri),
                     Map.class);
 
             return ret;
@@ -474,11 +475,11 @@ public final class LocalTechnology
     }
 
     @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForSection(FunctionalEndpoint fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
         if (modifiers.length == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/");
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/?" + Modifier.convertToQuery(modifiers));
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
         }
     }
 
@@ -750,7 +751,7 @@ public final class LocalTechnology
 
                         // We have a loop here for the sake of correctness.
                         do {
-                            groupId = FunctionalEndpoint.generateNewUid();
+                            groupId = Splot.generateNewUid();
                         } while (mGroups.containsKey(groupId));
 
                         return findOrCreateGroupWithId(groupId);

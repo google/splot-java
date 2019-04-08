@@ -52,15 +52,15 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
         Map<String, Object> map;
 
-        map = fe.fetchSection(Splot.Section.STATE).get();
+        map = fe.fetchSection(Section.STATE).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("State: " + map);
 
-        map = fe.fetchSection(Splot.Section.CONFIG).get();
+        map = fe.fetchSection(Section.CONFIG).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("Config: " + map);
 
-        map = fe.fetchSection(Splot.Section.METADATA).get();
+        map = fe.fetchSection(Section.METADATA).get();
         assertNotNull(map);
         if (DEBUG) LOGGER.info("Metadata: " + map);
     }

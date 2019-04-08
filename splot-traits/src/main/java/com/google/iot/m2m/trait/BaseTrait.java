@@ -16,8 +16,8 @@
 package com.google.iot.m2m.trait;
 
 import static com.google.iot.m2m.annotation.Property.*;
-import static com.google.iot.m2m.base.Splot.SECTION_METADATA;
-import static com.google.iot.m2m.base.Splot.SECTION_STATE;
+import static com.google.iot.m2m.base.Section.METADATA;
+import static com.google.iot.m2m.base.Section.STATE;
 
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
@@ -49,7 +49,7 @@ public final class BaseTrait {
         @Override
         public String onGetUid() {
             if (mUid == null) {
-                mUid = FunctionalEndpoint.generateNewUid();
+                mUid = Splot.generateNewUid();
             }
             return mUid;
         }
@@ -141,7 +141,7 @@ public final class BaseTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Administrative, human-readable name of the functional endpoint.
@@ -151,7 +151,7 @@ public final class BaseTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<String> META_NAME =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "name", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "name", java.lang.String.class);
 
     /**
      * Administrative unique identifier of the FE.
@@ -162,7 +162,7 @@ public final class BaseTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<String> META_UID =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "uid", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "uid", java.lang.String.class);
 
     /**
      * The localized names of the product.
@@ -174,7 +174,7 @@ public final class BaseTrait {
     @SuppressWarnings("unchecked")
     @Property(CONSTANT)
     public static final PropertyKey<Map<String, String>> META_PRODUCT_NAME =
-            new PropertyKey(SECTION_METADATA, TRAIT_ID, "prod", java.util.Map.class);
+            new PropertyKey(METADATA, TRAIT_ID, "prod", java.util.Map.class);
 
     /**
      * The model identifier for this functional endpoint, unique to the manufacturer.
@@ -184,7 +184,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String> META_MODEL =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "modl", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "modl", java.lang.String.class);
 
     /**
      * Manufacturer name.
@@ -194,7 +194,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String> META_MANUFACTURER =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "mfgr", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "mfgr", java.lang.String.class);
 
     /**
      * Software version description string.
@@ -204,7 +204,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String> META_SW_VERSION =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "sver", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "sver", java.lang.String.class);
 
     /**
      * Manufacturer unique-identifier/serial-number.
@@ -214,7 +214,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String> META_SERIAL =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "seri", java.lang.String.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "seri", java.lang.String.class);
 
     /**
      * Supported trait profiles.
@@ -226,7 +226,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String[]> META_TRAIT_PROFILES =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "prof", java.lang.String[].class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "prof", java.lang.String[].class);
 
     /**
      * Hidden flag.
@@ -236,7 +236,7 @@ public final class BaseTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<Boolean> META_HIDDEN =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "hide", java.lang.Boolean.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "hide", java.lang.Boolean.class);
 
     /**
      * Permanent flag.
@@ -246,7 +246,7 @@ public final class BaseTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<Boolean> META_PERMANENT =
-            new PropertyKey<>(SECTION_METADATA, TRAIT_ID, "perm", java.lang.Boolean.class);
+            new PropertyKey<>(METADATA, TRAIT_ID, "perm", java.lang.Boolean.class);
 
     /**
      * Current trap condition.
@@ -258,5 +258,5 @@ public final class BaseTrait {
      */
     @Property(READ_ONLY | NO_SAVE)
     public static final PropertyKey<String> STAT_TRAP =
-            new PropertyKey<>(SECTION_STATE, TRAIT_ID, "trap", java.lang.String.class);
+            new PropertyKey<>(STATE, TRAIT_ID, "trap", java.lang.String.class);
 }

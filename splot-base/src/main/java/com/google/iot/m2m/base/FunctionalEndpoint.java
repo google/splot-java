@@ -17,7 +17,7 @@ package com.google.iot.m2m.base;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import java.security.SecureRandom;
+
 import java.util.*;
 import java.util.concurrent.Executor;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -269,7 +269,7 @@ public interface FunctionalEndpoint {
      * @return a future that can be cancelled or monitored asynchronously for completion
      */
     @CanIgnoreReturnValue
-    <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers);
+    <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers);
 
     /**
      * Asynchronously removes the given value from a list/set property. If the value is not in the
@@ -390,8 +390,7 @@ public interface FunctionalEndpoint {
      * </ul>
      *
      * If such ambiguity is unacceptable, you will need to either use the {@link
-     * #fetchProperty} method or inspect the maps returned from {@link
-     * #copyCachedState()}, {@link #copyCachedConfig()}, and/or {@link #copyCachedMetadata()}.
+     * #fetchProperty} method or inspect the maps returned from {@link #copyCachedSection}.
      *
      * @param key the key for the property to fetch
      * @param <T> the type of the property (inferred from the key)
@@ -439,7 +438,7 @@ public interface FunctionalEndpoint {
      *     section (Can also be cancelled or monitored asynchronously for completion)
      */
     @CanIgnoreReturnValue
-    ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier ... mods);
+    ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier ... mods);
 
     /**
      * Synchronously return a {@link Map} containing the cached values of all of the properties
@@ -456,7 +455,7 @@ public interface FunctionalEndpoint {
      * @return a {@link Map} containing the cached values of all of the properties in the given
      *         section
      */
-    Map<String, Object> copyCachedSection(Splot.Section section);
+    Map<String, Object> copyCachedSection(Section section);
 
     /**
      * Asynchronously change the value of multiple properties at once.
@@ -665,7 +664,7 @@ public interface FunctionalEndpoint {
      * @see #unregisterSectionListener(SectionListener)
      * @see #unregisterAllListeners()
      */
-    void registerSectionListener(Executor executor, Splot.Section section, SectionListener listener);
+    void registerSectionListener(Executor executor, Section section, SectionListener listener);
 
     /**
      * Unregisters a previously registered {@link SectionListener}. Once unregistered, changes to
@@ -676,7 +675,7 @@ public interface FunctionalEndpoint {
      * calling this method will do nothing.
      *
      * @param listener the listener to unregister
-     * @see #registerSectionListener(Executor, Splot.Section, SectionListener)
+     * @see #registerSectionListener(Executor, Section, SectionListener)
      * @see #unregisterAllListeners()
      */
     void unregisterSectionListener(SectionListener listener);
@@ -711,27 +710,7 @@ public interface FunctionalEndpoint {
      *
      * @see #registerChildListener(Executor, ChildListener, String)
      * @see #registerPropertyListener(Executor, PropertyKey, PropertyListener)
-     * @see #registerSectionListener(Executor, Splot.Section, SectionListener)
+     * @see #registerSectionListener(Executor, Section, SectionListener)
      */
     void unregisterAllListeners();
-
-    /**
-     * {@hide} Generates a new 10-character random UID to be used with {@link
-     * com.google.iot.m2m.trait.BaseTrait#META_UID}.
-     */
-    static String generateNewUid() {
-        String uid;
-        SecureRandom random = new SecureRandom();
-
-        /* This loop just keeps calculating random base-64 strings
-         * until it finds one that doesn't include "+" or "/".
-         */
-        do {
-            byte[] bytes = new byte[8];
-            random.nextBytes(bytes);
-            uid = Base64.getEncoder().encodeToString(bytes).substring(0, 10);
-        } while (uid.contains("+") || uid.contains("/"));
-
-        return uid;
-    }
 }

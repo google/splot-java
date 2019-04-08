@@ -33,7 +33,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionState()
      */
     public static boolean isSectionState(String name) {
-        return name.startsWith(Splot.SECTION_STATE + "/");
+        return name.startsWith(Section.STATE.id + "/");
     }
 
     /**
@@ -44,7 +44,7 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionConfig()
      */
     public static boolean isSectionConfig(String name) {
-        return name.startsWith(Splot.SECTION_CONFIG + "/");
+        return name.startsWith(Section.CONFIG.id + "/");
     }
 
     /**
@@ -55,14 +55,14 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @see #isSectionMetadata()
      */
     public static boolean isSectionMetadata(String name) {
-        return name.startsWith(Splot.SECTION_METADATA + "/");
+        return name.startsWith(Section.METADATA.id + "/");
     }
 
     private final String mName;
 
     /**
-     * Constructs a property key object. Note that {@link #PropertyKey(String, String, String,
-     * Class)} is the preferred constructor to use.
+     * Constructs a property key object. Note that {@link #PropertyKey(Section, String,
+     * String, Class)} is the preferred constructor to use.
      *
      * @param fullName the full name of the property, in the form <code>
      *     &lt;SECTION&gt;/&lt;TRAIT-SHORT-ID&gt;/&lt;PROP-SHORT-ID&gt;</code>.
@@ -78,18 +78,14 @@ public final class PropertyKey<T> extends TypedKey<T> {
     /**
      * Preferred constructor for PropertyKey objects.
      *
-     * @param section the short name of the section this property is in. Can be one of {@link
-     *     Splot#SECTION_STATE}, {@link Splot#SECTION_CONFIG}, or {@link Splot#SECTION_METADATA}.
+     * @param section the section this property is in. Can be one of {@link Section#STATE},
+     *                {@link Section#CONFIG}, or {@link Section#METADATA}.
      * @param trait the short name of the trait that owns this property
      * @param shortName the short name of the property
      * @param type the class for the value that will be associated with this property.
      */
-    public PropertyKey(String section, String trait, String shortName, Class<T> type) {
-        this(section + "/" + trait + "/" + shortName, type);
-    }
-
-    public PropertyKey(Splot.Section section, String trait, String shortName, Class<T> type) {
-        this(section.name + "/" + trait + "/" + shortName, type);
+    public PropertyKey(Section section, String trait, String shortName, Class<T> type) {
+        this(section.id + "/" + trait + "/" + shortName, type);
     }
 
     /**
@@ -114,8 +110,8 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * @return true if the property is in the state section, false otherwise.
      * @see #isSectionState(String)
      */
-    public boolean isInSection(Splot.Section section) {
-        return mName.startsWith(section.name + "/");
+    public boolean isInSection(Section section) {
+        return mName.startsWith(section.id + "/");
     }
 
     /**

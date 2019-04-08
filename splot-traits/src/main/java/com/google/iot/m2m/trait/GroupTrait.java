@@ -21,7 +21,7 @@ import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /** Trait used by group functional endpoints. */
 @Trait
@@ -50,17 +50,17 @@ public final class GroupTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<String[]> CONF_LOCAL_MEMBERS =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "mbrl", java.lang.String[].class);
+                    Section.CONFIG, TRAIT_ID, "mbrl", java.lang.String[].class);
 
     @Property()
     public static final PropertyKey<String[]> CONF_REMOTE_MEMBERS =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "mbrr", java.lang.String[].class);
+                    Section.CONFIG, TRAIT_ID, "mbrr", java.lang.String[].class);
 
     /** Method parameter key for Group ID. */
     public static final ParamKey<String> PARAM_GROUP_ID =

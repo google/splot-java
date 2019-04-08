@@ -15,13 +15,11 @@
  */
 package com.google.iot.m2m.trait;
 
-import com.google.iot.m2m.annotation.Method;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
-import com.google.iot.m2m.base.MethodKey;
 import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 import java.net.URI;
 import java.util.Map;
@@ -57,7 +55,7 @@ public final class ActionsTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * The number of times this automation has "fired". This count may be reset by writing zero.
@@ -66,7 +64,7 @@ public final class ActionsTrait {
      */
     @Property(READ_ONLY | RESET)
     public static final PropertyKey<Integer> STAT_COUNT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "c", Integer.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "c", Integer.class);
 
     /**
      * The number of seconds ago that the actions last fired. This value is not cacheable.
@@ -74,7 +72,7 @@ public final class ActionsTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> STAT_LAST =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "last", Integer.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "last", Integer.class);
 
     /**
      * Actions to perform when this automation fires.
@@ -92,7 +90,7 @@ public final class ActionsTrait {
     @Property(READ_WRITE | REQUIRED)
     @SuppressWarnings("unchecked")
     public static final PropertyKey<Map<String, Object>[]> CONF_ACTIONS =
-            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "acti", Map[].class);
+            new PropertyKey(Section.CONFIG, TRAIT_ID, "acti", Map[].class);
 
     /**
      * Path for action.

@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
  * on it. Because of this, Local functional endpoints which use ResourceLinks need to
  * have a reference to the {@link Technology} that is hosting it.
  *
- * @see ResourceLinkManager#getResourceLinkForNativeUri(URI)
+ * @see ResourceLinkManager#getResourceLinkForUri(URI)
  */
 public abstract class ResourceLink<T> {
 

@@ -253,7 +253,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 }
 
                 // Go ahead and fetch to cache.
-                fe.fetchSection(Splot.Section.METADATA);
+                fe.fetchSection(Section.METADATA);
             }
         }
     }
@@ -395,11 +395,11 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException {
+    public ResourceLink<Object> getResourceLinkForUri(URI uri) throws UnknownResourceException {
         ResourceLink<Object> ret = null;
 
         if (uri.getScheme() == null) {
-            ret = mLocalTechnology.getResourceLinkForNativeUri(uri);
+            ret = mLocalTechnology.getResourceLinkForUri(uri);
 
         } else {
             WeakReference<ResourceLink<Object>> ref = mResourceLinkCache.get(uri);
@@ -439,11 +439,11 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, String section, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForSection(FunctionalEndpoint fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
         if (modifiers.length == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/");
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/");
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section + "/?" + Modifier.convertToQuery(modifiers));
+            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
         }
     }
 
@@ -481,7 +481,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
             // We have a loop here for the sake of correctness.
             do {
-                groupId = FunctionalEndpoint.generateNewUid();
+                groupId = Splot.generateNewUid();
             } while (mGroups.containsKey(groupId));
 
             return findOrCreateGroupWithId(groupId);

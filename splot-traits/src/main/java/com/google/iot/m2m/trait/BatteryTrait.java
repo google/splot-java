@@ -21,7 +21,7 @@ import static com.google.iot.m2m.annotation.Property.REQUIRED;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /**
  * The Battery trait is used on Functional Endpoints which are backed by a battery.
@@ -63,7 +63,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Remaining battery charge, as a floating-point value from zero (empty) to one (full). This
@@ -78,7 +78,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_CHARGE_REMAINING =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "vpct", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "vpct", java.lang.Float.class);
 
     /**
      * Energy remaining, in milliwatt-hours.
@@ -95,7 +95,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> STAT_ENERGY_REMAINING =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "vnrg", java.lang.Integer.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "vnrg", java.lang.Integer.class);
 
     /**
      * Battery needs service indicator. True if the battery needs to be serviced, false otherwise.
@@ -103,7 +103,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Boolean> STAT_NEEDS_SERVICE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "sreq", java.lang.Boolean.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "sreq", java.lang.Boolean.class);
 
     /**
      * Rechargable battery state. String describing the current state of the battery:
@@ -127,7 +127,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<String> STAT_CHARGE_STATE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "stat", java.lang.String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "stat", java.lang.String.class);
 
     /**
      * Battery is fully charged; Connected to external power.
@@ -179,12 +179,12 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> STAT_CAPACITY_REMAINING =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "rcap", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "rcap", java.lang.Float.class);
 
     /** The total number of battery charge cycles. Only used for rechargeable batteries. */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> STAT_CHARGE_CYCLES =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "cycl", java.lang.Integer.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "cycl", java.lang.Integer.class);
 
     /**
      * The voltages of the individual cells in the battery. This can be used to determine the
@@ -192,7 +192,7 @@ public final class BatteryTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<float[]> STAT_CELL_VOLTAGE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "celV", float[].class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "celV", float[].class);
 
     /**
      * The original energy capacity of the battery when new and fully charged, in milliwatt-hours.
@@ -201,29 +201,29 @@ public final class BatteryTrait {
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> META_ENERGY_CAPACITY =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "enrg", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "enrg", java.lang.Integer.class);
 
     /** The nominal voltage of the battery, in volts */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> META_NOMINAL_BATTERY_VOLTAGE =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "volt", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "volt", java.lang.Float.class);
 
     /** The nominal voltage of a single cell in the battery, in volts */
     @Property(READ_ONLY)
     public static final PropertyKey<Float> META_NOMINAL_CELL_VOLTAGE =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "celV", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "celV", java.lang.Float.class);
 
     /** The number of cells in the battery. */
     @Property(READ_ONLY)
     public static final PropertyKey<Integer> META_CELL_COUNT =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "ccnt", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "ccnt", java.lang.Integer.class);
 
     /** Indicates if the battery is rechargeable or not. */
     @Property(READ_ONLY)
     public static final PropertyKey<Boolean> META_RECHARGEABLE =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "rech", java.lang.Boolean.class);
+                    Section.METADATA, TRAIT_ID, "rech", java.lang.Boolean.class);
 }

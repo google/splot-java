@@ -20,6 +20,5 @@ import com.google.iot.m2m.base.UnknownResourceException;
 import java.net.URI;
 
 public interface ResourceLinkManager {
-    ResourceLink<Object> getResourceLinkForNativeUri(URI uri) throws UnknownResourceException;
-
+    ResourceLink<Object> getResourceLinkForUri(URI uri) throws UnknownResourceException;
 }

@@ -246,19 +246,19 @@ public abstract class LocalFunctionalEndpoint
         }
 
         if (key.isSectionState()) {
-            Map<String, Object> map = copyCachedSection(Splot.Section.STATE);
+            Map<String, Object> map = copyCachedSection(Section.STATE);
             key.putInMap(map, value);
             mStateListenerMap.forEach(
                     (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
 
         } else if (key.isSectionConfig()) {
-            Map<String, Object> map = copyCachedSection(Splot.Section.CONFIG);
+            Map<String, Object> map = copyCachedSection(Section.CONFIG);
             key.putInMap(map, value);
             mConfigListenerMap.forEach(
                     (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
 
         } else if (key.isSectionMetadata()) {
-            Map<String, Object> map = copyCachedSection(Splot.Section.METADATA);
+            Map<String, Object> map = copyCachedSection(Section.METADATA);
             key.putInMap(map, value);
             mMetadataListenerMap.forEach(
                     (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
@@ -365,8 +365,8 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value,
-                                                      Modifier ... modifiers) {
+    public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value,
+                                                           Modifier ... modifiers) {
         try {
             mutationCheck(Modifier.Insert.class, modifiers);
 
@@ -481,7 +481,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section,
+    public ListenableFuture<Map<String, Object>> fetchSection(Section section,
                                                               Modifier... mods) {
         boolean getAllKeys = false;
 
@@ -522,7 +522,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public Map<String, Object> copyCachedSection(Splot.Section section) {
+    public Map<String, Object> copyCachedSection(Section section) {
         Map<String, Object> ret = new LinkedHashMap<>();
         for (Map.Entry<PropertyKey<?>, LocalTrait> entry : mPropertyMap.entrySet()) {
             PropertyKey<?> key = entry.getKey();
@@ -743,7 +743,7 @@ public abstract class LocalFunctionalEndpoint
 
     @Override
     public final synchronized void registerSectionListener(Executor executor,
-                                                           Splot.Section section,
+                                                           Section section,
                                                            SectionListener listener) {
         switch (section) {
             case STATE:

@@ -72,7 +72,7 @@ public interface PersistentStateInterface {
      * Sets the listener to be called when the persistent state needs to be stored to non-volatile
      * memory. There can only be one listener.
      *
-     * <p>This method MUST be thread safe.
+     * <p>This method's implementation MUST be thread safe.
      *
      * @param listener the listener to use to indicate that this instance needs to save the
      *     persistent state to non-volatile memory.

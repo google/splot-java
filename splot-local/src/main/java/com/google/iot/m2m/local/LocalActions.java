@@ -167,7 +167,7 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
                             body = ActionsTrait.PARAM_ACTION_BODY.getFromMap(actionInfo);
                         }
 
-                        ResourceLink<Object> resourceLink = mTechnology.getResourceLinkForNativeUri(path);
+                        ResourceLink<Object> resourceLink = mTechnology.getResourceLinkForUri(path);
 
                         if (DEBUG)
                             LOGGER.info("Will " + method + " to " + path + " with body of " + body);

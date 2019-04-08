@@ -18,6 +18,7 @@ package com.google.iot.smcp;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Section;
 import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.trait.BaseTrait;
 import java.net.URI;
@@ -49,15 +50,9 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
         mTechnology = technology;
         mExecutor = mTechnology.getExecutor();
 
-        addChild(
-                Splot.SECTION_STATE,
-                new SectionResource(mFe, Splot.Section.STATE, mExecutor));
-        addChild(
-                Splot.SECTION_CONFIG,
-                new SectionResource(mFe, Splot.Section.CONFIG, mExecutor));
-        addChild(
-                Splot.SECTION_METADATA,
-                new SectionResource(mFe, Splot.Section.METADATA, mExecutor));
+        for (Section section : Section.values()) {
+            addChild(section.id, new SectionResource(mFe, section, mExecutor));
+        }
 
         addChild(Splot.SECTION_FUNC, new FuncResource(mTechnology, mFe));
     }
@@ -117,7 +112,7 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
     public void onBuildLinkParams(LinkFormat.LinkBuilder builder) {
         super.onBuildLinkParams(builder);
 
-        Map<String, Object> metadata = mFe.copyCachedSection(Splot.Section.METADATA);
+        Map<String, Object> metadata = mFe.copyCachedSection(Section.METADATA);
 
         String uid = BaseTrait.META_UID.getFromMapNoThrow(metadata);
 

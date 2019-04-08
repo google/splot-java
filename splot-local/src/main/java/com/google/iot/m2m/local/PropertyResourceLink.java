@@ -96,7 +96,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
                     return Futures.immediateFailedFuture(
                             new InvalidPropertyValueException("Can't add null to property value"));
                 } else {
-                    return fe.addValueToProperty(key, value, modifiers);
+                    return fe.insertValueIntoProperty(key, value, modifiers);
                 }
             }
 

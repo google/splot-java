@@ -21,6 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Convenience class representing a value tagged with a {@link TypedKey}.
+ *
+ * <p>This class makes it easier to pass typed parameters are arguments, specifically
+ * {@link FunctionalEndpoint#invokeMethod(MethodKey, TypedKeyValue[])}.
+ *
+ * @see TypedKey#with(Object)
+ * @see FunctionalEndpoint#invokeMethod(MethodKey, TypedKeyValue[])
+ */
 public class TypedKeyValue<T> {
     private final TypedKey<T> mKey;
     private final @Nullable T mValue;
@@ -35,14 +44,12 @@ public class TypedKeyValue<T> {
         return ret;
     }
 
+    /**
+     * Package-private constructor. Use {@link TypedKey#with(Object)} instead.
+     */
     TypedKeyValue(TypedKey<T> key, @Nullable T value) {
         mKey = key;
         mValue = value;
-    }
-
-    TypedKeyValue(TypedKey<T> key) {
-        mKey = key;
-        mValue = null;
     }
 
     public TypedKey<T> getKey() {

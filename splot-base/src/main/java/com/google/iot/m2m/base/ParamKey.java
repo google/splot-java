@@ -17,7 +17,7 @@ package com.google.iot.m2m.base;
 
 import com.google.common.base.Preconditions;
 
-/** A generic class for identifying and facilitating return-type-safety for method parameters. */
+/** A generic class for identifying and facilitating improved type-safety for method parameters. */
 public final class ParamKey<T> extends TypedKey<T> {
     private final String mName;
 

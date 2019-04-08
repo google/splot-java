@@ -20,7 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 import com.google.iot.m2m.base.TechnologyException;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -123,7 +123,7 @@ public final class LightTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Enumeration indicating the last color system used.
@@ -149,7 +149,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<String> STAT_MODE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "mode", java.lang.String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "mode", java.lang.String.class);
 
     /**
      * Color temperature light mode.
@@ -202,7 +202,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<String> STAT_EFFECT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "efct", java.lang.String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "efct", java.lang.String.class);
 
     /**
      * Color-cycle special effect.
@@ -261,7 +261,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<Float> STAT_MIREDS =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "mire", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "mire", java.lang.Float.class);
 
     /**
      * Convenience function for converting a color temperature in Kelvin to <a
@@ -301,7 +301,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<float[]> STAT_WHITEPOINT =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "whtp", float[].class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "whtp", float[].class);
 
     /**
      * The ‘x’ and ‘y’ CIE chromaticity coordinates for the current color.
@@ -315,7 +315,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<float[]> STAT_CHROMA_XY =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "chro", float[].class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "chro", float[].class);
 
     /**
      * The sRGB red, green, and blue components, normalized to values between 0.0 and 1.0
@@ -343,7 +343,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<float[]> STAT_SRGB =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "sRGB", float[].class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "sRGB", float[].class);
 
     /**
      * A normalized, perceptually uniform value representing lightness. Defined as <em>L*</em> from
@@ -369,7 +369,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<Float> STAT_CIE_LS =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "CIEL", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "CIEL", java.lang.Float.class);
 
     /**
      * 'C*' from CIELCh colorspace, analogous to saturation. Normalized between 0.0 and 1.0. Writing
@@ -380,7 +380,7 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<Float> STAT_CIE_CS =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "CIEC", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "CIEC", java.lang.Float.class);
 
     /**
      * 'h°' from CIELCh colorspace, analogous to hue. Normalized between 0.0 and 1.0. Writing to
@@ -392,13 +392,13 @@ public final class LightTrait {
      */
     @Property
     public static final PropertyKey<Float> STAT_CIE_HD =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "CIEh", java.lang.Float.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "CIEh", java.lang.Float.class);
 
     /** The maximum lumens that this FE is capable of emitting. */
     @Property(CONSTANT)
     public static final PropertyKey<Float> META_MAX_LUMENS =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "mxbr", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "mxbr", java.lang.Float.class);
 
     /**
      * This represents the minimum light output achievable by the light without turning completely
@@ -408,7 +408,7 @@ public final class LightTrait {
     @Property(CONSTANT)
     public static final PropertyKey<Float> META_MIN_DIM =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "mdim", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "mdim", java.lang.Float.class);
 
     /**
      * The native correlated color temperature (in Mireds) of the light.
@@ -421,7 +421,7 @@ public final class LightTrait {
     @Property(CONSTANT)
     public static final PropertyKey<Float> META_NATIVE_MIREDS =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "mire", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "mire", java.lang.Float.class);
 
     /**
      * The <b>maximum</b> numerical value for {@link #STAT_MIREDS} on this light.
@@ -431,7 +431,7 @@ public final class LightTrait {
     @Property(CONSTANT)
     public static final PropertyKey<Float> META_MAX_MIREDS =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "mxct", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "mxct", java.lang.Float.class);
 
     /**
      * The <b>minimum</b> numerical value for {@link #STAT_MIREDS} on this light.
@@ -441,7 +441,7 @@ public final class LightTrait {
     @Property(CONSTANT)
     public static final PropertyKey<Float> META_MIN_MIREDS =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "mnct", java.lang.Float.class);
+                    Section.METADATA, TRAIT_ID, "mnct", java.lang.Float.class);
 
     /**
      * An array indicating the special effects that are supported by {@link #STAT_EFFECT} on this
@@ -453,7 +453,7 @@ public final class LightTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<String[]> META_EFFECTS =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "efct", String[].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "efct", String[].class);
 
     /**
      * An array describing the primaries used on the light (up to six) in the CIE xyY colorspace.
@@ -463,7 +463,7 @@ public final class LightTrait {
      */
     @Property(CONSTANT)
     public static final PropertyKey<float[][]> META_PRIMARIES =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "prim", float[][].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "prim", float[][].class);
 
     /**
      * The physical orientation of the light.
@@ -479,7 +479,7 @@ public final class LightTrait {
     @Property(ENUM)
     public static final PropertyKey<Integer> META_ORIENTATION =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "ornt", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "ornt", java.lang.Integer.class);
 
     public static final int ORIENTATION_UNSPECIFIED = 0;
     public static final int ORIENTATION_OMNIDIRECTIONAL = 1;
@@ -500,7 +500,7 @@ public final class LightTrait {
     @Property(ENUM)
     public static final PropertyKey<Integer> META_FUNCTION =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "func", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "func", java.lang.Integer.class);
 
     public static final int FUNCTION_UNSPECIFIED = 0;
     public static final int FUNCTION_FUNCTIONAL = 1;

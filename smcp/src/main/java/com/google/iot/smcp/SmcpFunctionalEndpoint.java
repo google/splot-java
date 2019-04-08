@@ -157,7 +157,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         String path = key.getName()+ "?" + PROP_METHOD_INSERT;
         if (modifiers.length > 0) {
             path += "&" + Modifier.convertToQuery(modifiers);
@@ -264,7 +264,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     @Override
     public ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier... mods) {
         final Transaction transaction;
-        String path = section.name + "/";
+        String path = section.id + "/";
         if (mods.length > 0) {
             path += "?" + Modifier.convertToQuery(mods);
         }
@@ -286,7 +286,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     try {
                         collapsed =
                                 Utils.collapseSectionToOneLevelMap(
-                                        Utils.getMapFromPayload(response), section.name);
+                                        Utils.getMapFromPayload(response), section.id);
 
                     } catch (BadRequestException e) {
                         throw new SmcpException("Invalid response", e.getCause());
@@ -389,7 +389,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
     }
 
-    private String getSectionFromKeyString(String key) {
+    private String getSectionIdFromKeyString(String key) {
         if (key.startsWith(Splot.SECTION_STATE + "/")) {
             return Splot.SECTION_STATE;
         }
@@ -413,9 +413,9 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
 
         String firstKey = properties.keySet().iterator().next();
-        String section = getSectionFromKeyString(firstKey);
+        String sectionId = getSectionIdFromKeyString(firstKey);
 
-        if (section == null) {
+        if (sectionId == null) {
             return Futures.immediateFailedFuture(
                     new SmcpException("Invalid key \"" + firstKey + "\""));
         }
@@ -423,9 +423,9 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         // Convert the properties to a hierarchical format
         try {
             Map<String, Map<String, Object>> sectionValue =
-                    Utils.uncollapseSectionFromOneLevelMap(properties, section);
+                    Utils.uncollapseSectionFromOneLevelMap(properties, sectionId);
 
-            return doPost(section + "/", sectionValue);
+            return doPost(sectionId + "/", sectionValue);
         } catch (SmcpException e) {
             return Futures.immediateFailedFuture(e);
         }
@@ -719,7 +719,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
     }
 
-    private void receivedUpdateForSection(Splot.Section section, Map<String, Object> collapsed) {
+    private void receivedUpdateForSection(Section section, Map<String, Object> collapsed) {
         switch (section) {
             case STATE:
                 mStateCache = new HashMap<>(collapsed);
@@ -786,7 +786,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
                 observer =
                         mClient.newRequestBuilder()
-                                .changePath(section.name + "/")
+                                .changePath(section.id + "/")
                                 .addOption(Option.OBSERVE)
                                 .setOmitUriHostPortOptions(true)
                                 .addOption(Option.ACCEPT, ContentFormat.APPLICATION_CBOR)
@@ -806,7 +806,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                                     collapsed =
                                             Utils.collapseSectionToOneLevelMap(
                                                     Utils.getMapFromPayload(response),
-                                                    section.name);
+                                                    section.id);
                                     receivedUpdateForSection(section, collapsed);
 
                                 } catch (ResponseException | SmcpException e) {

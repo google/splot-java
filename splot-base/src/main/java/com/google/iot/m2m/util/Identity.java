@@ -15,11 +15,15 @@
  */
 package com.google.iot.m2m.util;
 
-import com.google.iot.m2m.base.FunctionalEndpoint;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
+
+import com.google.common.util.concurrent.AbstractScheduledService;
+import com.google.iot.m2m.base.Splot;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -95,7 +99,7 @@ class Identity implements Executor {
             String uid;
 
             do {
-                uid = FunctionalEndpoint.generateNewUid();
+                uid = Splot.generateNewUid();
             } while (sIdentityMap.containsKey(uid));
 
             return get(uid);
@@ -145,6 +149,19 @@ class Identity implements Executor {
     }
 
     /**
+     * Requires that one of the given identities is the current identity.
+     *
+     * @throws IdentityException if this Identity isn't one of the given current identities.
+     */
+    public static void require(Collection<Identity> identities) {
+        final Identity identity = current();
+        if (!identities.contains(identity)) {
+            throw new IdentityException(
+                    "Context identity \"" + identity + "\" was not in collection " + identities);
+        }
+    }
+
+    /**
      * Requires that this NOT be the current identity.
      *
      * @throws IdentityException if this Identity is the current identity.
@@ -156,11 +173,115 @@ class Identity implements Executor {
     }
 
     /**
-     * Returns an executor that will execute commands using the given executor but using this
-     * identity.
+     * Returns an {@link Executor} that will execute commands using the given executor but using
+     * this identity.
      */
     public Executor wrapExecutor(Executor executor) {
         return command -> executor.execute(() -> Identity.this.execute(command));
+    }
+
+    private class ScheduledExecutorWrapper extends AbstractExecutorService
+            implements ScheduledExecutorService {
+        final ScheduledExecutorService mExecutor;
+
+        ScheduledExecutorWrapper(ScheduledExecutorService executor) {
+            mExecutor = executor;
+        }
+
+        @Override
+        public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+            return mExecutor.schedule(
+                    () -> Identity.this.execute(command),
+                    delay,
+                    unit
+                    );
+        }
+
+        @Override
+        public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+            return mExecutor.schedule(
+                    () -> {
+                        Identity lastIdentity = current();
+                        final V ret;
+
+                        try {
+                            mCurrentIdentity.set(Identity.this);
+                            ret = callable.call();
+                        } finally {
+                            mCurrentIdentity.set(lastIdentity);
+                        }
+
+                        return ret;
+                    },
+                    delay,
+                    unit
+            );
+        }
+
+        @Override
+        public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay,
+                                                      long period, TimeUnit unit) {
+            return mExecutor.scheduleAtFixedRate(
+                    () -> Identity.this.execute(command),
+                    initialDelay,
+                    period,
+                    unit
+            );
+        }
+
+        @Override
+        public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,
+                                                         long delay, TimeUnit unit) {
+            return mExecutor.scheduleWithFixedDelay(
+                    () -> Identity.this.execute(command),
+                    initialDelay,
+                    delay,
+                    unit
+            );
+        }
+
+        @Override
+        public void shutdown() {
+            mExecutor.shutdown();
+        }
+
+        @Override
+        public List<Runnable> shutdownNow() {
+            return mExecutor.shutdownNow();
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return mExecutor.isShutdown();
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return mExecutor.isTerminated();
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+            return mExecutor.awaitTermination(timeout, unit);
+        }
+
+        @Override
+        public void execute(Runnable command) {
+            Identity.this.execute(command);
+        }
+
+        @Override
+        public String toString() {
+            return "<" + mExecutor + " IDENT:" + Identity.this + ">";
+        }
+    }
+
+    /**
+     * Returns a {@link ScheduledExecutorService} that will execute commands using the given
+     * {@link ScheduledExecutorService} but using this identity.
+     */
+    public ScheduledExecutorService wrapExecutor(ScheduledExecutorService executor) {
+        return new ScheduledExecutorWrapper(executor);
     }
 
     /**

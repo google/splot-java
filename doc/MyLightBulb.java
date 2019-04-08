@@ -87,12 +87,12 @@ public class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
     private final LightTrait.AbstractLocalTrait mLightTrait =
             new LightTrait.AbstractLocalTrait() {
                 @Override
-                public @Nullable Float onGetNativeMireds() throws TechnologyException {
+                public @Nullable Float onGetNativeMireds() {
                     return LightTrait.miredsFromKelvin(2700.0f);
                 }
 
                 @Override
-                public @Nullable Float onGetMaxLumens() throws TechnologyException {
+                public @Nullable Float onGetMaxLumens() {
                     return 800.0f;
                 }
             };

@@ -11,19 +11,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements SectionListener {
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Splot.Section section, URI uri) {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Section section, URI uri) {
         return new SectionResourceLink(fe, section, uri);
     }
 
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Splot.Section section) {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Section section) {
         return new SectionResourceLink(fe, section, null);
     }
 
     private final FunctionalEndpoint mFe;
-    private final Splot.Section mSection;
+    private final Section mSection;
     @Nullable private final URI mUri;
 
-    private SectionResourceLink(FunctionalEndpoint fe, Splot.Section section, @Nullable URI uri) {
+    private SectionResourceLink(FunctionalEndpoint fe, Section section, @Nullable URI uri) {
         mFe = fe;
         mSection = section;
         mUri = uri;
@@ -44,7 +44,7 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
 
         ListenableFutureTask<Map<String,Map<String,Object>>> uncollapser =
                 ListenableFutureTask.create(
-                        ()->uncollapseSectionFromOneLevelMap(future.get(), mSection.name));
+                        ()->uncollapseSectionFromOneLevelMap(future.get(), mSection.id));
 
         future.addListener(uncollapser, Runnable::run);
 
@@ -60,7 +60,7 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
         }
 
         try {
-            return mFe.applyProperties(collapseSectionToOneLevelMap(value, mSection.name));
+            return mFe.applyProperties(collapseSectionToOneLevelMap(value, mSection.id));
 
         } catch (InvalidValueException e) {
             return Futures.immediateFailedFuture(new InvalidPropertyValueException(e));
@@ -79,13 +79,13 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     @Override
     public void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> state) {
         try {
-            didChangeValue(uncollapseSectionFromOneLevelMap(state, mSection.name));
+            didChangeValue(uncollapseSectionFromOneLevelMap(state, mSection.id));
         } catch (InvalidValueException e) {
             throw new AssertionError(e);
         }
     }
 
-    static Map<String, Object> collapseSectionToOneLevelMap(Map<String, ?> payload, String section)
+    static Map<String, Object> collapseSectionToOneLevelMap(Map<String, ?> payload, String sectionId)
             throws InvalidValueException {
         final HashMap<String, Object> converted = new HashMap<>();
 
@@ -97,14 +97,14 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
             }
             @SuppressWarnings("unchecked")
             Map<String, Object> traitMap = (Map<String, Object>) v;
-            traitMap.forEach((k2, v2) -> converted.put(section + "/" + k + "/" + k2, v2));
+            traitMap.forEach((k2, v2) -> converted.put(sectionId + "/" + k + "/" + k2, v2));
         }
 
         return converted;
     }
 
     static Map<String, Map<String, Object>> uncollapseSectionFromOneLevelMap(
-            Map<String, Object> properties, String section) throws InvalidValueException {
+            Map<String, Object> properties, String sectionId) throws InvalidValueException {
         Map<String, Map<String, Object>> ret = new HashMap<>();
 
         for (Map.Entry<String, ?> entry : properties.entrySet()) {
@@ -118,7 +118,7 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
             }
 
             // Make sure the key is in the same section.
-            if (!section.equals(components[0])) {
+            if (!sectionId.equals(components[0])) {
                 throw new InvalidValueException("Key \"" + k + "\" is in the wrong section");
             }
 

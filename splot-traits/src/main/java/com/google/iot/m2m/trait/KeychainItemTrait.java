@@ -20,7 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /** Trait for managing an item in a cryptographic keychain. */
 @Trait
@@ -49,7 +49,7 @@ public final class KeychainItemTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * The identity associated with this key. This may be absent if the certificate is not
@@ -57,7 +57,7 @@ public final class KeychainItemTrait {
      */
     @Property(READ_WRITE | REQUIRED)
     public static final PropertyKey<String> CONF_IDENTITY =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "iden", java.lang.String.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "iden", java.lang.String.class);
 
     /**
      * True if this object should be garbage collected when there are no references to the
@@ -66,7 +66,7 @@ public final class KeychainItemTrait {
     @Property
     public static final PropertyKey<Boolean> CONF_RECYCLABLE =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "recy", java.lang.Boolean.class);
+                    Section.CONFIG, TRAIT_ID, "recy", java.lang.Boolean.class);
 
     /**
      * Specifies what type of key this item contains.
@@ -80,7 +80,7 @@ public final class KeychainItemTrait {
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<Integer> META_TYPE =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "type", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "type", java.lang.Integer.class);
 
     /**
      * If this item is a certificate without a private key, this value is false. Otherwise it is
@@ -89,7 +89,7 @@ public final class KeychainItemTrait {
     @Property(READ_ONLY)
     public static final PropertyKey<Boolean> META_OURS =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "ours", java.lang.Boolean.class);
+                    Section.METADATA, TRAIT_ID, "ours", java.lang.Boolean.class);
 
     /**
      * True if this item is permanent and cannot be deleted. Note that keys that are regenerated
@@ -99,7 +99,7 @@ public final class KeychainItemTrait {
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<Boolean> META_PERMANENT =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "perm", java.lang.Boolean.class);
+                    Section.METADATA, TRAIT_ID, "perm", java.lang.Boolean.class);
 
     /**
      * If the key for this item is asymmetric, then this property contains the public portion. For
@@ -108,7 +108,7 @@ public final class KeychainItemTrait {
      */
     @Property(READ_ONLY)
     public static final PropertyKey<byte[]> META_CERTIFICATE =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "cert", byte[].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "cert", byte[].class);
 
     /**
      * This property represents the actual secret data associated with this item. It is only used
@@ -116,13 +116,13 @@ public final class KeychainItemTrait {
      */
     @Property(WRITE_ONLY)
     public static final PropertyKey<byte[]> META_SECRET_KEY =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "secr", byte[].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "secr", byte[].class);
 
     /** True if the secret/private data associated with this item is on a secure element. */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<Boolean> META_HARDWARE_BACKED =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "hard", java.lang.Boolean.class);
+                    Section.METADATA, TRAIT_ID, "hard", java.lang.Boolean.class);
 
     /**
      * If this item is a certificate, this property contains the SHA256 hash of the certificate.
@@ -130,7 +130,7 @@ public final class KeychainItemTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<byte[]> META_HASH_SHA256 =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "sha2", byte[].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "sha2", byte[].class);
 
     /**
      * Contains one (of <i>m</i>) shares of the secret. It can only be read by someone who has
@@ -143,7 +143,7 @@ public final class KeychainItemTrait {
      */
     @Property
     public static final PropertyKey<byte[]> META_SECRET_SHARE =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "sssh", byte[].class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "sssh", byte[].class);
 
     /**
      * This property contains the version of the secret share. This is typically incremented every
@@ -155,5 +155,5 @@ public final class KeychainItemTrait {
     @Property
     public static final PropertyKey<Integer> META_SECRET_SHARE_VER =
             new PropertyKey<>(
-                    Splot.SECTION_METADATA, TRAIT_ID, "sssv", java.lang.Integer.class);
+                    Section.METADATA, TRAIT_ID, "sssv", java.lang.Integer.class);
 }

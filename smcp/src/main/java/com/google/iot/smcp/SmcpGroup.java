@@ -231,13 +231,13 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public <T> ListenableFuture<?> addValueToProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
+    public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
             return chainCancelation(
-                    super.addValueToProperty(key, value, modifiers),
-                    mLocalGroup.addValueToProperty(key, value, modifiers));
+                    super.insertValueIntoProperty(key, value, modifiers),
+                    mLocalGroup.insertValueIntoProperty(key, value, modifiers));
         }
-        return super.addValueToProperty(key, value, modifiers);
+        return super.insertValueIntoProperty(key, value, modifiers);
     }
 
     @Override
@@ -273,7 +273,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> fetchSection(Splot.Section section, Modifier ... modifiers) {
+    public ListenableFuture<Map<String, Object>> fetchSection(Section section, Modifier ... modifiers) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
             return mLocalGroup.fetchSection(section, modifiers);
         }
@@ -296,7 +296,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public Map<String, Object> copyCachedSection(Splot.Section section) {
+    public Map<String, Object> copyCachedSection(Section section) {
         final Map<String, Object> ret = super.copyCachedSection(section);
 
         if (mTechnology.isHosted(this)) {
@@ -339,7 +339,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public void registerSectionListener(Executor executor, Splot.Section section, SectionListener listener) {
+    public void registerSectionListener(Executor executor, Section section, SectionListener listener) {
         mLocalGroup.registerSectionListener(executor, section, listener);
     }
 

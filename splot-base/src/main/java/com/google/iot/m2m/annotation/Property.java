@@ -32,18 +32,18 @@ import java.lang.annotation.Target;
  *     &#64;Property(READ_WRITE | GET_REQUIRED)
  *     public static final PropertyKey<Float> STAT_VALUE =
  *             new PropertyKey<>(
- *                     PropertyKey.SECTION_STATE,
+ *                     Section.STATE,
  *                     TRAIT_ID,
  *                     "v",
- *                     java.lang.Float.class);
+ *                     Float.class);
  *
  *     &#64;Property(CONSTANT)
  *     public static final PropertyKey<Float> META_NATIVE_MIREDS =
  *             new PropertyKey<>(
- *                     PropertyKey.SECTION_METADATA,
+ *                     Section.METADATA,
  *                     TRAIT_ID,
  *                     "mire",
- *                     java.lang.Float.class);
+ *                     Float.class);
  * </code></pre>
  *
  * @see Trait

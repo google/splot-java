@@ -24,10 +24,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.google.iot.m2m.base.Splot.PROP_METHOD_INCREMENT;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LocalRuleTest extends TestBase {
@@ -123,7 +121,7 @@ class LocalRuleTest extends TestBase {
                 technology.getNativeUriForProperty(bulb2, LevelTrait.STAT_VALUE));
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        rule.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
+        rule.insertValueIntoProperty(ActionsTrait.CONF_ACTIONS, action).get();
 
         Map<String,Object> condition = new HashMap<>();
 
@@ -132,7 +130,7 @@ class LocalRuleTest extends TestBase {
         AutomationRuleTrait.PARAM_COND_EXPR.putInMap(condition,
                 "v 0.5 >");
 
-        rule.addValueToProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
+        rule.insertValueIntoProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
         rule.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
 
         tick(10);
@@ -163,21 +161,21 @@ class LocalRuleTest extends TestBase {
                 technology.getNativeUriForProperty(bulb2, LevelTrait.STAT_VALUE));
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        rule.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
+        rule.insertValueIntoProperty(ActionsTrait.CONF_ACTIONS, action).get();
 
         Map<String,Object> condition = new HashMap<>();
         AutomationRuleTrait.PARAM_COND_PATH.putInMap(condition,
                 technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE));
         AutomationRuleTrait.PARAM_COND_EXPR.putInMap(condition,
                 "v 0.5 >");
-        rule.addValueToProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
+        rule.insertValueIntoProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
 
         condition = new HashMap<>();
         AutomationRuleTrait.PARAM_COND_PATH.putInMap(condition,
                 technology.getNativeUriForProperty(bulb1, OnOffTrait.STAT_VALUE));
         AutomationRuleTrait.PARAM_COND_EXPR.putInMap(condition,
                 "! !");
-        rule.addValueToProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
+        rule.insertValueIntoProperty(AutomationRuleTrait.CONF_CONDITIONS, condition).get();
 
         rule.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
 

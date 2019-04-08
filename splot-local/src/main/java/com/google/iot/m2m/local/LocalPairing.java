@@ -408,7 +408,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
                 newSource = null;
             } else {
                 try {
-                    newSource = mTechnology.getResourceLinkForNativeUri(value);
+                    newSource = mTechnology.getResourceLinkForUri(value);
                 } catch (UnknownResourceException x) {
                     if (DEBUG) LOGGER.warning("onSetSource: " + x);
                     throw new InvalidPropertyValueException("Can't resolve src " + value, x);
@@ -447,7 +447,7 @@ public class LocalPairing extends LocalFunctionalEndpoint {
                 newDestination = null;
             } else {
                 try {
-                    newDestination = mTechnology.getResourceLinkForNativeUri(value);
+                    newDestination = mTechnology.getResourceLinkForUri(value);
                 } catch (UnknownResourceException x) {
                     if (DEBUG) LOGGER.warning("onSetDestination: " + x);
                     throw new InvalidPropertyValueException("Can't resolve dst " + value, x);

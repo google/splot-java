@@ -20,7 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /** The Text Display trait offers the ability for an FE to display short strings of text. */
 @Trait
@@ -49,13 +49,13 @@ public final class TextDisplayTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<String> STAT_VALUE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "v", String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "v", String.class);
 
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<Integer> META_MAX_CHARACTERS =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "mxch", Integer.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "mxch", Integer.class);
 }

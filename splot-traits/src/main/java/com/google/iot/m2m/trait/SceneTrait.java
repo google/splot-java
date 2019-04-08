@@ -53,7 +53,7 @@ public final class SceneTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Saves the current state to the given SceneId, optionally including a group id. Returns Sub-FE
@@ -73,7 +73,7 @@ public final class SceneTrait {
      */
     @Property(READ_WRITE | REQUIRED | NO_SAVE)
     public static final PropertyKey<String> STAT_SCENE_ID =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "sid", java.lang.String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "sid", java.lang.String.class);
 
     /**
      * Group id of the last scene that was set. This property is not cleared when the state is
@@ -81,11 +81,11 @@ public final class SceneTrait {
      */
     @Property(READ_ONLY | REQUIRED | NO_SAVE)
     public static final PropertyKey<String> STAT_GROUP_ID =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "gid", java.lang.String.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "gid", java.lang.String.class);
 
     @Property(READ_ONLY)
     public static final PropertyKey<String> CONF_SCENE_ID_POWER_ON =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "spor", java.lang.String.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "spor", java.lang.String.class);
 
     /**
      * Method parameter key for Scene ID.

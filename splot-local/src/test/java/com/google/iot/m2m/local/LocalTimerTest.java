@@ -17,19 +17,16 @@ package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.FunctionalEndpoint;
 import com.google.iot.m2m.base.Modifier;
-import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
 import com.google.iot.m2m.trait.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static com.google.iot.m2m.base.Splot.PROP_METHOD_INCREMENT;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LocalTimerTest extends TestBase {
@@ -133,7 +130,7 @@ class LocalTimerTest extends TestBase {
 
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
+        timer.insertValueIntoProperty(ActionsTrait.CONF_ACTIONS, action).get();
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "0.2").get();
         //timer.setProperty(AutomationTimerTrait.CONF_AUTO_RESET, true).get();
         timer.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
@@ -168,7 +165,7 @@ class LocalTimerTest extends TestBase {
 
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
+        timer.insertValueIntoProperty(ActionsTrait.CONF_ACTIONS, action).get();
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "0.2").get();
         timer.setProperty(AutomationTimerTrait.CONF_AUTO_RESET, true).get();
         timer.setProperty(EnabledDisabledTrait.STAT_VALUE, true).get();
@@ -208,7 +205,7 @@ class LocalTimerTest extends TestBase {
 
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
-        timer.addValueToProperty(ActionsTrait.CONF_ACTIONS, action).get();
+        timer.insertValueIntoProperty(ActionsTrait.CONF_ACTIONS, action).get();
 
         // This schedule program will stop the timer after two runs.
         timer.setProperty(AutomationTimerTrait.CONF_SCHEDULE_PROGRAM, "c 2 < IF 0.2 ENDIF").get();

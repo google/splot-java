@@ -21,7 +21,7 @@ import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 import java.net.URI;
 import java.util.Map;
@@ -60,7 +60,7 @@ public final class AutomationRuleTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * Criteria table for determining when the action should fire. All of the given criteria must be
@@ -117,13 +117,13 @@ public final class AutomationRuleTrait {
     @Property(READ_WRITE | REQUIRED)
     @SuppressWarnings("unchecked")
     public static final PropertyKey<Map<String, Object>[]> CONF_CONDITIONS =
-            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "cond", java.util.Map[].class);
+            new PropertyKey(Section.CONFIG, TRAIT_ID, "cond", java.util.Map[].class);
 
 
     @Property(READ_WRITE | REQUIRED)
     @SuppressWarnings("unchecked")
     public static final PropertyKey<String> CONF_MATCH =
-            new PropertyKey(Splot.SECTION_CONFIG, TRAIT_ID, "mtch", String.class);
+            new PropertyKey(Section.CONFIG, TRAIT_ID, "mtch", String.class);
 
     public static final String MATCH_ALL = "all";
 

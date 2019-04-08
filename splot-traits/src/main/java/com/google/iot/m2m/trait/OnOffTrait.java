@@ -20,7 +20,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
 import com.google.iot.m2m.base.PropertyKey;
-import com.google.iot.m2m.base.Splot;
+import com.google.iot.m2m.base.Section;
 
 /**
  * The OnOff trait describes a FE that can be turned on or off, such as a light bulb or a power
@@ -52,7 +52,7 @@ public final class OnOffTrait {
      */
     @Property(READ_ONLY | REQUIRED)
     public static final PropertyKey<String> META_TRAIT_URI =
-            new PropertyKey<>(Splot.SECTION_METADATA, TRAIT_ID, "turi", String.class);
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
      * On/Off state. On is <code>true</code>, off is <code>false</code>. A value of <code>null
@@ -60,7 +60,7 @@ public final class OnOffTrait {
      */
     @Property(READ_WRITE | GET_REQUIRED)
     public static final PropertyKey<Boolean> STAT_VALUE =
-            new PropertyKey<>(Splot.SECTION_STATE, TRAIT_ID, "v", java.lang.Boolean.class);
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "v", java.lang.Boolean.class);
 
     /**
      * Default off duration. Indicates the default duration (in seconds) when transitioning from the
@@ -69,7 +69,7 @@ public final class OnOffTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_DURATION_OFF =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "doff", java.lang.Float.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "doff", java.lang.Float.class);
 
     /**
      * Default on duration. Indicates the default duration (in seconds) when transitioning from the
@@ -78,7 +78,7 @@ public final class OnOffTrait {
      */
     @Property
     public static final PropertyKey<Float> CONF_DURATION_ON =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "don", java.lang.Float.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "don", java.lang.Float.class);
 
     /**
      * Power-on scene. Indicates the scene to recall when the device is physically powered on or
@@ -87,7 +87,7 @@ public final class OnOffTrait {
      */
     @Property
     public static final PropertyKey<String> CONF_SCENE_ID_ON =
-            new PropertyKey<>(Splot.SECTION_CONFIG, TRAIT_ID, "scon", java.lang.String.class);
+            new PropertyKey<>(Section.CONFIG, TRAIT_ID, "scon", java.lang.String.class);
 
     /**
      * Functional-endpoint-is-a-light flag. This property allows a functional endpoint that controls
@@ -99,5 +99,5 @@ public final class OnOffTrait {
     @Property
     public static final PropertyKey<Boolean> CONF_IS_LIGHT =
             new PropertyKey<>(
-                    Splot.SECTION_CONFIG, TRAIT_ID, "islt", java.lang.Boolean.class);
+                    Section.CONFIG, TRAIT_ID, "islt", java.lang.Boolean.class);
 }
