@@ -58,6 +58,7 @@ locally and do not rely on cloud infrastructure.
     (SOM)](doc/splot-object-model-intro.md)
 *   [Introduction to the Simple Monitoring and Control
     Protocol](doc/smcp-intro.md)
+*   [Introduction to Automation Primitives](doc/automation.md)
 *   [Light Bulb Example](doc/MyLightBulb.java)
 
 <!-- TODO: Update this with real URL
