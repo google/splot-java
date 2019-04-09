@@ -71,6 +71,7 @@ public abstract class Modifier {
 
         ArrayList<Modifier> ret = new ArrayList<>();
         String[] queryComponents = query.split("[&;]");
+        int mutationCount = 0;
 
         for (String key : queryComponents) {
             String value = null;
@@ -84,18 +85,22 @@ public abstract class Modifier {
             switch (key) {
                 case Splot.PROP_METHOD_INCREMENT:
                     ret.add(increment());
+                    mutationCount++;
                     break;
 
                 case Splot.PROP_METHOD_TOGGLE:
                     ret.add(toggle());
+                    mutationCount++;
                     break;
 
                 case Splot.PROP_METHOD_INSERT:
                     ret.add(insert());
+                    mutationCount++;
                     break;
 
                 case Splot.PROP_METHOD_REMOVE:
                     ret.add(remove());
+                    mutationCount++;
                     break;
 
                 case "tt":
@@ -112,18 +117,26 @@ public abstract class Modifier {
                         if (value != null) {
                             try {
                                 seconds = Double.valueOf(value);
-                            } catch (NumberFormatException x) {
+
+                                if (seconds <= 0) {
+                                    seconds = 0;
+                                }
+
+                                ret.add(duration(seconds));
+
+                            } catch (IllegalArgumentException x) {
                                 throw new InvalidModifierListException(
-                                        "Bad duration \"" + value + "\"");
-                            }
-                            if (seconds <= 0) {
-                                seconds = 0;
+                                        "Bad duration \"" + value + "\"", x);
                             }
                         }
-                        ret.add(duration(seconds));
                     }
                     break;
             }
+        }
+
+        if (mutationCount > 1) {
+            throw new InvalidModifierListException(
+                    "Modifier list has more than one mutator");
         }
 
         return ret.toArray(EMPTY_LIST);
