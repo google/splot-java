@@ -36,11 +36,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
     }
 
     public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
-        List<Modifier> withIncrement = new ArrayList<>();
-        withIncrement.add(Modifier.increment());
-        withIncrement.addAll(Arrays.asList(modifiers));
-
-        return new PropertyResourceLink<T>(fe, key, uri, withIncrement.toArray(Modifier.EMPTY_LIST)) {
+        return new PropertyResourceLink<T>(fe, key, uri, modifiers) {
             @Override
             public ListenableFuture<?> invoke(@Nullable T value) {
                 if (value == null) {
@@ -59,29 +55,21 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
                     }
                 }
 
-                return mFe.incrementProperty(mKey, value, modifiers);
+                return mFe.incrementProperty(mKey, value, mModifiers);
             }
         };
     }
 
     public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key, URI uri, Modifier ... modifiers) {
-        List<Modifier> withMutator = new ArrayList<>();
-        withMutator.add(Modifier.toggle());
-        withMutator.addAll(Arrays.asList(modifiers));
-
-        return new PropertyResourceLink<Boolean>(fe, key, uri, withMutator.toArray(Modifier.EMPTY_LIST)) {
+        return new PropertyResourceLink<Boolean>(fe, key, uri, modifiers) {
             @Override
             public ListenableFuture<?> invoke(@Nullable Boolean value) {
-                return mFe.toggleProperty(mKey, modifiers);
+                return mFe.toggleProperty(mKey, mModifiers);
             }
         };
     }
 
     public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
-        List<Modifier> withMutator = new ArrayList<>();
-        withMutator.add(Modifier.insert());
-        withMutator.addAll(Arrays.asList(modifiers));
-
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
@@ -117,10 +105,6 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
     }
 
     public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
-        List<Modifier> withMutator = new ArrayList<>();
-        withMutator.add(Modifier.insert());
-        withMutator.addAll(Arrays.asList(modifiers));
-
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
