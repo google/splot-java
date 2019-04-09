@@ -33,6 +33,7 @@ locally and do not rely on cloud infrastructure.
 *   Type-safe property API
 *   Easy to implement new functional endpoints
 *   Over 200 unit tests and growing.
+*   In-band-manageable [automation primitives](doc/automation.md)
 
 ## Current Protocol Limitations ##
 
@@ -85,10 +86,10 @@ jar files should be automatically downloaded.
 Gradle:
 
     dependencies {
-      compile 'com.google.iot.m2m:splot-base:0.01.00'
-      compile 'com.google.iot.m2m:splot-traits:0.01.00'
-      compile 'com.google.iot.m2m:splot-local:0.01.00'
-      compile 'com.google.iot.m2m:smcp:0.01.00'
+      compile 'com.google.iot.m2m:splot-base:0.02.00'
+      compile 'com.google.iot.m2m:splot-traits:0.02.00'
+      compile 'com.google.iot.m2m:splot-local:0.02.00'
+      compile 'com.google.iot.m2m:smcp:0.02.00'
     }
 
 Maven:
@@ -96,25 +97,25 @@ Maven:
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-base</artifactId>
-      <version>0.01.00</version>
+      <version>0.02.00</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-traits</artifactId>
-      <version>0.01.00</version>
+      <version>0.02.00</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-local</artifactId>
-      <version>0.01.00</version>
+      <version>0.02.00</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>smcp</artifactId>
-      <version>0.01.00</version>
+      <version>0.02.00</version>
       <scope>compile</scope>
     </dependency>
 
@@ -140,7 +141,7 @@ to download, build, and install those projects first.
 
 Splot for Java is released under the [Apache 2.0 license](LICENSE).
 
-    Copyright 2018 Google Inc.
+    Copyright 2019 Google Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
