@@ -24,40 +24,6 @@ import com.google.common.base.Preconditions;
  * @see com.google.iot.m2m.annotation.Method
  */
 public final class PropertyKey<T> extends TypedKey<T> {
-
-    /**
-     * Method for determining if the given property name is in the state section.
-     *
-     * @param name the name of the property
-     * @return true if the named property is in the state section, false otherwise.
-     * @see #isSectionState()
-     */
-    public static boolean isSectionState(String name) {
-        return name.startsWith(Section.STATE.id + "/");
-    }
-
-    /**
-     * Method for determining if the given property name is in the config section.
-     *
-     * @param name the name of the property
-     * @return true if the named property is in the config section, false otherwise.
-     * @see #isSectionConfig()
-     */
-    public static boolean isSectionConfig(String name) {
-        return name.startsWith(Section.CONFIG.id + "/");
-    }
-
-    /**
-     * Method for determining if the given property name is in the metadata section.
-     *
-     * @param name the name of the property
-     * @return true if the named property is in the metadata section, false otherwise.
-     * @see #isSectionMetadata()
-     */
-    public static boolean isSectionMetadata(String name) {
-        return name.startsWith(Section.METADATA.id + "/");
-    }
-
     private final String mName;
 
     /**
@@ -71,6 +37,14 @@ public final class PropertyKey<T> extends TypedKey<T> {
     public PropertyKey(String fullName, Class<T> type) {
         super(type);
         Preconditions.checkNotNull(fullName, "fullName cannot be null");
+
+        // Verify that the section is legal.
+        try {
+            @SuppressWarnings("unused")
+            Section ignore = Section.fromId(fullName.substring(0, fullName.indexOf('/')));
+        } catch (InvalidSectionException|StringIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Illegal property name: " + fullName, e);
+        }
 
         mName = fullName;
     }
@@ -108,39 +82,22 @@ public final class PropertyKey<T> extends TypedKey<T> {
      * Method for determining if this property is in a given section.
      *
      * @return true if the property is in the state section, false otherwise.
-     * @see #isSectionState(String)
+     * @see Section#containsPath(String)
      */
     public boolean isInSection(Section section) {
-        return mName.startsWith(section.id + "/");
+        return section.containsPath(mName);
     }
 
     /**
-     * @hide Method for determining if this property is in the state section.
-     *
-     * @return true if the property is in the state section, false otherwise.
-     * @see #isSectionState(String)
+     * Returns the {@link Section} enumeration that this property key falls under.
+     * @return a {@link Section} enum value
      */
-    public boolean isSectionState() {
-        return isSectionState(mName);
-    }
-
-    /**
-     * @hide Method for determining if this property is in the config section.
-     *
-     * @return true if the property is in the config section, false otherwise.
-     * @see #isSectionConfig(String)
-     */
-    public boolean isSectionConfig() {
-        return isSectionConfig(mName);
-    }
-
-    /**
-     * @hide Method for determining if this property is in the metadata section.
-     *
-     * @return true if the property is in the metadata section, false otherwise.
-     * @see #isSectionMetadata(String)
-     */
-    public boolean isSectionMetadata() {
-        return isSectionMetadata(mName);
+    public Section getSection() {
+        try {
+            return Section.fromId(mName.substring(0, mName.indexOf('/')));
+        } catch (InvalidSectionException e) {
+            // This shouldn't happen, we should catch these cases in the constructor.
+            throw new IllegalStateException(e);
+        }
     }
 }

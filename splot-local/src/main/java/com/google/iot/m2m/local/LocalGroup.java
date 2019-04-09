@@ -390,7 +390,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
 
     @Override
     public <T> ListenableFuture<T> fetchProperty(PropertyKey<T> key, Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.fetchProperty(key, modifiers);
         }
 
@@ -406,7 +406,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     @Override
     public <T> ListenableFuture<?> setProperty(PropertyKey<T> key, @Nullable T value,
                                                Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.setProperty(key, value, modifiers);
         }
 
@@ -422,7 +422,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     @Override
     public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,
                                                                     Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.incrementProperty(key, amount, modifiers);
         }
 
@@ -437,7 +437,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
 
     @Override
     public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key,Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.toggleProperty(key, modifiers);
         }
 
@@ -453,7 +453,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     @Override
     public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value,
                                                            Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.insertValueIntoProperty(key, value, modifiers);
         }
 
@@ -469,7 +469,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     @Override
     public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value,
                                                            Modifier ... modifiers) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return super.removeValueFromProperty(key, value, modifiers);
         }
 

@@ -69,7 +69,7 @@ public final class LightTrait {
 
             try {
                 if (ret
-                        && key.isSectionState()
+                        && key.isInSection(Section.STATE)
                         && !STAT_EFFECT.equals(key)
                         && !STAT_MODE.equals(key)) {
                     String mode = onGetMode();

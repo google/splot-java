@@ -77,6 +77,82 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         return mTechnology.getExecutor();
     }
 
+    private Map<SectionListener, Executor> getSectionListenerMap(Section section) {
+        switch (section) {
+            case STATE:
+                return mStateListenerMap;
+
+            case CONFIG:
+                return mConfigListenerMap;
+
+            case METADATA:
+                return mMetadataListenerMap;
+        }
+        throw new AssertionError(new InvalidSectionException("Invalid section: " + section));
+    }
+
+    private Map<String, Object> getSectionCache(Section section) {
+        switch (section) {
+            case STATE:
+                return mStateCache;
+
+            case CONFIG:
+                return mConfigCache;
+
+            case METADATA:
+                return mMetadataCache;
+        }
+        throw new AssertionError(new InvalidSectionException("Invalid section: " + section));
+    }
+
+    private void replaceSectionCache(Section section, Map<String,Object> map) {
+        HashMap<String,Object> mutableCopy = new HashMap<>(map);
+
+        switch (section) {
+            case STATE:
+                mStateCache = mutableCopy;
+                break;
+
+            case CONFIG:
+                mConfigCache = mutableCopy;
+                break;
+
+            case METADATA:
+                mMetadataCache = mutableCopy;
+                break;
+        }
+    }
+
+    private Transaction getSectionObserver(Section section) {
+        switch (section) {
+            case STATE:
+                return mStateObserver;
+
+            case CONFIG:
+                return mConfigObserver;
+
+            case METADATA:
+                return mMetadataObserver;
+        }
+        throw new AssertionError(new InvalidSectionException("Invalid section: " + section));
+    }
+
+    private void setSectionObserver(Section section, Transaction observer) {
+        switch (section) {
+            case STATE:
+                mStateObserver = observer;
+                break;
+
+            case CONFIG:
+                mConfigObserver = observer;
+                break;
+
+            case METADATA:
+                mMetadataObserver = observer;
+                break;
+        }
+    }
+
     /**
      * Performs a CoAP POST operation to the given path with the given value as the content. If
      * there is no content intended, then null may be passed as the value.
@@ -307,78 +383,30 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     <T> void updateCachedPropertyValue(PropertyKey<T> key, @Nullable T value) {
-        if (key.isSectionState()) {
-            final HashMap<String, Object> map = mStateCache;
-            // We synchronize on map here because mStateCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                key.putInMap(map, value);
-            }
-        } else if (key.isSectionMetadata()) {
-            final HashMap<String, Object> map = mMetadataCache;
-            // We synchronize on map here because mMetadataCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                key.putInMap(map, value);
-            }
-        } else if (key.isSectionConfig()) {
-            final HashMap<String, Object> map = mConfigCache;
-            // We synchronize on map here because mConfigCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                key.putInMap(map, value);
-            }
+        final Map<String, Object> map = getSectionCache(key.getSection());
+
+        // We synchronize on map here because mStateCache is not final.
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (map) {
+            key.putInMap(map, value);
         }
     }
 
     @Override
     @Nullable
     public <T> T getCachedProperty(PropertyKey<T> key) {
-        if (key.isSectionState()) {
-            final HashMap<String, Object> map = mStateCache;
-            // We synchronize on map here because mStateCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                return key.coerceFromMapNoThrow(map);
-            }
-        } else if (key.isSectionMetadata()) {
-            final HashMap<String, Object> map = mMetadataCache;
-            // We synchronize on map here because mMetadataCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                return key.coerceFromMapNoThrow(map);
-            }
-        } else if (key.isSectionConfig()) {
-            final HashMap<String, Object> map = mConfigCache;
-            // We synchronize on map here because mConfigCache is not final.
-            //noinspection SynchronizationOnLocalVariableOrMethodParameter
-            synchronized (map) {
-                return key.coerceFromMapNoThrow(map);
-            }
+        final Map<String, Object> map = getSectionCache(key.getSection());
+
+        // We synchronize on map here because mStateCache is not final.
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (map) {
+            return key.coerceFromMapNoThrow(map);
         }
-        return null;
     }
 
     @Override
     public Map<String, Object> copyCachedSection(Section section) {
-        final HashMap<String, Object> map;
-
-        switch (section) {
-            case STATE:
-                map = mStateCache;
-                break;
-
-            case CONFIG:
-                map = mConfigCache;
-                break;
-
-            case METADATA:
-                map = mMetadataCache;
-                break;
-
-            default:
-                throw new AssertionError("Bad section " + section);
-        }
+        final Map<String, Object> map = getSectionCache(section);
 
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (map) {
@@ -390,13 +418,13 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     private String getSectionIdFromKeyString(String key) {
-        if (key.startsWith(Splot.SECTION_STATE + "/")) {
+        if (Section.STATE.containsPath(key)) {
             return Splot.SECTION_STATE;
         }
-        if (key.startsWith(Splot.SECTION_METADATA + "/")) {
+        if (Section.METADATA.containsPath(key)) {
             return Splot.SECTION_METADATA;
         }
-        if (key.startsWith(Splot.SECTION_CONFIG + "/")) {
+        if (Section.CONFIG.containsPath(key)) {
             return Splot.SECTION_CONFIG;
         }
         if (key.startsWith(Splot.SECTION_FUNC + "/")) {
@@ -443,33 +471,21 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
 
         // Now refresh the value in the cache.
-        final Map<String, Object> map;
+        final Map<String, Object> map = getSectionCache(key.getSection());
 
-        if (key.isSectionState()) {
-            map = mStateCache;
-        } else if (key.isSectionConfig()) {
-            map = mConfigCache;
-        } else if (key.isSectionMetadata()) {
-            map = mMetadataCache;
-        } else {
-            map = null;
-        }
-
-        if (map != null) {
-            getExecutor()
-                    .execute(
-                            () -> {
-                                // The caches are volatile, but they only get replaced
-                                // when the associated section observer is triggered.
-                                // Thus, to avoid unnecessary object creation, we just
-                                // update the map in place here. There is a possibility
-                                // that we will be updating a map that has already been
-                                // invalidated, but in that case it doesn't really matter.
-                                synchronized (map) {
-                                    key.putInMap(map, value);
-                                }
-                            });
-        }
+        getExecutor()
+                .execute(
+                        () -> {
+                            // The caches are volatile, but they only get replaced
+                            // when the associated section observer is triggered.
+                            // Thus, to avoid unnecessary object creation, we just
+                            // update the map in place here. There is a possibility
+                            // that we will be updating a map that has already been
+                            // invalidated, but in that case it doesn't really matter.
+                            synchronized (map) {
+                                key.putInMap(map, value);
+                            }
+                        });
     }
 
     private <T> void receivedUpdateForPropertyKey(PropertyKey<T> key, Message response) {
@@ -720,55 +736,17 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     private void receivedUpdateForSection(Section section, Map<String, Object> collapsed) {
-        switch (section) {
-            case STATE:
-                mStateCache = new HashMap<>(collapsed);
+        replaceSectionCache(section, collapsed);
 
-                mStateListenerMap.forEach(
-                        (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, collapsed)));
-                break;
-
-            case CONFIG:
-                mConfigCache = new HashMap<>(collapsed);
-
-                mConfigListenerMap.forEach(
-                        (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, collapsed)));
-                break;
-
-            case METADATA:
-                mMetadataCache = new HashMap<>(collapsed);
-
-                mMetadataListenerMap.forEach(
-                        (listener, exec) ->
-                                exec.execute(() -> listener.onSectionChanged(this, collapsed)));
-                break;
-        }
+        getSectionListenerMap(section).forEach(
+                (listener, exec) ->
+                        exec.execute(() -> listener.onSectionChanged(this, collapsed)));
     }
 
     @Override
     public void registerSectionListener(Executor executor, Section section, SectionListener listener) {
-        final Map<SectionListener, Executor> listenerMap;
-        Transaction observer;
-
-        switch (section) {
-            case STATE:
-                listenerMap = mStateListenerMap;
-                observer = mStateObserver;
-                break;
-
-            case CONFIG:
-                listenerMap = mConfigListenerMap;
-                observer = mConfigObserver;
-                break;
-
-            case METADATA:
-                listenerMap = mMetadataListenerMap;
-                observer = mMetadataObserver;
-                break;
-
-            default:
-                throw new AssertionError("Bad section " + section);
-        }
+        final Map<SectionListener, Executor> listenerMap = getSectionListenerMap(section);
+        Transaction observer = getSectionObserver(section);
 
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (listenerMap) {
@@ -781,7 +759,6 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 if (observer != null) {
                     // Cancel any stale observer.
                     observer.cancel();
-                    observer = null;
                 }
 
                 observer =
@@ -819,22 +796,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                             }
                         });
 
-                switch (section) {
-                    case STATE:
-                        mStateObserver = observer;
-                        break;
-
-                    case CONFIG:
-                        mConfigObserver = observer;
-                        break;
-
-                    case METADATA:
-                        mMetadataObserver = observer;
-                        break;
-
-                    default:
-                        throw new AssertionError("Bad section " + section);
-                }
+                setSectionObserver(section, observer);
             }
         }
     }
@@ -1178,8 +1140,8 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     public FunctionalEndpoint getChild(String traitShortId, String childId) {
         String childPath = Splot.SECTION_FUNC + "/" + traitShortId + "/" + childId + "/";
 
-        FunctionalEndpoint ret =
-                null;
+        FunctionalEndpoint ret;
+
         try {
             ret = mTechnology.getFunctionalEndpointForNativeUri(mClient.getUri().resolve(childPath));
         } catch (UnknownResourceException e) {

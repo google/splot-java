@@ -73,7 +73,8 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
      * entity that requested the change.
      */
     private static final PropertyKey<Boolean> TRANS_IS_DEFAULT =
-            new PropertyKey<>("TRANS_IS_DEFAULT", java.lang.Boolean.class);
+            new PropertyKey<>(Section.STATE, TransitionTrait.TRAIT_ID,
+                    "TRANS_IS_DEFAULT", java.lang.Boolean.class);
 
     /**
      * The values of the transitioning properties when the transition is at 0%. This property, along
@@ -405,7 +406,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
      */
     protected synchronized boolean shouldTransitionProperty(PropertyKey<?> key) {
         // Strictly, only state properties can be transitioned.
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             return false;
         }
 
@@ -654,7 +655,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
             Map<String, Object> transState = new HashMap<>();
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
                 PropertyKey<?> key = new PropertyKey<>(entry.getKey(), entry.getValue().getClass());
-                if (key.isSectionState() && shouldTransitionProperty(key)) {
+                if (key.isInSection(Section.STATE) && shouldTransitionProperty(key)) {
                     transState.put(entry.getKey(), entry.getValue());
                 } else {
                     otherProps.put(entry.getKey(), entry.getValue());

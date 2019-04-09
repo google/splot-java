@@ -96,7 +96,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
                 return Futures.immediateFailedFuture(new PropertyNotFoundException());
             }
 
-            if (!key.isSectionState()) {
+            if (!key.isInSection(Section.STATE)) {
                 return Futures.immediateFailedFuture(new PropertyOperationUnsupportedException());
             }
 
@@ -162,7 +162,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         @Nullable
         @Override
         public <T> T getCachedProperty(PropertyKey<T> key) {
-            if (key.isSectionState()) {
+            if (key.isInSection(Section.STATE)) {
                 return key.getFromMapNoThrow(mState);
             }
 
@@ -195,7 +195,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
                     continue;
                 }
 
-                if (!key.isSectionState()
+                if (!key.isInSection(Section.STATE)
                         || !trait.onCanSaveProperty(key)
                         || SceneTrait.STAT_SCENE_ID.equals(key)) {
                     continue;

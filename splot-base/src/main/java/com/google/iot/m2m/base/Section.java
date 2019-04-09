@@ -47,6 +47,10 @@ public enum Section {
         throw new InvalidSectionException("Invalid Splot section ID \"" + sectionId + "\"");
     }
 
+    public boolean containsPath(String path) {
+        return path.startsWith(id + "/");
+    }
+
     Section(String id) {
         this.id = id;
     }

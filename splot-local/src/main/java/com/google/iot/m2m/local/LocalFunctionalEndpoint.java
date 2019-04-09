@@ -229,9 +229,23 @@ public abstract class LocalFunctionalEndpoint
         }
     }
 
+    private Map<SectionListener, Executor> getSectionListenerMap(Section section) {
+        switch (section) {
+            case STATE:
+                return mStateListenerMap;
+
+            case CONFIG:
+                return mConfigListenerMap;
+
+            case METADATA:
+                return mMetadataListenerMap;
+        }
+        throw new AssertionError(new InvalidSectionException("Invalid section: " + section));
+    }
+
     private <T> void onPropertyChanged(
             @SuppressWarnings("unused") LocalTrait localTrait, PropertyKey<T> key, T value) {
-        if (!key.isSectionState()) {
+        if (!key.isInSection(Section.STATE)) {
             changedPersistentState();
         }
 
@@ -245,24 +259,14 @@ public abstract class LocalFunctionalEndpoint
             }
         }
 
-        if (key.isSectionState()) {
-            Map<String, Object> map = copyCachedSection(Section.STATE);
-            key.putInMap(map, value);
-            mStateListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
+        Section section = key.getSection();
 
-        } else if (key.isSectionConfig()) {
-            Map<String, Object> map = copyCachedSection(Section.CONFIG);
-            key.putInMap(map, value);
-            mConfigListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
+        Map<String, Object> map = copyCachedSection(section);
 
-        } else if (key.isSectionMetadata()) {
-            Map<String, Object> map = copyCachedSection(Section.METADATA);
-            key.putInMap(map, value);
-            mMetadataListenerMap.forEach(
-                    (listener, exec) -> exec.execute(() -> listener.onSectionChanged(this, map)));
-        }
+        key.putInMap(map, value);
+
+        getSectionListenerMap(section).forEach(
+                (listener, exec) -> exec.execute( () -> listener.onSectionChanged(this, map)));
     }
 
     @Override
@@ -745,19 +749,7 @@ public abstract class LocalFunctionalEndpoint
     public final synchronized void registerSectionListener(Executor executor,
                                                            Section section,
                                                            SectionListener listener) {
-        switch (section) {
-            case STATE:
-                mStateListenerMap.put(listener, executor);
-                break;
-
-            case CONFIG:
-                mConfigListenerMap.put(listener, executor);
-                break;
-
-            case METADATA:
-                mMetadataListenerMap.put(listener, executor);
-                break;
-        }
+        getSectionListenerMap(section).put(listener, executor);
         executor.execute(()->listener.onSectionChanged(this, copyCachedSection(section)));
     }
 
