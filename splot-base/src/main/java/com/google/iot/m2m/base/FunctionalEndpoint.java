@@ -69,7 +69,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <h3>Fetching a property value</h3>
  *
  * <p>To fetch the value of a property on a FunctionalEndpoint instance, you use the {@link
- * #fetchProperty(PropertyKey)} method. The most simple case would look like this:
+ * #fetchProperty} method. The most simple case would look like this:
  *
  * <pre>{@code
  * Boolean onOffValue = fe.fetchProperty(OnOffTrait.STAT_VALUE).get();
@@ -99,6 +99,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre>{@code
  * fe.setProperty(OnOffTrait.STAT_VALUE, true).get();
+ * }</pre>
+ *
+ * <p>Alternatively, if we wanted this property change to transition over two seconds,
+ * we would add a {@link Modifier modifier}:
+ *
+ * <pre>{@code
+ * fe.setProperty(OnOffTrait.STAT_VALUE, true, Modifier.duration(2)).get();
  * }</pre>
  *
  * <p>If we don't care about synchronizing to the value being committed, we could even omit the call

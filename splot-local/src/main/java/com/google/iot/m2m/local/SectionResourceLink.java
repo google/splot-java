@@ -10,6 +10,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@hide} ResourceLink implementation for sections.
+ */
 public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements SectionListener {
     public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Section section, URI uri) {
         return new SectionResourceLink(fe, section, uri);

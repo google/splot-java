@@ -26,6 +26,13 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
 
+/**
+ * Abstract class for implementing a {@link LocalFunctionalEndpoint} that supports
+ * the {@link ActionsTrait} trait.
+ *
+ * @see LocalPairing
+ * @see LocalTimer
+ */
 public abstract class LocalActions extends LocalFunctionalEndpoint {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalActions.class.getCanonicalName());
@@ -82,19 +89,31 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
 
     abstract protected Executor getExecutor();
 
+    /**
+     * Gets the {@link ResourceLinkManager} instance.
+     */
     protected ResourceLinkManager getResourceLinkManager() {
         return mResourceLinkManager;
     }
 
+    /**
+     * Gets the current invocation count.
+     */
     protected int getCount() {
         return mCount;
     }
 
+    /**
+     * Resets the invocation count.
+     */
     protected void resetCount() {
         mCount = 0;
         mActionsTrait.didChangeCount(0);
     }
 
+    /**
+     * Invokes the configured actions once.
+     */
     protected void invoke() {
         List<Action> actions = new ArrayList<>(mActions);
 

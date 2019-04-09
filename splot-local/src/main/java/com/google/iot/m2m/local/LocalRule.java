@@ -31,6 +31,12 @@ import java.util.logging.Logger;
 import static com.google.iot.m2m.trait.AutomationRuleTrait.MATCH_ALL;
 import static com.google.iot.m2m.trait.AutomationRuleTrait.MATCH_ANY;
 
+/**
+ * {@link LocalFunctionalEndpoint} that implements {@link AutomationRuleTrait} and
+ * {@link ActionsTrait}. These are typically created automatically by
+ * {@link LocalAutomationManager}/{@link LocalRuleManagerTrait}, but can be created
+ * individually if needed.
+ */
 public class LocalRule extends LocalActions {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalRule.class.getCanonicalName());

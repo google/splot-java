@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+/**
+ * Abstract class that implements listener handler for {@link ResourceLink} implementations.
+ */
 public abstract class AbstractResourceLink<T> extends ResourceLink<T> {
     private final Map<Listener<T>, Executor> mListenerMap = new HashMap<>();
 

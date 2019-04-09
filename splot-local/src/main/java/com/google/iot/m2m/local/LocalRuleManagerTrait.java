@@ -30,6 +30,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
+/**
+ * Manager trait for enabling the in-band creation and management of {@link LocalRule} instances.
+ * This trait is implemented by the {@link LocalAutomationManager}, but is publicly defined to
+ * allow it to be integrated into custom {@link LocalFunctionalEndpoint} implementations.
+ */
 public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLocalTrait implements PersistentStateInterface {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalRuleManagerTrait.class.getCanonicalName());

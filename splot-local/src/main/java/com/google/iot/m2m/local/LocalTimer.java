@@ -18,9 +18,7 @@ package com.google.iot.m2m.local;
 import com.google.iot.m2m.base.*;
 import com.google.iot.m2m.local.rpn.RPNContext;
 import com.google.iot.m2m.local.rpn.RPNException;
-import com.google.iot.m2m.trait.AutomationTimerTrait;
-import com.google.iot.m2m.trait.BaseTrait;
-import com.google.iot.m2m.trait.EnabledDisabledTrait;
+import com.google.iot.m2m.trait.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.*;
@@ -28,6 +26,12 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
+/**
+ * {@link LocalFunctionalEndpoint} that implements {@link AutomationTimerTrait} and
+ * {@link ActionsTrait}. These are typically created automatically by
+ * {@link LocalAutomationManager}/{@link LocalTimerManagerTrait}, but can be created
+ * individually if needed.
+ */
 public class LocalTimer extends LocalActions {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalTimer.class.getCanonicalName());

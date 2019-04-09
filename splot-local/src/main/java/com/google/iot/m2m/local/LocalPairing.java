@@ -33,6 +33,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
+/**
+ * {@link LocalFunctionalEndpoint} that implements {@link AutomationPairingTrait}. These are
+ * typically created automatically by
+ * {@link LocalAutomationManager}/{@link LocalPairingManagerTrait}, but can be created
+ * individually if needed.
+ */
 public class LocalPairing extends LocalFunctionalEndpoint {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalPairing.class.getCanonicalName());

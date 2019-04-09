@@ -59,7 +59,7 @@
             <additionalOption>-quiet</additionalOption>
             <additionalOption>-federate JDK http://download.oracle.com/javase/8/docs/api/index.html?</additionalOption>
             <additionalOption>-federationxml JDK https://gist.githubusercontent.com/darconeous/6a8b96068ac29d00a001b23852517c5c/raw/openjdk-6.xml</additionalOption>
-            <additionalOption>-federate CoapBlaster http://google.github.io/coapblaster/releases/latest/apidocs/</additionalOption>
+            <additionalOption>-federate CoapBlaster https://google.github.io/coapblaster/releases/latest/apidocs/</additionalOption>
             <additionalOption>-hdf project.name "Splot for Java"</additionalOption>
             <additionalOption>-d ${project.build.directory}/site/apidocs</additionalOption>
           </additionalOptions>
@@ -74,12 +74,13 @@
           <charset>UTF-8</charset>
           <linksource>true</linksource>
           <subpackages>com.google.iot</subpackages>
-          <excludePackageNames>com.google.iot.m2m.processor</excludePackageNames>
+          <excludePackageNames>com.google.iot.m2m.processor:com.google.iot.m2m.local.rpn</excludePackageNames>
           <links>
             <link>http://docs.oracle.com/javase/8/docs/api/</link>
-            <link>http://google.github.io/guava/releases/23.5-jre/api/docs/</link>
+            <link>https://google.github.io/guava/releases/23.5-jre/api/docs/</link>
             <link>http://errorprone.info/api/latest/</link>
-            <link>http://google.github.io/coapblaster/releases/latest/apidocs/</link>
+            <link>https://google.github.io/coapblaster/releases/latest/apidocs/</link>
+            <link>https://google.github.io/cbortree/releases/latest/apidocs/</link>
           </links>
           <detectJavaApiLink>true</detectJavaApiLink>
           <detectLinks>true</detectLinks>
