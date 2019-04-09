@@ -5,10 +5,10 @@
   <parent>
     <groupId>com.google.iot.m2m</groupId>
     <artifactId>splot-parent</artifactId>
-    <version>HEAD-SNAPSHOT</version>
+    <version>0.02.00</version>
   </parent>
   <artifactId>splot-processor</artifactId>
-  <version>HEAD-SNAPSHOT</version>
+  <version>0.02.00</version>
   <name>Splot Annotation Processor</name>
   <dependencies>
     <dependency>
@@ -20,7 +20,7 @@
     <dependency>
       <groupId>com.google.iot.m2m</groupId>
       <artifactId>splot-base</artifactId>
-      <version>HEAD-SNAPSHOT</version>
+      <version>0.02.00</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
