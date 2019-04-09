@@ -34,7 +34,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalTimerManagerTrait.class.getCanonicalName());
 
-    private final ResourceLinkManager mTechnology;
+    private final ResourceLinkManager mResourceLinkManager;
 
     Map<String, LocalTimer> mTimerLookup = new HashMap<>();
     Map<FunctionalEndpoint, String> mTimerReverseLookup = new HashMap<>();
@@ -42,8 +42,8 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     FunctionalEndpoint mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalTimerManagerTrait(ResourceLinkManager technology, FunctionalEndpoint parent) {
-        mTechnology = technology;
+    public LocalTimerManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+        mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
 
@@ -99,7 +99,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
             onDeleteChild(mTimerLookup.get(childId));
         }
 
-        LocalTimer timer = new LocalTimer(mTechnology) {
+        LocalTimer timer = new LocalTimer(mResourceLinkManager) {
             @Override
             public ListenableFuture<Boolean> delete() {
                 return Futures.immediateFuture(onDeleteChild(this));

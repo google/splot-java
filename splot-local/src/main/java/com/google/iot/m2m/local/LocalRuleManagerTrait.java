@@ -34,7 +34,7 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalRuleManagerTrait.class.getCanonicalName());
 
-    private final ResourceLinkManager mTechnology;
+    private final ResourceLinkManager mResourceLinkManager;
 
     private Map<String, LocalRule> mRuleLookup = new HashMap<>();
     private Map<FunctionalEndpoint, String> mRuleReverseLookup = new HashMap<>();
@@ -42,8 +42,8 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
     private FunctionalEndpoint mParent;
     private NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalRuleManagerTrait(ResourceLinkManager technology, FunctionalEndpoint parent) {
-        mTechnology = technology;
+    public LocalRuleManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+        mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
 
@@ -98,7 +98,7 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
             onDeleteChild(mRuleLookup.get(childId));
         }
 
-        LocalRule Rule = new LocalRule(mTechnology) {
+        LocalRule Rule = new LocalRule(mResourceLinkManager) {
             @Override
             public ListenableFuture<Boolean> delete() {
                 return Futures.immediateFuture(onDeleteChild(this));

@@ -34,7 +34,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalPairingManagerTrait.class.getCanonicalName());
 
-    private final ResourceLinkManager mTechnology;
+    private final ResourceLinkManager mResourceLinkManager;
 
     Map<String, LocalPairing> mPairingLookup = new HashMap<>();
     Map<FunctionalEndpoint, String> mPairingReverseLookup = new HashMap<>();
@@ -42,8 +42,8 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     FunctionalEndpoint mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalPairingManagerTrait(ResourceLinkManager technology, FunctionalEndpoint parent) {
-        mTechnology = technology;
+    public LocalPairingManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+        mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
 
@@ -98,7 +98,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
             onDeleteChild(mPairingLookup.get(childId));
         }
 
-        LocalPairing pairing = new LocalPairing(mTechnology) {
+        LocalPairing pairing = new LocalPairing(mResourceLinkManager) {
             @Override
             public ListenableFuture<Boolean> delete() {
                 return Futures.immediateFuture(onDeleteChild(this));

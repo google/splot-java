@@ -305,7 +305,7 @@ public class LocalRule extends LocalActions {
                             expression = "TRUE";
                         }
 
-                        ResourceLink<Object> resourceLink = getTechnology().getResourceLinkForUri(path);
+                        ResourceLink<Object> resourceLink = getResourceLinkManager().getResourceLinkForUri(path);
                         Condition condition = new Condition(resourceLink);
 
                         condition.mExpression = mSharedRPNContext.compile(expression);

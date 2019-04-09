@@ -70,20 +70,20 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
     private List<Action> mActions = new ArrayList<>();
 
     // Technology backing this automation
-    private final ResourceLinkManager mTechnology;
+    private final ResourceLinkManager mResourceLinkManager;
 
     // Number of times this automation pairing has fired.
     private int mCount = 0;
 
     public LocalActions(ResourceLinkManager technology) {
-        mTechnology = technology;
+        mResourceLinkManager = technology;
         registerTrait(mActionsTrait);
     }
 
     abstract protected Executor getExecutor();
 
-    protected ResourceLinkManager getTechnology() {
-        return mTechnology;
+    protected ResourceLinkManager getResourceLinkManager() {
+        return mResourceLinkManager;
     }
 
     protected int getCount() {
@@ -108,7 +108,7 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
         mActionsTrait.didChangeLast(0);
     }
 
-    ActionsTrait.AbstractLocalTrait mActionsTrait = new ActionsTrait.AbstractLocalTrait() {
+    private ActionsTrait.AbstractLocalTrait mActionsTrait = new ActionsTrait.AbstractLocalTrait() {
         @Override
         public Integer onGetCount() {
             return mCount;
@@ -167,7 +167,7 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
                             body = ActionsTrait.PARAM_ACTION_BODY.getFromMap(actionInfo);
                         }
 
-                        ResourceLink<Object> resourceLink = mTechnology.getResourceLinkForUri(path);
+                        ResourceLink<Object> resourceLink = mResourceLinkManager.getResourceLinkForUri(path);
 
                         if (DEBUG)
                             LOGGER.info("Will " + method + " to " + path + " with body of " + body);
