@@ -244,6 +244,7 @@ public final class FilePersistentStateManager implements PersistentStateManager 
                         .writeTag(CborTag.SELF_DESCRIBE_CBOR)
                         .writeDataItem(state);
                 outputStream.flush();
+                outputStream.getFD().sync();
             }
 
             if (DEBUG) {
