@@ -9,7 +9,7 @@
   </parent>
   <groupId>com.google.iot.m2m</groupId>
   <artifactId>splot-parent</artifactId>
-  <version>0.02.00</version>
+  <version>HEAD-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Splot for Java (Maven Parent)</name>
   <url>https://github.com/google/splot-java</url>
