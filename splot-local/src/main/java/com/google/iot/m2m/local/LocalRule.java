@@ -108,6 +108,7 @@ public class LocalRule extends LocalActions {
 
     private AtomicBoolean mEvaluationPending = new AtomicBoolean(false);
     private Future<?> mScheduledEvaluation = null;
+    private String mTrap = null;
 
     @Override
     protected ScheduledExecutorService getExecutor() {
@@ -129,8 +130,21 @@ public class LocalRule extends LocalActions {
 
     @Override
     protected void invoke() {
+        if (mTrap != null) {
+            mTrap = null;
+            mBaseTrait.didChangeTrap(null);
+        }
+
         super.invoke();
+
         mSharedRPNContext.setVariable("c", getCount());
+    }
+
+    @Override
+    protected void onInvokeError(int actionIndex, String errorToken) {
+        String trap = actionIndex + ":" + errorToken;
+        mTrap = trap;
+        mBaseTrait.didChangeTrap(trap);
     }
 
     private synchronized void beginMonitoringConditions() {
@@ -229,6 +243,11 @@ public class LocalRule extends LocalActions {
         @Override
         public Boolean onGetPermanent()  {
             return getPermanent();
+        }
+
+        @Override
+        public @Nullable String onGetTrap() {
+            return mTrap;
         }
     };
 

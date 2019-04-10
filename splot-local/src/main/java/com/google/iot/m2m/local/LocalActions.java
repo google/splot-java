@@ -57,20 +57,7 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
         @CanIgnoreReturnValue
         ListenableFuture<?> invoke() {
             if (DEBUG) LOGGER.info("Invoking " + mResourceLink + " with " + mBody);
-            ListenableFuture<?> future = mResourceLink.invoke(mBody);
-
-            future.addListener(()->{
-                try {
-                    future.get();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (ExecutionException|CancellationException e) {
-                    LOGGER.warning("Caught exception on action invoke: " + e);
-                    e.printStackTrace();
-                }
-            }, getExecutor());
-
-            return future;
+            return mResourceLink.invoke(mBody);
         }
     }
 
@@ -116,9 +103,26 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
      */
     protected void invoke() {
         List<Action> actions = new ArrayList<>(mActions);
+        int i = 0;
 
         for (Action action : actions) {
-            action.invoke();
+            final int index = i++;
+            ListenableFuture<?> future = action.invoke();
+
+            future.addListener(()->{
+                try {
+                    future.get();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (CancellationException ignored) {
+                } catch (ExecutionException e) {
+                    if (DEBUG) {
+                        LOGGER.warning("Caught exception on action invoke: " + e);
+                        e.printStackTrace();
+                    }
+                    onInvokeError(index, e.getCause().getClass().getCanonicalName());
+                }
+            }, getExecutor());
         }
 
         mCount++;
@@ -126,6 +130,13 @@ public abstract class LocalActions extends LocalFunctionalEndpoint {
         mActionsTrait.didChangeCount(mCount);
         mActionsTrait.didChangeLast(0);
     }
+
+    /**
+     * Called whenever there was an error during invocation.
+     * @param actionIndex the index of the action that caused the error.
+     * @param errorToken a string describing the error
+     */
+    protected abstract void onInvokeError(int actionIndex, String errorToken);
 
     private ActionsTrait.AbstractLocalTrait mActionsTrait = new ActionsTrait.AbstractLocalTrait() {
         @Override

@@ -61,6 +61,8 @@ public class LocalTimer extends LocalActions {
     private Function<Object, Object> mPredicateProgram = (x) -> true;
     private String mPredicateProgramRecipe = "";
 
+    private String mTrap = null;
+
     public LocalTimer(ResourceLinkManager technology) {
         super(technology);
         registerTrait(mBaseTrait);
@@ -134,8 +136,19 @@ public class LocalTimer extends LocalActions {
 
     @Override
     protected void invoke() {
+        if (mTrap != null) {
+            mTrap = null;
+            mBaseTrait.didChangeTrap(null);
+        }
         super.invoke();
         mSharedRPNContext.setVariable("c", getCount());
+    }
+
+    @Override
+    protected void onInvokeError(int actionIndex, String errorToken) {
+        String trap = actionIndex + ":" + errorToken;
+        mTrap = trap;
+        mBaseTrait.didChangeTrap(trap);
     }
 
     private void handleTimerFired() {
@@ -188,6 +201,11 @@ public class LocalTimer extends LocalActions {
         @Override
         public Boolean onGetPermanent()  {
             return getPermanent();
+        }
+
+        @Override
+        public @Nullable String onGetTrap() {
+            return mTrap;
         }
     };
 
