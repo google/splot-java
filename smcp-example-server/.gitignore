@@ -1,0 +1,5 @@
+/build
+/out
+/target
+example-smcp-server.cbor
+*.temp

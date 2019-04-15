@@ -36,6 +36,7 @@
     <module>splot-traits</module>
     <module>splot-local</module>
     <module>smcp</module>
+    <module>smcp-example-server</module>
   </modules>
   <build>
     <plugins>
@@ -74,7 +75,7 @@
           <charset>UTF-8</charset>
           <linksource>true</linksource>
           <subpackages>com.google.iot</subpackages>
-          <excludePackageNames>com.google.iot.m2m.processor:com.google.iot.m2m.local.rpn</excludePackageNames>
+          <excludePackageNames>com.google.iot.m2m.processor:com.google.iot.m2m.local.rpn:com.example.*</excludePackageNames>
           <links>
             <link>http://docs.oracle.com/javase/8/docs/api/</link>
             <link>https://google.github.io/guava/releases/23.5-jre/api/docs/</link>

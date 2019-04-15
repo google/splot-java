@@ -60,7 +60,8 @@ locally and do not rely on cloud infrastructure.
 *   [Introduction to the Simple Monitoring and Control
     Protocol](doc/smcp-intro.md)
 *   [Introduction to Automation Primitives](doc/automation.md)
-*   [Light Bulb Example](doc/MyLightBulb.java)
+*   [SMCP Example Server](smcp-example-server/)
+*   [Light Bulb Example](smcp-example-server/src/main/java/com/example/smcp/server/MyLightBulb.java)
 
 <!-- TODO: Update this with real URL
 *   [High-level introductory slide deck](TBD)
