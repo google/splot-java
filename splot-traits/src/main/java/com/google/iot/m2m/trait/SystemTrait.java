@@ -15,31 +15,33 @@
  */
 package com.google.iot.m2m.trait;
 
-import static com.google.iot.m2m.annotation.Property.*;
-
 import com.google.iot.m2m.annotation.Property;
 import com.google.iot.m2m.annotation.Trait;
-import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
 import com.google.iot.m2m.base.Section;
 
-/** Trait used by group functional endpoints. */
+import static com.google.iot.m2m.annotation.Property.*;
+
+/**
+ * Describes various parameters and state of the operating system.
+ */
 @Trait
-public final class GroupTrait {
-    // Prevent instantiation
-    private GroupTrait() {}
+public final class SystemTrait {
+    private SystemTrait() {}
 
     /** Abstract class for implementing trait behavior on a local functional endpoint. */
-    public abstract static class AbstractLocalTrait extends LocalGroupTrait {}
+    @SuppressWarnings("RedundantThrows")
+    public abstract static class AbstractLocalTrait extends LocalSystemTrait {
+    }
 
     /** The name of this trait */
-    public static final String TRAIT_NAME = "Group";
+    public static final String TRAIT_NAME = "System";
 
     /** The URI that identifies the specification used to implement this trait. */
-    public static final String TRAIT_URI = "tag:google.com,2018:m2m:traits:group:v1:v0#r0";
+    public static final String TRAIT_URI = "tag:google.com,2018:m2m:traits:system:v1:v0#r0";
 
-    /** The Short ID of this trait (<code>"grup"</code>) */
-    public static final String TRAIT_ID = "grup";
+    /** The Short ID of this trait (<code>"syst"</code>) */
+    public static final String TRAIT_ID = "syst";
 
     /** Flag indicating if this trait supports children or not. */
     public static final boolean TRAIT_SUPPORTS_CHILDREN = false;
@@ -52,22 +54,19 @@ public final class GroupTrait {
     public static final PropertyKey<String> META_TRAIT_URI =
             new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
-    @Property(READ_WRITE | GET_REQUIRED)
-    public static final PropertyKey<String[]> CONF_LOCAL_MEMBERS =
-            new PropertyKey<>(
-                    Section.CONFIG, TRAIT_ID, "mbrl", java.lang.String[].class);
+    @Property(READ_ONLY)
+    public static final PropertyKey<Double> STAT_LOAD_AVERAGE =
+            new PropertyKey<>(Section.STATE, TRAIT_ID, "load", Double.class);
 
-    @Property()
-    public static final PropertyKey<String[]> CONF_REMOTE_MEMBERS =
-            new PropertyKey<>(
-                    Section.CONFIG, TRAIT_ID, "mbrr", java.lang.String[].class);
+    @Property(READ_ONLY)
+    public static final PropertyKey<Integer> META_CPU_COUNT =
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "ncpu", Integer.class);
 
-    @Property
-    public static final PropertyKey<String> CONF_GROUP_ADDRESS =
-            new PropertyKey<>(
-                    Section.CONFIG, TRAIT_ID, "addr", java.lang.String.class);
+    @Property(READ_ONLY)
+    public static final PropertyKey<String> META_OS_NAME =
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "sysn", String.class);
 
-    /** Method parameter key for Group ID. */
-    public static final ParamKey<String> PARAM_GROUP_ID =
-            new ParamKey<>("gid", java.lang.String.class);
+    @Property(READ_ONLY)
+    public static final PropertyKey<String> META_OS_VERSION =
+            new PropertyKey<>(Section.METADATA, TRAIT_ID, "sysv", String.class);
 }

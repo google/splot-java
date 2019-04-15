@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.iot.m2m.local;
+package com.example.smcp.server;
 
-import com.google.iot.m2m.base.TechnologyException;
+import com.google.iot.m2m.local.LocalActions;
+import com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint;
 import com.google.iot.m2m.trait.BaseTrait;
 import com.google.iot.m2m.trait.LevelTrait;
 import com.google.iot.m2m.trait.LightTrait;
@@ -23,10 +24,13 @@ import com.google.iot.m2m.trait.OnOffTrait;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Example Dimmable Light Bulb Functional Endpoint. */
 public class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
+    private static final Logger LOGGER = Logger.getLogger(LocalActions.class.getCanonicalName());
     private boolean mIsOn = false;
     private float mLevel = 0.0f;
 
@@ -63,6 +67,11 @@ public class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
                 public void onSetValue(@Nullable Boolean value) {
                     if (value != null && mIsOn != value) {
                         mIsOn = value;
+                        if (mIsOn) {
+                            LOGGER.info("Light " + mBaseTrait.onGetUid() + " is ON");
+                        } else {
+                            LOGGER.info("Light " + mBaseTrait.onGetUid() + " is OFF");
+                        }
                         didChangeValue(mIsOn);
                     }
                 }
@@ -79,6 +88,13 @@ public class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
                 public void onSetValue(@Nullable Float value) {
                     if (value != null && mLevel != value) {
                         mLevel = value;
+                        if (mIsOn) {
+                            LOGGER.info(String.format("Light %s level is %.1f%%",
+                                    mBaseTrait.onGetUid(), mLevel*100.0));
+                        } else {
+                            LOGGER.info(String.format("Light %s level will be %.1f%%",
+                                    mBaseTrait.onGetUid(), mLevel*100.0));
+                        }
                         didChangeValue(mLevel);
                     }
                 }
