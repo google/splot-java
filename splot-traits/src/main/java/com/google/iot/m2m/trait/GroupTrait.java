@@ -62,6 +62,11 @@ public final class GroupTrait {
             new PropertyKey<>(
                     Section.CONFIG, TRAIT_ID, "mbrr", java.lang.String[].class);
 
+    @Property
+    public static final PropertyKey<String> CONF_GROUP_ADDRESS =
+            new PropertyKey<>(
+                    Section.CONFIG, TRAIT_ID, "addr", java.lang.String.class);
+
     /** Method parameter key for Group ID. */
     public static final ParamKey<String> PARAM_GROUP_ID =
             new ParamKey<>("gid", java.lang.String.class);
