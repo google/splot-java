@@ -45,60 +45,23 @@ public abstract class Modifier {
     public static final Modifier[] EMPTY_LIST = new Modifier[0];
 
     /**
-     * Returns the {@link Mutation} modifier from the list of modifiers, if the list
-     * has one.
-     *
-     * @param modifiers the modifier list to examine
-     * @return the modifier that subclasses {@link Mutation}, or {@code null} if none
-     *         of the modifiers in the list are subclasses of {@link Mutation}.
-     * @throws InvalidModifierListException if more than one subclass of {@link Mutation}
-     *         is present in the modifier list
-     */
-    @Nullable
-    public static Mutation getMutation(Modifier ... modifiers) throws InvalidModifierListException {
-        Mutation mutation = null;
-
-        for (Modifier mod : modifiers) {
-            if (mod instanceof Mutation) {
-                if (mutation == null) {
-                    mutation = (Mutation)mod;
-                } else {
-                    throw new InvalidModifierListException(
-                            "Modifier list has more than one mutator");
-                }
-            }
-        }
-
-        return mutation;
-    }
-
-    /**
      * Converts the modifier list into a URI query string.
      *
      * @param modifiers the modifier list to convert to a query string
      * @return the query string representing the modifiers
-     * @throws InvalidModifierListException if more than one subclass of {@link Mutation}
-     *         is present in the modifier list
      */
-    public static String convertToQuery(Modifier ... modifiers)
-            throws InvalidModifierListException {
-        Mutation mutation = getMutation(modifiers);
+    public static String convertToQuery(Modifier ... modifiers) {
 
         StringBuilder ret = new StringBuilder();
         boolean first = true;
 
-        if (mutation != null) {
-            ret.append(mutation.toString());
-            first = false;
-        }
-
         for (Modifier mod : modifiers) {
-            if (!(mod instanceof Mutation)) {
-                if (!first) {
-                    ret.append("&");
-                }
-                ret.append(mod.toString());
+            if (first) {
+                first = false;
+            } else {
+                ret.append("&");
             }
+            ret.append(mod.toString());
         }
         return ret.toString();
     }
@@ -107,8 +70,7 @@ public abstract class Modifier {
      * Converts a URI query string into an array of {@link Modifier modifiers}.
      * @param query The URI query string to convert. May be null
      * @return The list of modifiers
-     * @throws InvalidModifierListException if more than one subclass of {@link Mutation}
-     *         is present in the modifier list, or if one of the query components fails
+     * @throws InvalidModifierListException if one of the query components fails
      *         to parse correctly.
      */
     public static Modifier[] convertFromQuery(@Nullable String query)
@@ -119,7 +81,6 @@ public abstract class Modifier {
 
         ArrayList<Modifier> ret = new ArrayList<>();
         String[] queryComponents = query.split("[&;]");
-        int mutationCount = 0;
 
         for (String key : queryComponents) {
             String value = null;
@@ -129,28 +90,7 @@ public abstract class Modifier {
                 key = key.substring(0, key.indexOf('='));
             }
 
-
             switch (key) {
-                case Splot.PROP_METHOD_INCREMENT:
-                    ret.add(increment());
-                    mutationCount++;
-                    break;
-
-                case Splot.PROP_METHOD_TOGGLE:
-                    ret.add(toggle());
-                    mutationCount++;
-                    break;
-
-                case Splot.PROP_METHOD_INSERT:
-                    ret.add(insert());
-                    mutationCount++;
-                    break;
-
-                case Splot.PROP_METHOD_REMOVE:
-                    ret.add(remove());
-                    mutationCount++;
-                    break;
-
                 case "tt":
                     ret.add(transitionTarget());
                     break;
@@ -180,11 +120,6 @@ public abstract class Modifier {
                     }
                     break;
             }
-        }
-
-        if (mutationCount > 1) {
-            throw new InvalidModifierListException(
-                    "Modifier list has more than one mutator");
         }
 
         return ret.toArray(EMPTY_LIST);
@@ -308,79 +243,6 @@ public abstract class Modifier {
     }
 
     /**
-     * Mutation superclass for modifiers that indicate the property value
-     * should be mutated.
-     * @see Increment
-     * @see Toggle
-     * @see Insert
-     * @see Remove
-     */
-    public static abstract class Mutation extends Modifier {
-        @Override
-        public int hashCode() {
-            return toString().hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj != null
-                    && getClass().equals(obj.getClass());
-        }
-    }
-
-    /**
-     * Mutation class that indicates that the property value should be incremented.
-     *
-     * <p>Users of the {@link FunctionalEndpoint} API do not need to use this mutator,
-     * since it is assumed by {@link FunctionalEndpoint#incrementProperty}.
-     */
-    public static class Increment extends Mutation {
-        @Override
-        public String toString() {
-            return Splot.PROP_METHOD_INCREMENT;
-        }
-    }
-
-    /**
-     * Mutation class that indicates that the property value should be toggled.
-     *
-     * <p>Users of the {@link FunctionalEndpoint} API do not need to use this mutator,
-     * since it is assumed by {@link FunctionalEndpoint#toggleProperty}.
-     */
-    public static class Toggle extends Mutation {
-        @Override
-        public String toString() {
-            return Splot.PROP_METHOD_TOGGLE;
-        }
-    }
-
-    /**
-     * Mutation class that indicates that the value should be inserted into the property.
-     *
-     * <p>Users of the {@link FunctionalEndpoint} API do not need to use this mutator,
-     * since it is assumed by {@link FunctionalEndpoint#insertValueIntoProperty}.
-     */
-    public static class Insert extends Mutation {
-        @Override
-        public String toString() {
-            return Splot.PROP_METHOD_INSERT;
-        }
-    }
-
-    /**
-     * Mutation class that indicates that the value should be removed from the property.
-     *
-     * <p>Users of the {@link FunctionalEndpoint} API do not need to use this mutator,
-     * since it is assumed by {@link FunctionalEndpoint#removeValueFromProperty}.
-     */
-    public static class Remove extends Mutation {
-        @Override
-        public String toString() {
-            return Splot.PROP_METHOD_REMOVE;
-        }
-    }
-
-    /**
      * Convenience method for creating a {@link Duration} modifier.
      * @param seconds the number of seconds for the transition to last
      * @return a new {@link Duration} modifier
@@ -403,37 +265,5 @@ public abstract class Modifier {
      */
     public static All all() {
         return new All();
-    }
-
-    /**
-     * Convenience method for creating a {@link Insert} mutation modifier.
-     * @return a new {@link Insert} mutation modifier.
-     */
-    public static Insert insert() {
-        return new Insert();
-    }
-
-    /**
-     * Convenience method for creating a {@link Remove} mutation modifier.
-     * @return a new {@link Remove} mutation modifier.
-     */
-    public static Remove remove() {
-        return new Remove();
-    }
-
-    /**
-     * Convenience method for creating a {@link Increment} mutation modifier.
-     * @return a new {@link Increment} mutation modifier.
-     */
-    public static Increment increment() {
-        return new Increment();
-    }
-
-    /**
-     * Convenience method for creating a {@link Toggle} mutation modifier.
-     * @return a new {@link Toggle} mutation modifier.
-     */
-    public static Toggle toggle() {
-        return new Toggle();
     }
 }

@@ -381,59 +381,61 @@ public final class LocalTechnology
             final String name = parser.getRelativeComponent(3);
             final Section section;
 
-            Modifier.Mutation method = null;
+            Operation operation = Operation.UNSPECIFIED;
             ResourceLink<Object> ret;
             Modifier[] modifierList;
 
             try {
                 section = Section.fromId(parser.getRelativeComponent(1));
                 modifierList = convertFromQuery(uri.getQuery());
+                operation = Operation.fromQuery(uri.getQuery());
             } catch(InvalidModifierListException|InvalidSectionException x) {
                 throw new UnknownResourceException(x);
             }
 
-            for (Modifier mod : modifierList) {
-                if (mod instanceof Modifier.Mutation) {
-                    if (method != null) {
-                        throw new UnknownResourceException("Too many mutations in modifier list");
-                    }
-                    method = (Modifier.Mutation)mod;
+            switch (operation) {
+                case INCREMENT: {
+                    PropertyKey<Number> key = new PropertyKey<>(section, trait, name, Number.class);
+                    if (DEBUG) LOGGER.info("Making property incrementer for " + key);
+                    ret = ResourceLink.stripType(
+                            PropertyResourceLink.createIncrement(parser.mFe, key,
+                                    uri, modifierList),
+                            Number.class);
+                    break;
+                }
+
+                case TOGGLE: {
+                    PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name, Boolean.class);
+                    if (DEBUG) LOGGER.info("Making property toggler for " + key);
+                    ret = ResourceLink.stripType(
+                            PropertyResourceLink.createToggle(parser.mFe, key, uri, modifierList),
+                            Boolean.class);
+                    break;
+                }
+
+                case INSERT: {
+                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
+                    if (DEBUG) LOGGER.info("Making property value inserter for " + key);
+                    ret = PropertyResourceLink.createInsert(parser.mFe, key, uri, modifierList);
+                    break;
+                }
+
+                case REMOVE: {
+                    PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
+                    if (DEBUG) LOGGER.info("Making property value inserter for " + key);
+                    ret = PropertyResourceLink.createRemove(parser.mFe, key, uri, modifierList);
+                    break;
+                }
+
+                default:
+                case UNSPECIFIED: {
+                    PropertyKey<Object> key = new PropertyKey<>(section, trait, name, Object.class);
+                    ret = PropertyResourceLink.create(parser.mFe, key, uri, modifierList);
+                    break;
                 }
             }
 
-            if (method instanceof Modifier.Increment) {
-                PropertyKey<Number> key = new PropertyKey<>(section, trait, name, Number.class);
-                if (DEBUG) LOGGER.info("Making property incrementer for " + key);
-                ret = ResourceLink.stripType(
-                        PropertyResourceLink.createIncrement(parser.mFe, key,
-                                uri, modifierList),
-                        Number.class);
-
-            } else if (method instanceof Modifier.Toggle) {
-                PropertyKey<Boolean> key = new PropertyKey<>(section, trait, name, Boolean.class);
-                if (DEBUG) LOGGER.info("Making property toggler for " + key);
-                ret = ResourceLink.stripType(
-                        PropertyResourceLink.createToggle(parser.mFe, key, uri, modifierList),
-                        Boolean.class);
-
-            } else if (method instanceof Modifier.Insert) {
-                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
-                if (DEBUG) LOGGER.info("Making property value inserter for " + key);
-                ret = PropertyResourceLink.createInsert(parser.mFe, key, uri, modifierList);
-
-            } else if (method instanceof Modifier.Remove) {
-                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, name, Object[].class);
-                if (DEBUG) LOGGER.info("Making property value inserter for " + key);
-                ret = PropertyResourceLink.createRemove(parser.mFe, key, uri, modifierList);
-
-            } else {
-                PropertyKey<Object> key = new PropertyKey<>(section, trait, name, Object.class);
-                ret = PropertyResourceLink.create(parser.mFe, key, uri, modifierList);
-
-            }
-
             return ret;
-
         }
 
         // Resource link tracking a trait in a section
@@ -465,12 +467,23 @@ public final class LocalTechnology
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException {
-        if (modifiers.length == 0) {
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
+        StringBuilder query = new StringBuilder();
+
+        query.append(op.id);
+
+        if (modifiers.length != 0) {
+            if (query.length() != 0) {
+                query.append("&");
+            }
+            query.append(Modifier.convertToQuery(modifiers));
+        }
+
+        if (query.length() == 0) {
             return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
         } else {
             return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
-                    + "?" + Modifier.convertToQuery(modifiers));
+                    + "?" + query);
         }
     }
 

@@ -17,6 +17,7 @@ package com.google.iot.m2m.local;
 
 import com.google.iot.m2m.base.FunctionalEndpoint;
 import com.google.iot.m2m.base.Modifier;
+import com.google.iot.m2m.base.Operation;
 import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
 import com.google.iot.m2m.trait.*;
 import org.junit.jupiter.api.AfterEach;
@@ -161,7 +162,7 @@ class LocalTimerTest extends TestBase {
         assertFalse(timer.fetchProperty(AutomationTimerTrait.STAT_RUNNING).get());
 
         ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
-                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Modifier.increment()));
+                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Operation.INCREMENT));
 
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 
@@ -201,7 +202,7 @@ class LocalTimerTest extends TestBase {
         assertFalse(timer.fetchProperty(AutomationTimerTrait.STAT_RUNNING).get());
 
         ActionsTrait.PARAM_ACTION_PATH.putInMap(action,
-                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Modifier.increment()));
+                technology.getNativeUriForProperty(bulb1, LevelTrait.STAT_VALUE, Operation.INCREMENT));
 
         ActionsTrait.PARAM_ACTION_BODY.putInMap(action, 0.2);
 

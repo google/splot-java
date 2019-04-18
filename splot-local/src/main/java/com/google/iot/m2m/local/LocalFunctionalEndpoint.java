@@ -304,21 +304,12 @@ public abstract class LocalFunctionalEndpoint
         return applyProperties(map);
     }
 
-    private void mutationCheck(Class<? extends Modifier.Mutation> clazz, Modifier ... modifiers) {
-
-        Modifier.Mutation mutation = Modifier.getMutation(modifiers);
-        if (mutation != null && !clazz.isInstance(mutation)) {
-            throw new InvalidModifierListException("Conflicting mutation " + mutation);
-        }
-    }
-
     @Override
     public <T extends Number> ListenableFuture<?> incrementProperty(PropertyKey<T> key, T amount,
                                                                     Modifier ... modifiers) {
         Number targetValue;
 
         try {
-            mutationCheck(Modifier.Increment.class, modifiers);
             targetValue = getPropertyTargetValue(key);
 
         } catch (PropertyException | TechnologyException | InvalidModifierListException e) {
@@ -355,7 +346,6 @@ public abstract class LocalFunctionalEndpoint
     @CanIgnoreReturnValue
     public ListenableFuture<?> toggleProperty(PropertyKey<Boolean> key, Modifier ... modifiers) {
         try {
-            mutationCheck(Modifier.Toggle.class, modifiers);
             Boolean value = getPropertyTargetValue(key);
             if (value == null) {
                 return Futures.immediateFailedFuture(
@@ -372,7 +362,6 @@ public abstract class LocalFunctionalEndpoint
     public <T> ListenableFuture<?> insertValueIntoProperty(PropertyKey<T[]> key, T value,
                                                            Modifier ... modifiers) {
         try {
-            mutationCheck(Modifier.Insert.class, modifiers);
 
             final T[] oldArray = getPropertyTargetValue(key);
             final ArrayList<T> newArray;
@@ -401,7 +390,6 @@ public abstract class LocalFunctionalEndpoint
     public <T> ListenableFuture<?> removeValueFromProperty(PropertyKey<T[]> key, T value,
                                                            Modifier ... modifiers) {
         try {
-            mutationCheck(Modifier.Remove.class, modifiers);
 
             T[] oldArray = getPropertyTargetValue(key);
 
