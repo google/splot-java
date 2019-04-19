@@ -429,12 +429,23 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier ... modifiers) throws UnassociatedResourceException {
-        if (modifiers.length == 0) {
+    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
+        StringBuilder query = new StringBuilder();
+
+        query.append(op.id);
+
+        if (modifiers.length != 0) {
+            if (query.length() != 0) {
+                query.append("&");
+            }
+            query.append(Modifier.convertToQuery(modifiers));
+        }
+
+        if (query.length() == 0) {
             return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
         } else {
             return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
-                    + "?" + Modifier.convertToQuery(modifiers));
+                    + "?" + query);
         }
     }
 

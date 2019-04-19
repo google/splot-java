@@ -503,13 +503,13 @@ class SectionResource extends Resource<InboundRequestHandler> {
 
         URI uri = request.getOptionSet().getUri();
         ListenableFuture<?> future;
-        Modifier.Mutation method = null;
+        Operation op = Operation.UNSPECIFIED;
         Modifier[] modifierList = Modifier.EMPTY_LIST;
 
         if (uri != null) {
             try {
                 modifierList = convertFromQuery(uri.getQuery());
-                method = Modifier.getMutation(modifierList);
+                op = Operation.fromQuery(uri.getQuery());
 
             } catch (InvalidModifierListException x) {
                 inboundRequest.sendSimpleResponse(
@@ -518,48 +518,67 @@ class SectionResource extends Resource<InboundRequestHandler> {
             }
         }
 
-        if (method instanceof Modifier.Increment) {
-            PropertyKey<Number> key = new PropertyKey<>(section, trait, prop, Number.class);
+        switch (op) {
+            case INCREMENT: {
+                PropertyKey<Number> key = new PropertyKey<>(section, trait, prop, Number.class);
 
-            if (content == null) {
-                future = mFe.incrementProperty(key, 1, modifierList);
-            } else if (content instanceof Number) {
-                future = mFe.incrementProperty(key, (Number) content, modifierList);
-            } else {
-                inboundRequest.sendSimpleResponse(
-                        Code.RESPONSE_BAD_REQUEST, "Increment value not a number");
-                return;
+                if (content == null) {
+                    future = mFe.incrementProperty(key, 1, modifierList);
+                } else if (content instanceof Number) {
+                    future = mFe.incrementProperty(key, (Number) content, modifierList);
+                } else {
+                    inboundRequest.sendSimpleResponse(
+                            Code.RESPONSE_BAD_REQUEST, "Increment value not a number");
+                    return;
+                }
+                break;
             }
 
-        } else if (method instanceof Modifier.Toggle) {
-            PropertyKey<Boolean> key = new PropertyKey<>(section, trait, prop, Boolean.class);
-            future = mFe.toggleProperty(key, modifierList);
+            case TOGGLE: {
+                PropertyKey<Boolean> key = new PropertyKey<>(section, trait, prop, Boolean.class);
+                future = mFe.toggleProperty(key, modifierList);
 
-        } else if (method instanceof Modifier.Insert) {
-            PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
-
-            if (content == null) {
-                inboundRequest.sendSimpleResponse(
-                        Code.RESPONSE_BAD_REQUEST, "Missing value to add");
-                return;
+                break;
             }
 
-            future = mFe.insertValueIntoProperty(key, content, modifierList);
+            case INSERT: {
+                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
 
-        } else if (method instanceof Modifier.Remove) {
-            PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
+                if (content == null) {
+                    inboundRequest.sendSimpleResponse(
+                            Code.RESPONSE_BAD_REQUEST, "Missing value to add");
+                    return;
+                }
 
-            if (content == null) {
+                future = mFe.insertValueIntoProperty(key, content, modifierList);
+
+                break;
+            }
+
+            case REMOVE: {
+                PropertyKey<Object[]> key = new PropertyKey<>(section, trait, prop, Object[].class);
+
+                if (content == null) {
+                    inboundRequest.sendSimpleResponse(
+                            Code.RESPONSE_BAD_REQUEST, "Missing value to remove");
+                    return;
+                }
+                future = mFe.removeValueFromProperty(key, content, modifierList);
+
+                break;
+            }
+
+            case UNSPECIFIED: {
+                PropertyKey<Object> key = new PropertyKey<>(section, trait, prop, Object.class);
+                future = mFe.setProperty(key, content, modifierList);
+                break;
+            }
+
+            default: {
                 inboundRequest.sendSimpleResponse(
-                        Code.RESPONSE_BAD_REQUEST, "Missing value to remove");
+                        Code.RESPONSE_BAD_REQUEST, "Unknown operation " + op);
                 return;
             }
-            future = mFe.removeValueFromProperty(key, content, modifierList);
-
-        } else {
-            PropertyKey<Object> key = new PropertyKey<>(section, trait, prop, Object.class);
-            future = mFe.setProperty(key, content, modifierList);
-
         }
 
         inboundRequest.responsePending();

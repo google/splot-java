@@ -293,14 +293,35 @@ public interface Technology {
      *
      * @param fe the {@link FunctionalEndpoint} to generate the {@link URI} for.
      * @param propertyKey the {@link PropertyKey} to generate the {@link URI} for.
+     * @param op the operation to associate with the returned URI
      * @param modifiers any {@link Modifier modifiers} to associate with this {@link URI}.
      * @return a {@link URI} representing this specific property, including modifiers
      * @throws UnassociatedResourceException If this FunctionalEndpoint isn't associated with this
      *         technology.
      * @see #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)
      */
-    URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey,
+    URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op,
                                 Modifier ... modifiers) throws UnassociatedResourceException;
+
+    /**
+     * Convenience wrapper for
+     * {@link #getNativeUriForProperty(FunctionalEndpoint, PropertyKey, Operation, Modifier...)}.
+     *
+     * This method is effectively the same as calling
+     * {@link #getNativeUriForProperty(FunctionalEndpoint, PropertyKey, Operation, Modifier...)}
+     * with {@link Operation#UNSPECIFIED} and no modifiers.
+     *
+     * @param fe the {@link FunctionalEndpoint} to generate the {@link URI} for.
+     * @param propertyKey the {@link PropertyKey} to generate the {@link URI} for.
+     * @return a {@link URI} representing this specific property, including modifiers
+     * @throws UnassociatedResourceException If this FunctionalEndpoint isn't associated with this
+     *         technology.
+     * @see #getRelativeUriForFunctionalEndpoint(FunctionalEndpoint, URI)
+     */
+    default URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey)
+            throws UnassociatedResourceException {
+        return getNativeUriForProperty(fe, propertyKey, Operation.UNSPECIFIED);
+    }
 
     /**
      * Calculated the native URI that represents a {@link Section} on the given FunctionalEndpoint,

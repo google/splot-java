@@ -186,7 +186,7 @@ public class TechnologyTest {
         }
 
         @Override
-        public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Modifier... modifiers) throws UnassociatedResourceException {
+        public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier... modifiers) throws UnassociatedResourceException {
             return null;
         }
 

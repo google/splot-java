@@ -26,28 +26,14 @@ class ModifierTest {
 
     @Test
     void convertToQuery() {
-        assertEquals("inc&d=2.00&tt&all",
+        assertEquals("d=2.00&tt&all",
                 Modifier.convertToQuery(
-                        Modifier.increment(),
                         Modifier.duration(2),
-                        Modifier.transitionTarget(),
-                        Modifier.all()));
-
-        assertEquals("tog", Modifier.convertToQuery(Modifier.toggle()));
-        assertEquals("ins", Modifier.convertToQuery(Modifier.insert()));
-        assertEquals("rem", Modifier.convertToQuery(Modifier.remove()));
-
-        assertThrows(InvalidModifierListException.class,
-                ()->Modifier.convertToQuery(
-                        Modifier.increment(),
-                        Modifier.duration(2),
-                        Modifier.toggle(),
                         Modifier.transitionTarget(),
                         Modifier.all()));
 
         assertThrows(IllegalArgumentException.class,
                 ()->Modifier.convertToQuery(
-                        Modifier.increment(),
                         Modifier.duration(-2),
                         Modifier.transitionTarget(),
                         Modifier.all()));
@@ -57,26 +43,10 @@ class ModifierTest {
     void convertFromQuery() {
         assertEquals(
                 Arrays.asList(
-                    Modifier.insert(),
                     Modifier.duration(2),
                     Modifier.transitionTarget(),
                     Modifier.all()),
                 Arrays.asList(Modifier.convertFromQuery("ins&d=2.00&tt&all")));
-
-        assertEquals(
-                Arrays.asList(Modifier.remove()),
-                Arrays.asList(Modifier.convertFromQuery("rem")));
-
-        assertEquals(
-                Arrays.asList(Modifier.toggle()),
-                Arrays.asList(Modifier.convertFromQuery("tog")));
-
-        assertEquals(
-                Arrays.asList(Modifier.increment()),
-                Arrays.asList(Modifier.convertFromQuery("inc")));
-
-        assertThrows(InvalidModifierListException.class,
-                ()->Modifier.convertFromQuery("inc&tog&d=2.00&tt&all"));
 
         assertThrows(InvalidModifierListException.class,
                 ()->Modifier.convertFromQuery("inc&d=-2&tt&all"));
