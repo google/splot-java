@@ -2,7 +2,7 @@ Splot for Java
 ==============
 
 Splot for Java is an experimental set of Java libraries implementing
-the Splot Object Model (SOM), enabling easy-to-use monitoring,
+the [Splot Object Model (SOM)][SOM], enabling easy-to-use monitoring,
 control, and thing-to-thing/machine-to-machine behaviors. It is broken
 down into five subprojects:
 
@@ -13,9 +13,12 @@ down into five subprojects:
 *   `splot-traits`: A standard set of defined traits.
 *   `splot-local`: Classes for implementing local functional
     endpoints, as well as a local technology implementation.
-*   `smcp`: A library for using the experimental CoAP-based Simple
-    Monitoring and Control Protocol using the Splot Object Model as
-    implemented in `splot-base`.
+*   `smcp`: A library for using the experimental CoAP-based [Splot Monitoring and Control Protocol][SMCP]
+   using the [Splot Object Model][SOM] as
+   implemented in `splot-base`.
+
+[SOM]: https://google.github.io/splot-java/splot-book/som/intro.html
+[SMCP]: https://google.github.io/splot-java/splot-book/smcp/intro.html
 
 Splot for Java should be considered experimental and should not yet be
 considered production-ready. This is an early release for testing and
@@ -53,24 +56,22 @@ locally and do not rely on cloud infrastructure.
     *   Will likely use COSE, OSCORE, possibly DTLS under certain
         circumstances.
 
-## Introductory Material ##
+## Documentation ##
 
-*   [Introduction to the Splot Object Model
-    (SOM)](doc/splot-object-model-intro.md)
-*   [Introduction to the Simple Monitoring and Control
-    Protocol](doc/smcp-intro.md)
-*   [Introduction to Automation Primitives](doc/automation.md)
+*   [Splot Design Documentation](https://google.github.io/splot-java/splot-book/)
+*   [API Javadoc](https://google.github.io/splot-java/releases/latest/apidocs/)
+*   [Github Project](https://github.com/google/splot-java)
+
+## Examples ##
+
 *   [SMCP Example Server](smcp-example-server/)
 *   [Light Bulb Example](smcp-example-server/src/main/java/com/example/smcp/server/MyLightBulb.java)
+*   [Coffee Machine Protocol Example](https://docs.google.com/document/d/e/2PACX-1vQselDu8k3rLdt8Qncy5ryL3uz7toLzzHgS6Sz9F0bfl1IhJsGzvsBG-WP5u3dLDkjITJipCFy6Ip18/pub)
 
 <!-- TODO: Update this with real URL
 *   [High-level introductory slide deck](TBD)
 -->
 
-## Documentation ##
-
-*   [API Javadoc](https://google.github.io/splot-java/releases/latest/apidocs/)
-*   [Github Project](https://github.com/google/splot-java)
 
 ### Related Projects ###
 

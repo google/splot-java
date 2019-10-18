@@ -1,0 +1,6 @@
+[book]
+authors = ["Robert Quattlebaum"]
+language = "en"
+multilingual = false
+src = "src"
+title = "[DRAFT] Splot Design Documentation"
