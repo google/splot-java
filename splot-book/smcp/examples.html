@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introductory Example - [DRAFT] Splot Design Documentation</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="../title-page.html">Splot Design Documentation</a></li><li><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li><a href="../design-goals.html"><strong aria-hidden="true">1.1.</strong> Design Goals</a></li><li><a href="../terminology.html"><strong aria-hidden="true">1.2.</strong> Terminology</a></li></ol></li><li><a href="../som/intro.html"><strong aria-hidden="true">2.</strong> Splot Object Model</a></li><li><ol class="section"><li><a href="../som/arch.html"><strong aria-hidden="true">2.1.</strong> Architecture</a></li><li><a href="../som/things.html"><strong aria-hidden="true">2.2.</strong> Things</a></li><li><a href="../som/properties.html"><strong aria-hidden="true">2.3.</strong> Properties</a></li><li><a href="../som/methods.html"><strong aria-hidden="true">2.4.</strong> Methods</a></li><li><a href="../som/traits.html"><strong aria-hidden="true">2.5.</strong> Traits</a></li><li><a href="../som/children.html"><strong aria-hidden="true">2.6.</strong> Children</a></li><li><a href="../som/trait-profiles.html"><strong aria-hidden="true">2.7.</strong> Trait Profiles</a></li><li><a href="../som/groups.html"><strong aria-hidden="true">2.8.</strong> Groups</a></li><li><a href="../som/technologies.html"><strong aria-hidden="true">2.9.</strong> Technologies</a></li></ol></li><li><a href="../automation/intro.html"><strong aria-hidden="true">3.</strong> Automation</a></li><li><ol class="section"><li><a href="../automation/primitives.html"><strong aria-hidden="true">3.1.</strong> Primitives</a></li><li><ol class="section"><li><a href="../automation/pairings.html"><strong aria-hidden="true">3.1.1.</strong> Pairings</a></li><li><a href="../automation/rules.html"><strong aria-hidden="true">3.1.2.</strong> Rules</a></li><li><a href="../automation/timers.html"><strong aria-hidden="true">3.1.3.</strong> Timers</a></li><li><a href="../automation/actionable.html"><strong aria-hidden="true">3.1.4.</strong> Actionable Primitives</a></li></ol></li><li><a href="../automation/expressions.html"><strong aria-hidden="true">3.2.</strong> Automation Expressions</a></li><li><a href="../automation/recipes.html"><strong aria-hidden="true">3.3.</strong> Automation Recipes</a></li><li><a href="../automation/examples.html"><strong aria-hidden="true">3.4.</strong> Pulling it All Together</a></li></ol></li><li><a href="../ssm/intro.html"><strong aria-hidden="true">4.</strong> Splot Security Model</a></li><li><ol class="section"><li><a href="../ssm/arch.html"><strong aria-hidden="true">4.1.</strong> Architecture</a></li><li><a href="../ssm/sessions.html"><strong aria-hidden="true">4.2.</strong> Security Sessions</a></li><li><a href="../ssm/identities.html"><strong aria-hidden="true">4.3.</strong> Identities</a></li><li><a href="../ssm/keychain.html"><strong aria-hidden="true">4.4.</strong> Keychain</a></li><li><a href="../ssm/lost-secret-recovery.html"><strong aria-hidden="true">4.5.</strong> Lost Secret Recovery</a></li><li><a href="../ssm/spske.html"><strong aria-hidden="true">4.6.</strong> Single-Purpose Shared Key Establishment</a></li><li><a href="../ssm/unresolved-issues.html"><strong aria-hidden="true">4.7.</strong> Unresolved Issues</a></li></ol></li><li><a href="../smcp/intro.html"><strong aria-hidden="true">5.</strong> Splot Monitoring and Control Protocol</a></li><li><ol class="section"><li><a href="../smcp/examples.html" class="active"><strong aria-hidden="true">5.1.</strong> Introductory Example</a></li><li><a href="../smcp/cloud_control.html"><strong aria-hidden="true">5.2.</strong> Remote Monitoring and Control</a></li></ol></li><li><a href="../trait-def/core/intro.html"><strong aria-hidden="true">6.</strong> Core Traits</a></li><li><ol class="section"><li><a href="../trait-def/core/base.html"><strong aria-hidden="true">6.1.</strong> Base</a></li><li><a href="../trait-def/core/group.html"><strong aria-hidden="true">6.2.</strong> Group</a></li><li><a href="../trait-def/core/scene.html"><strong aria-hidden="true">6.3.</strong> Scene</a></li><li><a href="../trait-def/core/transition.html"><strong aria-hidden="true">6.4.</strong> Transition</a></li></ol></li><li><a href="../trait-def/std/intro.html"><strong aria-hidden="true">7.</strong> Standard Traits</a></li><li><ol class="section"><li><a href="../trait-def/std/on-off.html"><strong aria-hidden="true">7.1.</strong> OnOff</a></li><li><a href="../trait-def/std/level.html"><strong aria-hidden="true">7.2.</strong> Level</a></li><li><a href="../trait-def/std/light.html"><strong aria-hidden="true">7.3.</strong> Light</a></li><li><a href="../trait-def/std/enabled.html"><strong aria-hidden="true">7.4.</strong> Enabled</a></li><li><a href="../trait-def/std/energy.html"><strong aria-hidden="true">7.5.</strong> Energy</a></li><li><a href="../trait-def/std/battery.html"><strong aria-hidden="true">7.6.</strong> Battery</a></li><li><a href="../trait-def/std/ambient-environment.html"><strong aria-hidden="true">7.7.</strong> AmbientEnvironment</a></li><li><a href="../trait-def/std/button.html"><strong aria-hidden="true">7.8.</strong> Button</a></li><li><a href="../trait-def/std/presence.html"><strong aria-hidden="true">7.9.</strong> Presence</a></li></ol></li><li><a href="../trait-def/auto/intro.html"><strong aria-hidden="true">8.</strong> Automation Traits</a></li><li><ol class="section"><li><a href="../trait-def/auto/pairing.html"><strong aria-hidden="true">8.1.</strong> Pairing</a></li><li><a href="../trait-def/auto/pairing-manager.html"><strong aria-hidden="true">8.2.</strong> PairingManager</a></li><li><a href="../trait-def/auto/actionable.html"><strong aria-hidden="true">8.3.</strong> Actionable</a></li><li><a href="../trait-def/auto/rule.html"><strong aria-hidden="true">8.4.</strong> Rule</a></li><li><a href="../trait-def/auto/rule-manager.html"><strong aria-hidden="true">8.5.</strong> RuleManager</a></li><li><a href="../trait-def/auto/timer.html"><strong aria-hidden="true">8.6.</strong> Timer</a></li><li><a href="../trait-def/auto/timer-manager.html"><strong aria-hidden="true">8.7.</strong> TimerManager</a></li></ol></li><li><a href="../trait-def/sec/intro.html"><strong aria-hidden="true">9.</strong> Security Traits</a></li><li><ol class="section"><li><a href="../trait-def/sec/keychain.html"><strong aria-hidden="true">9.1.</strong> Keychain</a></li><li><a href="../trait-def/sec/keychain-item.html"><strong aria-hidden="true">9.2.</strong> KeychainItem</a></li><li><a href="../trait-def/sec/identity.html"><strong aria-hidden="true">9.3.</strong> Identity</a></li><li><a href="../trait-def/sec/access-rule.html"><strong aria-hidden="true">9.4.</strong> AccessRule</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">[DRAFT] Splot Design Documentation</h1>
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2><a class="header" href="#introductory-example" id="introductory-example">Introductory Example</a></h2>
+<p>This section introduces a strawman device and describes how it would
+be used in practice. It has been written in such a way as to allow you
+to jump right in without much context on how the SOM works, but I do
+recommend having a look at the <a href="splot-object-model-intro.html">Splot Object Model
+Introduction</a>.</p>
+<p>Since SMCP is a RESTful protocol, it uses a hierarchy reminiscent o
+that of a file system. Here is an example of what the hierarchy might
+look like for a simple smart light bulb:</p>
+<pre><code> * /.well-known/
+    * core                  &lt;- RFC6690, for service discovery
+ * /1/                      &lt;- Feature Thing #1
+    * s/                    &lt;- State Section
+        * onof/v            &lt;- OnOff value (Boolean)
+        * levl/v            &lt;- Level value (Float)
+        * scen/sid          &lt;- Scene ID
+        * tran/d            &lt;- Transition Duration
+    * c/                    &lt;- Configuration Section
+        * lock/v            &lt;- Change Lock (Boolean)
+    * m/                    &lt;- Metadata Section
+        * base/turi         &lt;- Base Trait Version URI
+        * base/name         &lt;- Administrative Name for this Thing
+        * base/uid          &lt;- Administrative UID for this Thing
+        * base/sver         &lt;- Software version
+        * onof/turi         &lt;- OnOff Trait Version URI
+        * lock/turi         &lt;- Lock Trait Version URI
+        * levl/turi         &lt;- Level Trait Version URI
+        * lght/turi         &lt;- Light Trait Version URI
+        * lght/mire         &lt;- Native Correlated Color Temperature
+        * lght/mxbr         &lt;- Maximum Lumen Output
+        * lght/mdim         &lt;- Minimum Dimming Output
+        * scen/turi         &lt;- Scene Version URI
+        * tran/turi         &lt;- Transition Version URI
+    * f/                    &lt;- Methods/Children Section
+        * scen?save         &lt;- Scene Trait Save Method
+        * scen/[scene-id]/  &lt;- Individual Scene Thing
+            * s/onof/v      &lt;- OnOff value for [scene-id]
+            * s/levl/v      &lt;- Level value for [scene-id]
+            * s/tran/d      &lt;- Transition duration for [scene-id]
+            * m/base/name   &lt;- Administrative name of the scene
+</code></pre>
+<h3><a class="header" href="#example-rest-operations" id="example-rest-operations">Example REST Operations</a></h3>
+<p>Note that while the following examples use JSON, CBOR is the preferred
+encoding for SMCP. Support for JSON in SMCP is optional.</p>
+<p>To get information about the state of this thing:</p>
+<pre><code>GET /1/s
+
+...
+
+2.05 CONTENT
+{&quot;onof&quot;:{&quot;v&quot;:false},&quot;levl&quot;:{&quot;v&quot;:0.2},&quot;tran&quot;:{&quot;d&quot;:0}}
+</code></pre>
+<p>To get information on just the on/off status:</p>
+<pre><code>GET /1/s/onof/v
+
+...
+
+2.05 CONTENT
+false
+</code></pre>
+<p>To turn on this light to full brightness (assuming it isn't locked):</p>
+<pre><code>POST /1/s
+{&quot;onof&quot;:{&quot;v&quot;:true},&quot;levl&quot;:{&quot;v&quot;:1}}
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>To toggle this light on or off:</p>
+<pre><code>POST /1/s/onof/v?tog
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>To increase the perceived brightness of the light by around 10% of
+maximum:</p>
+<pre><code>POST /1/s/levl/v?inc
+0.1
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>Change the light level to 100% brightness over the course of three
+seconds:</p>
+<pre><code>POST /1/s
+{&quot;levl&quot;:{&quot;v&quot;:1},&quot;tran&quot;:{&quot;d&quot;:3}}
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>Significantly decrease the brightness of the light (by 0.5) over the
+course of 10 seconds:</p>
+<pre><code>POST /1/s/levl/v?inc&amp;d=10
+-0.5
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>To stop a transition currently in progress:</p>
+<pre><code>POST /1/s/tran/d
+0
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>To save the current state as a scene identified as 'evening':</p>
+<pre><code>POST /1/f/scen?save
+{&quot;sid&quot;:&quot;evening&quot;}
+
+...
+
+2.01 CREATED /1/f/scen/evening/
+</code></pre>
+<p>To later see what the state for the evening scene is:</p>
+<pre><code>GET /1/f/scen/evening/s
+
+...
+
+2.05 CONTENT
+{&quot;onof&quot;:{&quot;v&quot;:true},&quot;levl&quot;:{&quot;v&quot;:0.3}}
+</code></pre>
+<p>To recall evening scene state:</p>
+<pre><code>POST /1/s/scen/sid
+&quot;evening&quot;
+
+...
+
+2.04 CHANGED
+</code></pre>
+<p>To delete the evening scene:</p>
+<pre><code>DELETE /1/f/scen/evening/
+
+...
+
+2.02 DELETED
+</code></pre>
+<h3><a class="header" href="#additional-bits" id="additional-bits">Additional Bits</a></h3>
+<p>Now that we've covered some of the more simple sorts of interactions,
+we can add on to the hierarchy to add things like group support,
+device management, keychain management, etc:</p>
+<pre><code> * /g/                   &lt;- Group directory
+    * ?create            &lt;- Query for creating a new group
+    * [group-id]/        &lt;- Individual Group Thing
+        * s/...          &lt;- Group Member State (changes state of all members)
+        * c/...          &lt;- Group Configuration (normal section)
+        * m/...          &lt;- Group Metadata (normal section)
+        * f/...          &lt;- Group Member Functions/Children (similar to state)
+ * /dev/                 &lt;- Device Management Thing
+    * m/                 &lt;- Metadata Section
+        * base/turi      &lt;- Base Trait Version URI
+        * base/name      &lt;- Administrative Name for this thing
+        * base/uid       &lt;- Administrative UID for this thing
+        * base/sver      &lt;- Software version
+        * prmg/turi      &lt;- Automation Pairing Manager Version URI
+        * rlmg/turi      &lt;- Automation Rule Manager Version URI
+        * keyc/turi      &lt;- Keychain Version URI
+        * gmgr/turi      &lt;- Group Manager Version URI
+    * f/                 &lt;- Methods/Children Section
+        * prmg/
+            * ?create    &lt;- Query to create automation pairings
+            * [pair-id]/ &lt;- Path to the things for individual pairings
+        * rlmg/
+            * ?create    &lt;- Query to create automation rules
+            * [rule-id]/ &lt;- Path to the things for individual rules
+        * keyc/
+            * ?create    &lt;- Query to create new keychain items
+            * [key-id]/  &lt;- Path to the things for individual keychain items</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../smcp/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../smcp/cloud_control.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../smcp/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../smcp/cloud_control.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
