@@ -67,12 +67,12 @@ class SmcpDiscoveryQueryTest extends SmcpTestBase {
 
             tick(1);
 
-            Set<FunctionalEndpoint> results = query.get();
+            Set<Thing> results = query.get();
 
             assertFalse(results.isEmpty());
             assertEquals(1, results.size());
 
-            FunctionalEndpoint remoteFe = results.iterator().next();
+            Thing remoteFe = results.iterator().next();
 
             assertEquals(
                     localFe.getCachedProperty(BaseTrait.META_UID),
@@ -112,12 +112,12 @@ class SmcpDiscoveryQueryTest extends SmcpTestBase {
                             .setBaseUri(URI.create("coap://" + Coap.ALL_NODES_MCAST_IP4 + ":" + port + "/"))
                             .buildAndRun();
 
-            Set<FunctionalEndpoint> results = query.get();
+            Set<Thing> results = query.get();
 
             assertFalse(results.isEmpty());
             assertEquals(1, results.size());
 
-            FunctionalEndpoint remoteFe = results.iterator().next();
+            Thing remoteFe = results.iterator().next();
 
             assertEquals(
                     localFe.getCachedProperty(BaseTrait.META_UID),

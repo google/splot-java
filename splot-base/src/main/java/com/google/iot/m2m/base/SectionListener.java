@@ -20,17 +20,17 @@ import java.util.concurrent.Executor;
 
 /**
  * Interface for receiving notifications of changes to the properties of a {@link Section} in a
- * {@link FunctionalEndpoint}.
+ * {@link Thing}.
  *
- * @see FunctionalEndpoint#registerSectionListener(Executor, Section, SectionListener)
- * @see FunctionalEndpoint#unregisterSectionListener(SectionListener)
+ * @see Thing#registerSectionListener(Executor, Section, SectionListener)
+ * @see Thing#unregisterSectionListener(SectionListener)
  */
 public interface SectionListener {
     /**
-     * Called whenever a section of a {@link FunctionalEndpoint} has changed.
+     * Called whenever a section of a {@link Thing} has changed.
      *
-     * @param fe the functional endpoint that is reporting the change
+     * @param fe the thing that is reporting the change
      * @param sectionValues the current values of all of the properties in the section
      */
-    void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> sectionValues);
+    void onSectionChanged(Thing fe, Map<String, Object> sectionValues);
 }

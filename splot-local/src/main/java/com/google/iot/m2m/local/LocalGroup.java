@@ -34,14 +34,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Package-private Group implementation for {@link LocalTechnology}. This implementation is fairly
  * dumb because it can't do things like multicast. However, it is still useful in cases where you
- * need group functionality with functional endpoints native to technologies that don't support
+ * need group functionality with things native to technologies that don't support
  * groups.
  */
-final class LocalGroup extends LocalFunctionalEndpoint implements Group {
+final class LocalGroup extends LocalThing implements Group {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalGroup.class.getCanonicalName());
 
-    private final Set<FunctionalEndpoint> mMembers = new HashSet<>();
+    private final Set<Thing> mMembers = new HashSet<>();
     private final Set<String> mUnhostedMemberUids = new HashSet<>();
     private final LocalTechnology mTechnology;
     private final String mGroupId;
@@ -90,7 +90,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
                                 ret[i++] = uid;
                             }
 
-                            for (FunctionalEndpoint fe : mMembers) {
+                            for (Thing fe : mMembers) {
                                 ret[i++] = fe.getCachedProperty(BaseTrait.META_UID);
                             }
 
@@ -125,16 +125,16 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
                         return;
                     }
 
-                    List<FunctionalEndpoint> membersToAdd = new LinkedList<>();
+                    List<Thing> membersToAdd = new LinkedList<>();
 
                     for (String uid : new ArrayList<>(toAdd)) {
-                        FunctionalEndpoint fe = mTechnology.getHostedFunctionalEndpointForUid(uid);
+                        Thing fe = mTechnology.getHostedThingForUid(uid);
 
                         if (fe != null) {
                             if (fe instanceof LocalGroup
                                     && ((LocalGroup) fe).getTechnology() == mTechnology) {
                                 throw new InvalidPropertyValueException(
-                                        new UnacceptableFunctionalEndpointException(
+                                        new UnacceptableThingException(
                                                 "Cannot add a native group \""
                                                         + uid
                                                         + "\"as a member of a native group"));
@@ -267,7 +267,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
     }
 
     @Override
-    public ListenableFuture<Set<FunctionalEndpoint>> fetchMembers() {
+    public ListenableFuture<Set<Thing>> fetchMembers() {
         return submit(
                 () -> {
                     synchronized (mMembers) {
@@ -278,24 +278,24 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
 
     @Override
     @CanIgnoreReturnValue
-    public ListenableFuture<Void> addMember(FunctionalEndpoint fe) {
+    public ListenableFuture<Void> addMember(Thing fe) {
         if (fe instanceof LocalGroup && ((LocalGroup) fe).getTechnology() == mTechnology) {
             return Futures.immediateFailedFuture(
-                    new UnacceptableFunctionalEndpointException(
+                    new UnacceptableThingException(
                             "Cannot add a native group as a member"));
         }
 
         if (mTechnology != null) {
             if (!mTechnology.isAssociatedWith(fe)) {
                 return Futures.immediateFailedFuture(
-                        new UnacceptableFunctionalEndpointException(
-                                "Functional endpoint is not yet associated with this technology"));
+                        new UnacceptableThingException(
+                                "Thing is not yet associated with this technology"));
             }
 
             if (!mTechnology.isHosted(this)) {
                 return Futures.immediateFailedFuture(
-                        new UnacceptableFunctionalEndpointException(
-                                "This group must itself be hosted before adding hosted functional endpoints"));
+                        new UnacceptableThingException(
+                                "This group must itself be hosted before adding hosted things"));
             }
         }
 
@@ -322,7 +322,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
 
     @Override
     @CanIgnoreReturnValue
-    public ListenableFuture<Void> removeMember(FunctionalEndpoint fe) {
+    public ListenableFuture<Void> removeMember(Thing fe) {
         return submit(
                 () -> {
                     synchronized (mMembers) {
@@ -529,14 +529,14 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
         }
 
         synchronized (mMembers) {
-            for (FunctionalEndpoint fe : mMembers) {
+            for (Thing fe : mMembers) {
                 futures.add(fe.invokeMethod(methodKey, arguments));
             }
         }
 
-        if (methodKey.getType().isAssignableFrom(FunctionalEndpoint.class)) {
-            // This method is returning a functional endpoint.
-            // TODO: Do we need to build an aggregate functional endpoint that will represent the
+        if (methodKey.getType().isAssignableFrom(Thing.class)) {
+            // This method is returning a thing.
+            // TODO: Do we need to build an aggregate thing that will represent the
             // new object?
             return Futures.immediateFuture(null);
 
@@ -561,7 +561,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
         mHasInitialized = true;
     }
 
-    void checkIfWantsFunctionalEndpoint(FunctionalEndpoint fe) {
+    void checkIfWantsThing(Thing fe) {
         synchronized (mUnhostedMemberUids) {
             if (mUnhostedMemberUids.isEmpty()) {
                 return;
@@ -598,7 +598,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
                                 if (mUnhostedMemberUids.contains(fetchedUid)) {
                                     if (DEBUG)
                                         LOGGER.info(
-                                                "checkIfWantsFunctionalEndpoint: Upgrading "
+                                                "checkIfWantsThing: Upgrading "
                                                         + fetchedUid
                                                         + " to a real member");
                                     addMember(fe);
@@ -610,7 +610,7 @@ final class LocalGroup extends LocalFunctionalEndpoint implements Group {
             } else if (mUnhostedMemberUids.contains(uid)) {
                 if (DEBUG)
                     LOGGER.info(
-                            "checkIfWantsFunctionalEndpoint: Upgrading "
+                            "checkIfWantsThing: Upgrading "
                                     + uid
                                     + " to a real member");
                 addMember(fe);

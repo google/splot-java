@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * Experimental trait representing an automation rule. An automation rule allows you to create
- * if-this-then-that style relationships across functional endpoints that are associated with the
+ * if-this-then-that style relationships across things that are associated with the
  * same {@link com.google.iot.m2m.base.Technology} instance.
  *
  * <p>This trait is typically used with {@link ActionsTrait}.
@@ -39,7 +39,7 @@ public final class AutomationRuleTrait {
     // Prevent instantiation
     private AutomationRuleTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalAutomationRuleTrait {}
 
     /** The name of this trait */

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class SmcpResourceLink<T> extends AbstractResourceLink<T> {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(SmcpFunctionalEndpoint.class.getCanonicalName());
+            Logger.getLogger(SmcpThing.class.getCanonicalName());
 
     private final Client mClient;
     private final Class<T> mClass;

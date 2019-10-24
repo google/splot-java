@@ -31,7 +31,7 @@ public final class TransitionTrait {
     // Prevent instantiation
     private TransitionTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalTransitionTrait {}
 
     /** The name of this trait */
@@ -69,7 +69,7 @@ public final class TransitionTrait {
 
     /**
      * Transition speed, in percentage of maximum speed. This is an alternative to specifying the
-     * duration of a transition for functional endpoints where certain properties cannot be
+     * duration of a transition for things where certain properties cannot be
      * physically transitioned faster than a certain speed. The units of this property are a
      * percentage of full speed. The implementation SHOULD allow this parameter to be adjusted as
      * the transition is occurring. This property SHOULD NOT be implemented unless it makes sense

@@ -17,7 +17,7 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception indicating problems and errors related to the changing or fetching of
- * properties on {@link FunctionalEndpoint}s.
+ * properties on {@link Thing}s.
  *
  * @see PropertyNotFoundException
  * @see PropertyReadOnlyException

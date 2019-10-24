@@ -16,7 +16,7 @@
 package com.example.smcp.server;
 
 import com.google.iot.m2m.local.LocalActions;
-import com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalTransitioningThing;
 import com.google.iot.m2m.trait.BaseTrait;
 import com.google.iot.m2m.trait.LevelTrait;
 import com.google.iot.m2m.trait.LightTrait;
@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/** Example Dimmable Light Bulb Functional Endpoint. */
-public class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
+/** Example Dimmable Light Bulb Thing. */
+public class MyLightBulb extends LocalTransitioningThing {
     private static final Logger LOGGER = Logger.getLogger(LocalActions.class.getCanonicalName());
     private boolean mIsOn = false;
     private float mLevel = 0.0f;

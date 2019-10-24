@@ -39,7 +39,7 @@ public final class LightTrait {
         return new float[] {0.3127f, 0.3290f};
     }
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalLightTrait {
         @Override
         public float[] onSanitizeChromaXy(

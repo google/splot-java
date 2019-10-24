@@ -23,20 +23,20 @@ import java.util.ArrayList;
  * Class for specifying additional context for operations on properties.
  *
  * <p>Instances of this class are generally passed as a variable list of arguments
- * to property-related functions on a {@link FunctionalEndpoint}, like
- * {@link FunctionalEndpoint#setProperty} or
- * {@link FunctionalEndpoint#fetchSection}. They provide a
+ * to property-related functions on a {@link Thing}, like
+ * {@link Thing#setProperty} or
+ * {@link Thing#fetchSection}. They provide a
  * mechanism for indicating things like the intent to read the transition target
  * value rather than the immediate value, or to indicate that a given change should
  * transition to the target value over a period of time.
  *
- * @see FunctionalEndpoint#setProperty
- * @see FunctionalEndpoint#fetchProperty
- * @see FunctionalEndpoint#fetchSection
- * @see FunctionalEndpoint#incrementProperty
- * @see FunctionalEndpoint#toggleProperty
- * @see FunctionalEndpoint#insertValueIntoProperty
- * @see FunctionalEndpoint#removeValueFromProperty
+ * @see Thing#setProperty
+ * @see Thing#fetchProperty
+ * @see Thing#fetchSection
+ * @see Thing#incrementProperty
+ * @see Thing#toggleProperty
+ * @see Thing#insertValueIntoProperty
+ * @see Thing#removeValueFromProperty
  */
 public abstract class Modifier {
     /**
@@ -129,11 +129,11 @@ public abstract class Modifier {
      * Modifier class indicating a transition duration for changes to properties in
      * {@link Section#STATE}.
      *
-     * <p>This modifier will only have an effect if the target {@link FunctionalEndpoint} supports
+     * <p>This modifier will only have an effect if the target {@link Thing} supports
      * {@link com.google.iot.m2m.trait.TransitionTrait transitions}.
      *
      * <p>Even when transitions are supported, not all properties in {@link Section#STATE}
-     * necessarily support transitions. See the documentation for the FunctionalEndpoint for
+     * necessarily support transitions. See the documentation for the Thing for
      * more information.</p>
      *
      * <p>If the duration is set to zero, then this modifier also has the same behavior
@@ -141,11 +141,11 @@ public abstract class Modifier {
      *
      * @see com.google.iot.m2m.trait.TransitionTrait
      * @see Section#STATE
-     * @see FunctionalEndpoint#setProperty
-     * @see FunctionalEndpoint#incrementProperty
-     * @see FunctionalEndpoint#toggleProperty
-     * @see FunctionalEndpoint#insertValueIntoProperty
-     * @see FunctionalEndpoint#removeValueFromProperty
+     * @see Thing#setProperty
+     * @see Thing#incrementProperty
+     * @see Thing#toggleProperty
+     * @see Thing#insertValueIntoProperty
+     * @see Thing#removeValueFromProperty
      */
     public static class Duration extends Modifier {
         double mValue;
@@ -190,14 +190,14 @@ public abstract class Modifier {
      * <p>This modifier will have no effect if...
      *
      * <ul>
-     *     <li>the target {@link FunctionalEndpoint} doesn't support
+     *     <li>the target {@link Thing} doesn't support
      *     {@link com.google.iot.m2m.trait.TransitionTrait transitions}.</li>
      *     <li>the fetch operation isn't to {@link Section#STATE}.</li>
      * </ul>
      *
      * @see com.google.iot.m2m.trait.TransitionTrait
-     * @see FunctionalEndpoint#fetchProperty
-     * @see FunctionalEndpoint#fetchSection
+     * @see Thing#fetchProperty
+     * @see Thing#fetchSection
      * @see Section#STATE
      */
     public static class TransitionTarget extends Modifier {
@@ -222,7 +222,7 @@ public abstract class Modifier {
      * Modifier class indicating that properties with {@code null} values should
      * be included in the section results.
      *
-     * @see FunctionalEndpoint#fetchSection
+     * @see Thing#fetchSection
      */
     public static class All extends Modifier {
         @Override

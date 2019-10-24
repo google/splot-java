@@ -28,7 +28,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * The base trait is the one trait which is required on all Functional Endpoints. It contains
+ * The base trait is the one trait which is required on all Things. It contains
  * information about the model, manufacturer, and identifier, as well as administratively
  * configurable properties like the administrative name, administrative id, and the hidden flag.
  */
@@ -38,7 +38,7 @@ public final class BaseTrait {
     private BaseTrait() {}
 
     /**
-     * Abstract class used to implement @{link BaseTrait} behavior on a local functional endpoint.
+     * Abstract class used to implement @{link BaseTrait} behavior on a local thing.
      */
     @SuppressWarnings("RedundantThrows")
     public abstract static class AbstractLocalTrait extends LocalBaseTrait {
@@ -144,7 +144,7 @@ public final class BaseTrait {
             new PropertyKey<>(METADATA, TRAIT_ID, "turi", String.class);
 
     /**
-     * Administrative, human-readable name of the functional endpoint.
+     * Administrative, human-readable name of the thing.
      *
      * <p>After a factory reset, this is set to a descriptive default value by the manufacturer.
      * This value does not need to be unique.
@@ -177,7 +177,7 @@ public final class BaseTrait {
             new PropertyKey(METADATA, TRAIT_ID, "prod", java.util.Map.class);
 
     /**
-     * The model identifier for this functional endpoint, unique to the manufacturer.
+     * The model identifier for this thing, unique to the manufacturer.
      *
      * <p>It identifies the specific model of the device hosting this FE. Note that this field is
      * not for the marketing name: use ‘prod’ for that.
@@ -219,7 +219,7 @@ public final class BaseTrait {
     /**
      * Supported trait profiles.
      *
-     * <p>This property identifies which trait profiles this functional endpoint implements. Trait
+     * <p>This property identifies which trait profiles this thing implements. Trait
      * profiles define what the minimum implementation requirements are for specific types of
      * functionality, such as lights. The first listed profile is intended to best describe the
      * functionality of the FE, with subordinate profiles listed subsequently.

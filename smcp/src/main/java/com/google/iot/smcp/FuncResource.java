@@ -44,10 +44,10 @@ class FuncResource extends Resource<TraitChildrenResource> {
     private static final Logger LOGGER = Logger.getLogger(FuncResource.class.getCanonicalName());
 
     private final SmcpTechnology mTechnology;
-    private final FunctionalEndpoint mFe;
+    private final Thing mFe;
     private final Set<String> mTraits = new HashSet<>();
 
-    FuncResource(SmcpTechnology technology, FunctionalEndpoint fe) {
+    FuncResource(SmcpTechnology technology, Thing fe) {
         mFe = fe;
         mTechnology = technology;
         ListenableFuture<Map<String, Object>> future = mFe.fetchSection(Section.METADATA);
@@ -85,7 +85,7 @@ class FuncResource extends Resource<TraitChildrenResource> {
 
     private void initTrait(String trait) {
 
-        ListenableFuture<Collection<FunctionalEndpoint>> future;
+        ListenableFuture<Collection<Thing>> future;
 
         future = mFe.fetchChildrenForTrait(trait);
 
@@ -93,7 +93,7 @@ class FuncResource extends Resource<TraitChildrenResource> {
                 new Runnable() {
                     @Override
                     public void run() {
-                        Collection<FunctionalEndpoint> children;
+                        Collection<Thing> children;
                         try {
                             children = Futures.getChecked(future, SmcpException.class);
 
@@ -113,7 +113,7 @@ class FuncResource extends Resource<TraitChildrenResource> {
                 mTechnology.getExecutor());
     }
 
-    private void initTraitWithChildren(String trait, Collection<FunctionalEndpoint> children) {
+    private void initTraitWithChildren(String trait, Collection<Thing> children) {
         TraitChildrenResource resource;
 
         if (DEBUG) LOGGER.info("Adding children to trait " + trait + ": " + children);
@@ -122,11 +122,11 @@ class FuncResource extends Resource<TraitChildrenResource> {
 
         FuncResource.this.addChild(trait, resource);
 
-        for (FunctionalEndpoint cfe : children) {
+        for (Thing cfe : children) {
             String childId = mFe.getIdForChild(cfe);
 
             if (childId != null) {
-                resource.addChild(childId, new HostedFunctionalEndpointAdapter(mTechnology, cfe));
+                resource.addChild(childId, new HostedThingAdapter(mTechnology, cfe));
 
             } else {
                 if (DEBUG)
@@ -246,11 +246,11 @@ class FuncResource extends Resource<TraitChildrenResource> {
 
                         CborObject cborValue;
 
-                        if (value instanceof FunctionalEndpoint) {
-                            FunctionalEndpoint fe = (FunctionalEndpoint) value;
-                            URI uri = mTechnology.getNativeUriForFunctionalEndpoint(fe);
+                        if (value instanceof Thing) {
+                            Thing fe = (Thing) value;
+                            URI uri = mTechnology.getNativeUriForThing(fe);
 
-                            if (fe.getParentFunctionalEndpoint() == mFe) {
+                            if (fe.getParentThing() == mFe) {
                                 response.setCode(Code.RESPONSE_CREATED);
                             }
 

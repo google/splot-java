@@ -17,9 +17,9 @@ package com.google.iot.smcp;
 
 import com.google.iot.coap.Coap;
 import com.google.iot.coap.LocalEndpoint;
-import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Thing;
 import com.google.iot.m2m.base.Group;
-import com.google.iot.m2m.local.LocalFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalThing;
 import com.google.iot.m2m.local.LocalPairing;
 import com.google.iot.m2m.trait.AutomationPairingTrait;
 import com.google.iot.m2m.trait.EnabledDisabledTrait;
@@ -45,11 +45,11 @@ class SmcpPairingTest extends SmcpTestBase {
 
     SmcpTechnology techHosting = null;
     SmcpTechnology techBacking = null;
-    FunctionalEndpoint bulbHosted = null;
-    FunctionalEndpoint bulbLocal = null;
+    Thing bulbHosted = null;
+    Thing bulbLocal = null;
     LocalPairing pairing = null;
 
-    FunctionalEndpoint bulbRemote = null;
+    Thing bulbRemote = null;
 
     @BeforeEach
     public void before() throws Exception {
@@ -84,9 +84,9 @@ class SmcpPairingTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        bulbRemote = techBacking.getFunctionalEndpointForNativeUri(new URI(
+        bulbRemote = techBacking.getThingForNativeUri(new URI(
                 scheme, null, host, port,
-                techHosting.getNativeUriForFunctionalEndpoint(bulbHosted).getPath(), null, null
+                techHosting.getNativeUriForThing(bulbHosted).getPath(), null, null
         ));
 
         if (DEBUG) {
@@ -130,11 +130,11 @@ class SmcpPairingTest extends SmcpTestBase {
     }
 
     void setupOnOffPairing() throws Exception {
-        URI source = techBacking.getNativeUriForFunctionalEndpoint(bulbLocal);
+        URI source = techBacking.getNativeUriForThing(bulbLocal);
         assertNotNull(source);
         source = source.resolve(OnOffTrait.STAT_VALUE.getName());
 
-        URI destination = techBacking.getNativeUriForFunctionalEndpoint(bulbRemote);
+        URI destination = techBacking.getNativeUriForThing(bulbRemote);
         assertNotNull(destination);
         destination = destination.resolve(OnOffTrait.STAT_VALUE.getName());
 

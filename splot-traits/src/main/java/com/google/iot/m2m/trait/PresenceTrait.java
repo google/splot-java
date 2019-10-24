@@ -28,7 +28,7 @@ public final class PresenceTrait {
     // Prevent instantiation
     private PresenceTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalPresenceTrait {}
 
     /** The name of this trait */

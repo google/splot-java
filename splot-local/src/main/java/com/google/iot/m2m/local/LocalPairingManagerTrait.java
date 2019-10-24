@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 /**
  * Manager trait for enabling the in-band creation and management of {@link LocalPairing} instances.
  * This trait is implemented by the {@link LocalAutomationManager}, but is publicly defined to
- * allow it to be integrated into custom {@link LocalFunctionalEndpoint} implementations.
+ * allow it to be integrated into custom {@link LocalThing} implementations.
  */
 public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.AbstractLocalTrait implements PersistentStateInterface {
     private static final boolean DEBUG = false;
@@ -42,12 +42,12 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     private final ResourceLinkManager mResourceLinkManager;
 
     Map<String, LocalPairing> mPairingLookup = new HashMap<>();
-    Map<FunctionalEndpoint, String> mPairingReverseLookup = new HashMap<>();
+    Map<Thing, String> mPairingReverseLookup = new HashMap<>();
     int mNextChildId = 1;
-    FunctionalEndpoint mParent;
+    Thing mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalPairingManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+    public LocalPairingManagerTrait(ResourceLinkManager resourceLinkManager, Thing parent) {
         mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
@@ -63,22 +63,22 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     }
 
     @Override
-    public Set<FunctionalEndpoint> onCopyChildrenSet() {
+    public Set<Thing> onCopyChildrenSet() {
         return new HashSet<>(mPairingReverseLookup.keySet());
     }
 
     @Override
-    public @Nullable String onGetIdForChild(FunctionalEndpoint child) {
+    public @Nullable String onGetIdForChild(Thing child) {
         return mPairingReverseLookup.get(child);
     }
 
     @Override
-    public @Nullable FunctionalEndpoint onGetChild(String childId) {
+    public @Nullable Thing onGetChild(String childId) {
         return mPairingLookup.get(childId);
     }
 
     @CanIgnoreReturnValue
-    private boolean onDeleteChild(FunctionalEndpoint child) {
+    private boolean onDeleteChild(Thing child) {
         String childId = mPairingReverseLookup.get(child);
 
         if (childId == null || !mPairingLookup.containsKey(childId)) {
@@ -110,7 +110,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
             }
 
             @Override
-            public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
+            public @Nullable Thing getParentThing() {
                 return mParent;
             }
 
@@ -129,7 +129,7 @@ public class LocalPairingManagerTrait extends AutomationPairingManagerTrait.Abst
     }
 
     @Override
-    public FunctionalEndpoint onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
+    public Thing onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
         LocalPairing ret = newLocalPairing(getNewChildId());
         String param = null;
         try {

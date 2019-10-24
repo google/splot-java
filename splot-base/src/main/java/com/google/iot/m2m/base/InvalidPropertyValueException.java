@@ -20,10 +20,10 @@ package com.google.iot.m2m.base;
  * either be of the wrong type or it may be that the value it contains is out of range or in the
  * incorrect format.
  *
- * @see FunctionalEndpoint#setProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#incrementProperty(PropertyKey, Number)
- * @see FunctionalEndpoint#addValueToProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#removeValueFromProperty(PropertyKey, Object)
+ * @see Thing#setProperty(PropertyKey, Object)
+ * @see Thing#incrementProperty(PropertyKey, Number)
+ * @see Thing#addValueToProperty(PropertyKey, Object)
+ * @see Thing#removeValueFromProperty(PropertyKey, Object)
  */
 public class InvalidPropertyValueException extends PropertyException {
     @SuppressWarnings("unused")

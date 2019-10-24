@@ -32,7 +32,7 @@ public final class KeychainTrait {
     // Prevent Instantiation
     private KeychainTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalKeychainTrait {}
 
     /** The name of this trait */
@@ -67,8 +67,8 @@ public final class KeychainTrait {
      * @see KeychainItemTrait
      */
     @Method(REQUIRED)
-    public static final MethodKey<FunctionalEndpoint> METHOD_CREATE =
-            new MethodKey<>(TRAIT_ID, "create", FunctionalEndpoint.class);
+    public static final MethodKey<Thing> METHOD_CREATE =
+            new MethodKey<>(TRAIT_ID, "create", Thing.class);
 
     /**
      * Identity parameter.

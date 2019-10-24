@@ -15,7 +15,7 @@
  */
 package com.example.smcp.server;
 
-import com.google.iot.m2m.local.LocalFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalThing;
 import com.google.iot.m2m.trait.BaseTrait;
 import com.google.iot.m2m.trait.SystemTrait;
 
@@ -30,10 +30,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Functional Endpoint which exposes information about the operating system,
+ * Thing which exposes information about the operating system,
  * such as its name, version, load average, and number of available CPUs.
  */
-public class SystemInfo extends LocalFunctionalEndpoint {
+public class SystemInfo extends LocalThing {
     private final static int LOAD_AVERAGE_PERIOD_SECONDS = 5;
 
     private final OperatingSystemMXBean mMxBean;

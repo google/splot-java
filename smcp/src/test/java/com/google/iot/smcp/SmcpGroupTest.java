@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 import com.google.iot.coap.*;
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.local.LocalFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalThing;
 import com.google.iot.m2m.trait.*;
 import com.google.iot.m2m.util.NestedPersistentStateManager;
 import java.util.*;
@@ -42,9 +42,9 @@ class SmcpGroupTest extends SmcpTestBase {
             NestedPersistentStateManager psm = new NestedPersistentStateManager();
 
             SmcpTechnology technology = new SmcpTechnology(mContextA);
-            LocalFunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+            LocalThing bulb1 = new MyLightBulbNoTrans();
+            LocalThing bulb2 = new MyLightBulbNoTrans();
+            LocalThing bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulbHosted", bulb1);
@@ -78,9 +78,9 @@ class SmcpGroupTest extends SmcpTestBase {
             psm.initWithPersistentState(persistentState);
 
             SmcpTechnology technology = new SmcpTechnology(mContextA);
-            LocalFunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+            LocalThing bulb1 = new MyLightBulbNoTrans();
+            LocalThing bulb2 = new MyLightBulbNoTrans();
+            LocalThing bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulbHosted", bulb1);

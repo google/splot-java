@@ -31,26 +31,26 @@ import com.google.iot.m2m.trait.TransitionTrait;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Abstract class for more easily implementing local {@link FunctionalEndpoint}s. This class is
- * intended by be subclassed by developers who are implementing FunctionalEndpoints which are
- * locally hosted---meaning those functional endpoints which will be used to manipulate aspects of
+ * Abstract class for more easily implementing local {@link Thing}s. This class is
+ * intended by be subclassed by developers who are implementing Things which are
+ * locally hosted---meaning those things which will be used to manipulate aspects of
  * the device this code is running on. Subclasses of this class should <em>NOT</em> be used to
- * implement non-local FunctionalEndpoints: in those cases a class directly implementing the methods
- * of {@link FunctionalEndpoint} should be used.
+ * implement non-local Things: in those cases a class directly implementing the methods
+ * of {@link Thing} should be used.
  *
  * <p>Note that there are special subclasses of this class which provide native support for scenes
- * and transitions: {@link LocalSceneFunctionalEndpoint} and {@link
- * LocalTransitioningFunctionalEndpoint}, respectively. If your functional endpoint needs to support
+ * and transitions: {@link LocalSceneThing} and {@link
+ * LocalTransitioningThing}, respectively. If your thing needs to support
  * either, you should subclass one of those classes instead.
  *
- * @see LocalSceneFunctionalEndpoint
- * @see LocalTransitioningFunctionalEndpoint
+ * @see LocalSceneThing
+ * @see LocalTransitioningThing
  */
-public abstract class LocalFunctionalEndpoint
-        implements FunctionalEndpoint, PersistentStateInterface {
+public abstract class LocalThing
+        implements Thing, PersistentStateInterface {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(LocalFunctionalEndpoint.class.getCanonicalName());
+            Logger.getLogger(LocalThing.class.getCanonicalName());
 
     private final Map<String, LocalTrait> mTraits = new HashMap<>();
     private final Map<PropertyKey<?>, LocalTrait> mPropertyMap = new HashMap<>();
@@ -127,8 +127,8 @@ public abstract class LocalFunctionalEndpoint
      */
     protected Executor getExecutor() {
         // Default executor returns immediately, which is OK for subclasses of
-        // LocalFunctionalEndpoint and LocalSceneFunctionalEndpoint but not
-        // adequate for LocalTransitioningFunctionalEndpoint. That class provides
+        // LocalThing and LocalSceneThing but not
+        // adequate for LocalTransitioningThing. That class provides
         // its own override of this method.
         return Runnable::run;
     }
@@ -141,10 +141,10 @@ public abstract class LocalFunctionalEndpoint
         return future;
     }
 
-    protected LocalFunctionalEndpoint() {}
+    protected LocalThing() {}
 
     /**
-     * Registers the given trait with the local functional endpoint. This method is only called
+     * Registers the given trait with the local thing. This method is only called
      * during construction.
      *
      * @param trait The trait to register with this FE.
@@ -156,20 +156,20 @@ public abstract class LocalFunctionalEndpoint
                 new LocalTrait.Callback() {
                     @Override
                     public void onChildAdded(
-                            LocalTrait localTrait, FunctionalEndpoint functionalEndpoint) {
-                        LocalFunctionalEndpoint.this.onChildAdded(localTrait, functionalEndpoint);
+                            LocalTrait localTrait, Thing thing) {
+                        LocalThing.this.onChildAdded(localTrait, thing);
                     }
 
                     @Override
                     public void onChildRemoved(
-                            LocalTrait localTrait, FunctionalEndpoint functionalEndpoint) {
-                        LocalFunctionalEndpoint.this.onChildRemoved(localTrait, functionalEndpoint);
+                            LocalTrait localTrait, Thing thing) {
+                        LocalThing.this.onChildRemoved(localTrait, thing);
                     }
 
                     @Override
                     public <T> void onPropertyChanged(
                             LocalTrait localTrait, PropertyKey<T> propertyKey, T t) {
-                        LocalFunctionalEndpoint.this.onPropertyChanged(localTrait, propertyKey, t);
+                        LocalThing.this.onPropertyChanged(localTrait, propertyKey, t);
                     }
                 });
 
@@ -192,7 +192,7 @@ public abstract class LocalFunctionalEndpoint
         }
     }
 
-    private void onChildAdded(LocalTrait localTrait, FunctionalEndpoint child) {
+    private void onChildAdded(LocalTrait localTrait, Thing child) {
         changedPersistentState();
 
         if (DEBUG) {
@@ -212,7 +212,7 @@ public abstract class LocalFunctionalEndpoint
         }
     }
 
-    private void onChildRemoved(LocalTrait localTrait, FunctionalEndpoint child) {
+    private void onChildRemoved(LocalTrait localTrait, Thing child) {
         changedPersistentState();
 
         if (DEBUG) {
@@ -458,7 +458,7 @@ public abstract class LocalFunctionalEndpoint
 
     /**
      * An immediately returning variant of {@link #fetchSupportedPropertyKeys()} that is only
-     * available on subclasses of {@link LocalFunctionalEndpoint}.
+     * available on subclasses of {@link LocalThing}.
      *
      * @return a set containing all of the property keys that are supported by this functional
      *     endpoint.
@@ -686,7 +686,7 @@ public abstract class LocalFunctionalEndpoint
             return;
         }
 
-        Set<FunctionalEndpoint> children = trait.onCopyChildrenSet();
+        Set<Thing> children = trait.onCopyChildrenSet();
 
         if (children == null) {
             // Trait doesn't support children.
@@ -710,7 +710,7 @@ public abstract class LocalFunctionalEndpoint
             entry.mExecutor.execute(
                     () -> {
                         if (DEBUG) LOGGER.info("Pre-announcing children to " + listener);
-                        for (FunctionalEndpoint child : children) {
+                        for (Thing child : children) {
                             entry.mListener.onChildAdded(this, traitShortName, child);
                         }
                     });
@@ -760,7 +760,7 @@ public abstract class LocalFunctionalEndpoint
     @Override
     @CanIgnoreReturnValue
     public ListenableFuture<Boolean> delete() {
-        // Default behavior is you can't delete a local functional endpoint.
+        // Default behavior is you can't delete a local thing.
         return Futures.immediateFuture(false);
     }
 
@@ -777,7 +777,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     @Override
-    public ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(
+    public ListenableFuture<Collection<Thing>> fetchChildrenForTrait(
             String traitShortId) {
         final LocalTrait trait = mTraits.get(traitShortId);
 
@@ -790,9 +790,9 @@ public abstract class LocalFunctionalEndpoint
 
     @Nullable
     @Override
-    public final String getTraitForChild(FunctionalEndpoint child) {
+    public final String getTraitForChild(Thing child) {
         for (Map.Entry<String, LocalTrait> entry : mTraits.entrySet()) {
-            Set<FunctionalEndpoint> children = entry.getValue().onCopyChildrenSet();
+            Set<Thing> children = entry.getValue().onCopyChildrenSet();
             if (children != null && children.contains(child)) {
                 return entry.getKey();
             }
@@ -802,9 +802,9 @@ public abstract class LocalFunctionalEndpoint
 
     @Nullable
     @Override
-    public String getIdForChild(FunctionalEndpoint child) {
+    public String getIdForChild(Thing child) {
         for (LocalTrait trait : mTraits.values()) {
-            Set<FunctionalEndpoint> children = trait.onCopyChildrenSet();
+            Set<Thing> children = trait.onCopyChildrenSet();
             if (children != null && children.contains(child)) {
                 return trait.onGetIdForChild(child);
             }
@@ -814,7 +814,7 @@ public abstract class LocalFunctionalEndpoint
 
     @Nullable
     @Override
-    public FunctionalEndpoint getChild(String traitShortId, String childId) {
+    public Thing getChild(String traitShortId, String childId) {
         final LocalTrait trait = mTraits.get(traitShortId);
 
         if (trait == null) {
@@ -826,12 +826,12 @@ public abstract class LocalFunctionalEndpoint
 
     @Nullable
     @Override
-    public FunctionalEndpoint getParentFunctionalEndpoint() {
+    public Thing getParentThing() {
         return null;
     }
 
     /**
-     * Called whenever the persistent state of this functional endpoint has changed.
+     * Called whenever the persistent state of this thing has changed.
      *
      * <p>The persistent state will be written to non-volatile storage in the background.
      */
@@ -844,7 +844,7 @@ public abstract class LocalFunctionalEndpoint
     }
 
     /**
-     * Called whenever the persistent state of this functional endpoint has changed, and execution
+     * Called whenever the persistent state of this thing has changed, and execution
      * should be blocked until the state has been committed.
      *
      * <p>This method will block until it has confirmed that the persistent state has been

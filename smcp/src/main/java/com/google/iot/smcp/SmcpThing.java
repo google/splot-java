@@ -33,10 +33,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.iot.m2m.base.Splot.*;
 
-class SmcpFunctionalEndpoint implements FunctionalEndpoint {
+class SmcpThing implements Thing {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(SmcpFunctionalEndpoint.class.getCanonicalName());
+            Logger.getLogger(SmcpThing.class.getCanonicalName());
 
     private final Client mClient;
     final SmcpTechnology mTechnology;
@@ -55,11 +55,11 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     private Transaction mConfigObserver = null;
     private volatile HashMap<String, Object> mMetadataCache = new HashMap<>();
     private Transaction mMetadataObserver = null;
-    private SmcpFunctionalEndpoint mParent = null;
+    private SmcpThing mParent = null;
 
-    private final HashMap<String, Set<FunctionalEndpoint>> mChildrenCache = new HashMap<>();
+    private final HashMap<String, Set<Thing>> mChildrenCache = new HashMap<>();
 
-    SmcpFunctionalEndpoint(Client client, SmcpTechnology technology) {
+    SmcpThing(Client client, SmcpTechnology technology) {
         mClient = client;
         mTechnology = technology;
     }
@@ -599,7 +599,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
             baseUri = baseUri.resolve(requestUri.getPath());
         }
 
-        Set<FunctionalEndpoint> children;
+        Set<Thing> children;
 
         try {
             children = getChildrenFromResponse(baseUri, response);
@@ -614,9 +614,9 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         handleTraitChildrenSet(traitShortName, children);
     }
 
-    private void handleTraitChildrenSet(String trait, Set<FunctionalEndpoint> children) {
-        final Set<FunctionalEndpoint> curr = Sets.newHashSet(children);
-        Set<FunctionalEndpoint> prev;
+    private void handleTraitChildrenSet(String trait, Set<Thing> children) {
+        final Set<Thing> curr = Sets.newHashSet(children);
+        Set<Thing> prev;
 
         synchronized (mChildrenCache) {
             prev = mChildrenCache.get(trait);
@@ -640,8 +640,8 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                 prev = Sets.newHashSet(prev);
             }
 
-            final Set<FunctionalEndpoint> toRemove = Sets.difference(prev, curr);
-            final Set<FunctionalEndpoint> toAdd =
+            final Set<Thing> toRemove = Sets.difference(prev, curr);
+            final Set<Thing> toAdd =
                     Sets.newHashSet(Sets.difference(curr, prev).iterator());
 
             if (DEBUG) {
@@ -708,7 +708,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
 
         // Pre-announce existing known children
-        Set<FunctionalEndpoint> toAdd;
+        Set<Thing> toAdd;
         synchronized (mChildrenCache) {
             toAdd = mChildrenCache.get(traitShortName);
             if (toAdd != null) {
@@ -918,22 +918,22 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     throws MethodException, TechnologyException {
 
                 if (response.getCode() == Code.RESPONSE_CREATED
-                        && FunctionalEndpoint.class.isAssignableFrom(methodKey.getType())) {
+                        && Thing.class.isAssignableFrom(methodKey.getType())) {
 
-                    FunctionalEndpoint childFe = null;
+                    Thing childFe = null;
 
                     URI location = response.getOptionSet().getLocation();
 
                     if (location != null) {
                         location = requestUri.resolve(location);
 
-                        childFe = mTechnology.getFunctionalEndpointForNativeUri(location);
+                        childFe = mTechnology.getThingForNativeUri(location);
 
                         if (childFe == null) {
                             String desc =
                                     "Unable to convert path <"
                                             + location
-                                            + "> to a FunctionalEndpoint";
+                                            + "> to a Thing";
                             throw new SmcpRemoteException(desc + ": " + response);
                         }
                     }
@@ -986,7 +986,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         };
     }
 
-    private Set<FunctionalEndpoint> getChildrenFromResponse(URI baseUri, Message response)
+    private Set<Thing> getChildrenFromResponse(URI baseUri, Message response)
             throws TechnologyException {
         if (response.getCode() != Code.RESPONSE_CONTENT) {
             throw new SmcpRemoteException(response.toString());
@@ -999,7 +999,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
         }
 
         StringReader reader = new StringReader(response.getPayloadAsString());
-        Set<FunctionalEndpoint> ret = new HashSet<>();
+        Set<Thing> ret = new HashSet<>();
         Map<URI, Map<String, String>> results;
 
         try {
@@ -1022,15 +1022,15 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
             if (DEBUG) LOGGER.info("Found " + anchorUri.resolve(entry.getKey()));
 
-            FunctionalEndpoint fe =
-                    mTechnology.getFunctionalEndpointForNativeUri(
+            Thing fe =
+                    mTechnology.getThingForNativeUri(
                             anchorUri.resolve(entry.getKey()));
 
-            if (fe instanceof SmcpFunctionalEndpoint) {
-                SmcpFunctionalEndpoint smcpFe = (SmcpFunctionalEndpoint) fe;
+            if (fe instanceof SmcpThing) {
+                SmcpThing smcpFe = (SmcpThing) fe;
 
                 if (smcpFe.mParent == null) {
-                    smcpFe.mParent = SmcpFunctionalEndpoint.this;
+                    smcpFe.mParent = SmcpThing.this;
                 }
             }
             ret.add(fe);
@@ -1040,7 +1040,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Override
-    public ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(
+    public ListenableFuture<Collection<Thing>> fetchChildrenForTrait(
             String traitShortId) {
         final Transaction transaction =
                 mClient.newRequestBuilder()
@@ -1050,7 +1050,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                         .setOmitUriHostPortOptions(true)
                         .send();
 
-        return new TransactionFuture<Collection<FunctionalEndpoint>>(transaction) {
+        return new TransactionFuture<Collection<Thing>>(transaction) {
             @Override
             protected void onTransactionResponse(LocalEndpoint endpoint, Message response)
                     throws TechnologyException {
@@ -1063,7 +1063,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
                     baseUri = baseUri.resolve(requestUri.getPath());
                 }
 
-                Set<FunctionalEndpoint> children = getChildrenFromResponse(baseUri, response);
+                Set<Thing> children = getChildrenFromResponse(baseUri, response);
                 set(children);
                 handleTraitChildrenSet(traitShortId, children);
             }
@@ -1071,12 +1071,12 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
     }
 
     @Nullable
-    private String[] getChildPathComponents(FunctionalEndpoint child) {
-        if (child == this || !(child instanceof SmcpFunctionalEndpoint)) {
+    private String[] getChildPathComponents(Thing child) {
+        if (child == this || !(child instanceof SmcpThing)) {
             return null;
         }
 
-        SmcpFunctionalEndpoint smcpChild = (SmcpFunctionalEndpoint) child;
+        SmcpThing smcpChild = (SmcpThing) child;
 
         if (smcpChild.mTechnology != mTechnology) {
             return null;
@@ -1113,7 +1113,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Nullable
     @Override
-    public String getTraitForChild(FunctionalEndpoint child) {
+    public String getTraitForChild(Thing child) {
         String[] components = getChildPathComponents(child);
 
         if (components == null) {
@@ -1125,7 +1125,7 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Nullable
     @Override
-    public String getIdForChild(FunctionalEndpoint child) {
+    public String getIdForChild(Thing child) {
         String[] components = getChildPathComponents(child);
 
         if (components == null) {
@@ -1137,27 +1137,27 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
     @Nullable
     @Override
-    public FunctionalEndpoint getChild(String traitShortId, String childId) {
+    public Thing getChild(String traitShortId, String childId) {
         String childPath = Splot.SECTION_FUNC + "/" + traitShortId + "/" + childId + "/";
 
-        FunctionalEndpoint ret;
+        Thing ret;
 
         try {
-            ret = mTechnology.getFunctionalEndpointForNativeUri(mClient.getUri().resolve(childPath));
+            ret = mTechnology.getThingForNativeUri(mClient.getUri().resolve(childPath));
         } catch (UnknownResourceException e) {
             // Should not happen.
             throw new SmcpRuntimeException(e);
         }
 
-        if (ret instanceof SmcpFunctionalEndpoint) {
-            ((SmcpFunctionalEndpoint) ret).mParent = this;
+        if (ret instanceof SmcpThing) {
+            ((SmcpThing) ret).mParent = this;
         }
         return ret;
     }
 
     @Nullable
     @Override
-    public FunctionalEndpoint getParentFunctionalEndpoint() {
+    public Thing getParentThing() {
         return mParent;
     }
 
@@ -1239,18 +1239,18 @@ class SmcpFunctionalEndpoint implements FunctionalEndpoint {
 
         void announceChanges(
                 String trait,
-                @Nullable Collection<FunctionalEndpoint> toAdd,
-                @Nullable Collection<FunctionalEndpoint> toRemove) {
+                @Nullable Collection<Thing> toAdd,
+                @Nullable Collection<Thing> toRemove) {
             mExecutor.execute(
                     () -> {
                         if (toAdd != null) {
-                            for (FunctionalEndpoint child : toAdd) {
-                                mListener.onChildAdded(SmcpFunctionalEndpoint.this, trait, child);
+                            for (Thing child : toAdd) {
+                                mListener.onChildAdded(SmcpThing.this, trait, child);
                             }
                         }
                         if (toRemove != null) {
-                            for (FunctionalEndpoint child : toRemove) {
-                                mListener.onChildRemoved(SmcpFunctionalEndpoint.this, trait, child);
+                            for (Thing child : toRemove) {
+                                mListener.onChildRemoved(SmcpThing.this, trait, child);
                             }
                         }
                     });

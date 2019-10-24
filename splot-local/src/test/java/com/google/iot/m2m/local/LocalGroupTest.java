@@ -17,7 +17,7 @@ package com.google.iot.m2m.local;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Thing;
 import com.google.iot.m2m.base.Group;
 import com.google.iot.m2m.trait.*;
 import com.google.iot.m2m.util.NestedPersistentStateManager;
@@ -34,9 +34,9 @@ public class LocalGroupTest extends TestBase {
     public void localGroupTest() throws Exception {
         LocalTechnology technology = new LocalTechnology(mExecutor);
 
-        FunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+        Thing bulb1 = new MyLightBulbNoTrans();
+        Thing bulb2 = new MyLightBulbNoTrans();
+        Thing bulb3 = new MyLightBulbNoTrans();
 
         technology.prepareToHost();
 
@@ -116,9 +116,9 @@ public class LocalGroupTest extends TestBase {
     public void localGroupSceneTest() throws Exception {
         LocalTechnology technology = new LocalTechnology(mExecutor);
 
-        FunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+        Thing bulb1 = new MyLightBulbNoTrans();
+        Thing bulb2 = new MyLightBulbNoTrans();
+        Thing bulb3 = new MyLightBulbNoTrans();
 
         technology.prepareToHost();
 
@@ -165,14 +165,14 @@ public class LocalGroupTest extends TestBase {
         livingRoom.addMember(bulb3).get();
 
         livingRoom.setProperty(OnOffTrait.STAT_VALUE, false).get();
-        FunctionalEndpoint offScene =
+        Thing offScene =
                 livingRoom
                         .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off"))
                         .get();
 
         livingRoom.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
         livingRoom.setProperty(OnOffTrait.STAT_VALUE, true).get();
-        FunctionalEndpoint onScene =
+        Thing onScene =
                 livingRoom
                         .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on"))
                         .get();
@@ -180,7 +180,7 @@ public class LocalGroupTest extends TestBase {
         bulb1.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
         bulb2.setProperty(LevelTrait.STAT_VALUE, 0.5f).get();
         bulb3.setProperty(OnOffTrait.STAT_VALUE, false).get();
-        FunctionalEndpoint dimScene =
+        Thing dimScene =
                 livingRoom
                         .invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim"))
                         .get();
@@ -208,9 +208,9 @@ public class LocalGroupTest extends TestBase {
     public void localGroupInBandTest() throws Exception {
         LocalTechnology technology = new LocalTechnology(mExecutor);
 
-        FunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-        FunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+        Thing bulb1 = new MyLightBulbNoTrans();
+        Thing bulb2 = new MyLightBulbNoTrans();
+        Thing bulb3 = new MyLightBulbNoTrans();
 
         technology.prepareToHost();
 
@@ -286,9 +286,9 @@ public class LocalGroupTest extends TestBase {
             NestedPersistentStateManager psm = new NestedPersistentStateManager();
 
             LocalTechnology technology = new LocalTechnology(mExecutor);
-            LocalFunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+            LocalThing bulb1 = new MyLightBulbNoTrans();
+            LocalThing bulb2 = new MyLightBulbNoTrans();
+            LocalThing bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulb1", bulb1);
@@ -324,9 +324,9 @@ public class LocalGroupTest extends TestBase {
             psm.initWithPersistentState(persistentState);
 
             LocalTechnology technology = new LocalTechnology(mExecutor);
-            LocalFunctionalEndpoint bulb1 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb2 = new MyLightBulbNoTrans();
-            LocalFunctionalEndpoint bulb3 = new MyLightBulbNoTrans();
+            LocalThing bulb1 = new MyLightBulbNoTrans();
+            LocalThing bulb2 = new MyLightBulbNoTrans();
+            LocalThing bulb3 = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulb1", bulb1);

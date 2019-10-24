@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.iot.coap.*;
-import com.google.iot.m2m.local.LocalSceneFunctionalEndpoint;
-import com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalSceneThing;
+import com.google.iot.m2m.local.LocalTransitioningThing;
 import com.google.iot.m2m.trait.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -197,7 +197,7 @@ class SmcpTestBase extends FakeExecutorTestBase {
                 };
     }
 
-    class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
+    class MyLightBulb extends LocalTransitioningThing {
         private final MyLightBulbImpl mImpl = new MyLightBulbImpl();
 
         MyLightBulb() {
@@ -217,7 +217,7 @@ class SmcpTestBase extends FakeExecutorTestBase {
         }
     }
 
-    class MyLightBulbNoTrans extends LocalSceneFunctionalEndpoint {
+    class MyLightBulbNoTrans extends LocalSceneThing {
         private final MyLightBulbImpl mImpl = new MyLightBulbImpl();
 
         MyLightBulbNoTrans() {

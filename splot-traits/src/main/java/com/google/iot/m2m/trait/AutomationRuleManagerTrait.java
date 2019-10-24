@@ -36,7 +36,7 @@ public final class AutomationRuleManagerTrait {
     // Prevent instantiation
     private AutomationRuleManagerTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalAutomationRuleManagerTrait {}
 
     /** The name of this trait */
@@ -71,8 +71,8 @@ public final class AutomationRuleManagerTrait {
      * @see #PARAM_RECYCLABLE
      */
     @Method(REQUIRED)
-    public static final MethodKey<FunctionalEndpoint> METHOD_CREATE =
-            new MethodKey<>(TRAIT_ID, "create", FunctionalEndpoint.class);
+    public static final MethodKey<Thing> METHOD_CREATE =
+            new MethodKey<>(TRAIT_ID, "create", Thing.class);
 
     /**
      * Recyclable flag parameter.

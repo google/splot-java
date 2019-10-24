@@ -27,13 +27,13 @@ import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 /**
- * Abstract class for implementing a {@link LocalFunctionalEndpoint} that supports
+ * Abstract class for implementing a {@link LocalThing} that supports
  * the {@link ActionsTrait} trait.
  *
  * @see LocalPairing
  * @see LocalTimer
  */
-public abstract class LocalActions extends LocalFunctionalEndpoint {
+public abstract class LocalActions extends LocalThing {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(LocalActions.class.getCanonicalName());
 

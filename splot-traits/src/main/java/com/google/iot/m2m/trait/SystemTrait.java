@@ -29,7 +29,7 @@ import static com.google.iot.m2m.annotation.Property.*;
 public final class SystemTrait {
     private SystemTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     @SuppressWarnings("RedundantThrows")
     public abstract static class AbstractLocalTrait extends LocalSystemTrait {
     }

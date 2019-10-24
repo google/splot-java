@@ -17,12 +17,12 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception that indicates that the operation being performed is not available for the
- * given property on this {@link FunctionalEndpoint}.
+ * given property on this {@link Thing}.
  *
- * @see FunctionalEndpoint#incrementProperty(PropertyKey, Number)
- * @see FunctionalEndpoint#toggleProperty(PropertyKey)
- * @see FunctionalEndpoint#addValueToProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#removeValueFromProperty(PropertyKey, Object)
+ * @see Thing#incrementProperty(PropertyKey, Number)
+ * @see Thing#toggleProperty(PropertyKey)
+ * @see Thing#addValueToProperty(PropertyKey, Object)
+ * @see Thing#removeValueFromProperty(PropertyKey, Object)
  */
 public class PropertyOperationUnsupportedException extends PropertyException {
     public PropertyOperationUnsupportedException() {}

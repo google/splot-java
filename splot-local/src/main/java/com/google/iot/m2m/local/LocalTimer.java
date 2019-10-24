@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
- * {@link LocalFunctionalEndpoint} that implements {@link AutomationTimerTrait} and
+ * {@link LocalThing} that implements {@link AutomationTimerTrait} and
  * {@link ActionsTrait}. These are typically created automatically by
  * {@link LocalAutomationManager}/{@link LocalTimerManagerTrait}, but can be created
  * individually if needed.

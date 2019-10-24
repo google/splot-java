@@ -20,7 +20,7 @@ final class Smcp {
 
     private Smcp() {}
 
-    /** Interface description for functional endpoints (w/out version). */
+    /** Interface description for things (w/out version). */
     public static final String IF_DESC_FE = "som.fe";
 
     /** Interface description for properties. */
@@ -32,10 +32,10 @@ final class Smcp {
     /** Interface description for groups container */
     public static final String IF_DESC_GROUPS = "som.g";
 
-    /** Interface description for group functional endpoint */
+    /** Interface description for group thing */
     public static final String IF_DESC_GROUP_FE = "som.g.fe";
 
-    /** Interface description for functional endpoints (with version). */
+    /** Interface description for things (with version). */
     public static final String IF_DESC_FE_FULL = IF_DESC_FE + "#r0";
 
     /** Interface description prefix for trait profiles. */
@@ -44,6 +44,6 @@ final class Smcp {
     /** Resource type prefix for traits. */
     public static final String RESOURCE_TYPE_PREFIX = "som.t.";
 
-    /** URI path for functional endpoint discovery. */
+    /** URI path for thing discovery. */
     public static final String DISCOVERY_QUERY_URI = "/.well-known/core?if=" + IF_DESC_FE + "*";
 }

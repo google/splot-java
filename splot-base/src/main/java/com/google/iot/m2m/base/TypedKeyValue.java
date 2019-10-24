@@ -25,10 +25,10 @@ import java.util.Objects;
  * Convenience class representing a value tagged with a {@link TypedKey}.
  *
  * <p>This class makes it easier to pass typed parameters are arguments, specifically
- * {@link FunctionalEndpoint#invokeMethod(MethodKey, TypedKeyValue[])}.
+ * {@link Thing#invokeMethod(MethodKey, TypedKeyValue[])}.
  *
  * @see TypedKey#with(Object)
- * @see FunctionalEndpoint#invokeMethod(MethodKey, TypedKeyValue[])
+ * @see Thing#invokeMethod(MethodKey, TypedKeyValue[])
  */
 public class TypedKeyValue<T> {
     private final TypedKey<T> mKey;

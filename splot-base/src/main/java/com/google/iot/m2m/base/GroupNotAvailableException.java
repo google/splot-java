@@ -20,8 +20,8 @@ package com.google.iot.m2m.base;
  * called after the group has been deleted or otherwise no longer available.
  *
  * @see Group#fetchMembers()
- * @see Group#addMember(FunctionalEndpoint)
- * @see Group#removeMember(FunctionalEndpoint)
+ * @see Group#addMember(Thing)
+ * @see Group#removeMember(Thing)
  */
 public class GroupNotAvailableException extends TechnologyException {
     @SuppressWarnings("unused")

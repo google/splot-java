@@ -11,8 +11,8 @@ down into five subprojects:
 *   `splot-processor`: An annotation processor for processing trait
     definitions.
 *   `splot-traits`: A standard set of defined traits.
-*   `splot-local`: Classes for implementing local functional
-    endpoints, as well as a local technology implementation.
+*   `splot-local`: Classes for implementing local things,
+    as well as a local technology implementation.
 *   `smcp`: A library for using the experimental CoAP-based [Splot Monitoring and Control Protocol][SMCP]
    using the [Splot Object Model][SOM] as
    implemented in `splot-base`.
@@ -34,7 +34,7 @@ locally and do not rely on cloud infrastructure.
 *   Uses open standards like CoAP, CBOR, etc.
 *   Fully working discovery, observing, groups, scenes, transitions, etc.
 *   Type-safe property API
-*   Easy to implement new functional endpoints
+*   Easy to implement new things
 *   Over 200 unit tests and growing.
 *   In-band-manageable [automation primitives](doc/automation.md)
 

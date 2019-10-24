@@ -15,10 +15,10 @@
  */
 package com.google.iot.m2m.local;
 
-import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Thing;
 import com.google.iot.m2m.base.Modifier;
 import com.google.iot.m2m.base.Operation;
-import com.google.iot.m2m.base.UnacceptableFunctionalEndpointException;
+import com.google.iot.m2m.base.UnacceptableThingException;
 import com.google.iot.m2m.trait.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,11 +33,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class LocalTimerTest extends TestBase {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(LocalFunctionalEndpointTest.class.getCanonicalName());
+            Logger.getLogger(LocalThingTest.class.getCanonicalName());
 
     LocalTechnology technology = null;
-    FunctionalEndpoint bulb1 = null;
-    FunctionalEndpoint bulb2 = null;
+    Thing bulb1 = null;
+    Thing bulb2 = null;
     LocalTimer timer = null;
 
     @BeforeEach
@@ -57,7 +57,7 @@ class LocalTimerTest extends TestBase {
             technology.host(bulb1);
             technology.host(bulb2);
             technology.host(timer);
-        } catch (UnacceptableFunctionalEndpointException e) {
+        } catch (UnacceptableThingException e) {
             throw new AssertionError(e);
         }
 

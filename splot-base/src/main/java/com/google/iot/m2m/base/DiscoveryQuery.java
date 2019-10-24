@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An abstract class representing a specific functional endpoint discovery query. Instances of this
+ * An abstract class representing a specific thing discovery query. Instances of this
  * class are used to track the progress and results of a discovery operation. Objects of this class
  * can be constructed using the {@link DiscoveryBuilder} class, which in turn is obtained from
  * {@link Technology#createDiscoveryQueryBuilder()}.
@@ -29,33 +29,33 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public abstract class DiscoveryQuery {
     /**
-     * Callback class for handling functional endpoints immediately as they are discovered and being
+     * Callback class for handling things immediately as they are discovered and being
      * notified of the completion of a {@link DiscoveryQuery}.
      */
     @SuppressWarnings("EmptyMethod")
     public abstract static class Listener {
-        public void onDiscoveryQueryFoundFunctionalEndpoint(
-                FunctionalEndpoint functionalEndpoint) {}
+        public void onDiscoveryQueryFoundThing(
+                Thing thing) {}
 
         public void onDiscoveryQueryIsDone() {}
     }
 
     /**
-     * Method to retrieve the set of discovered {@link FunctionalEndpoint}s. If the discovery query
+     * Method to retrieve the set of discovered {@link Thing}s. If the discovery query
      * is still in progress, this method will block execution until the discovery operation is
      * complete.
      *
      * <p>If blocking is unacceptable, use {@link #setListener} to be notified of discovered
-     * functional endpoints asynchronously.
+     * things asynchronously.
      *
-     * @return the set of discovered functional endpoints
+     * @return the set of discovered things
      * @throws InterruptedException if this thread was interrupted while waiting for the query to
      *     complete
      * @throws TechnologyException if there was an underlying technology-related problem
      * @see Listener
      * @see #setListener(Executor, Listener)
      */
-    public abstract Set<FunctionalEndpoint> get() throws InterruptedException, TechnologyException;
+    public abstract Set<Thing> get() throws InterruptedException, TechnologyException;
 
     /** Restarts a discovery query, allowing a discovery query to be reused multiple times. */
     public abstract void restart();
@@ -71,11 +71,11 @@ public abstract class DiscoveryQuery {
     public abstract boolean isDone();
 
     /**
-     * Set the listener class that will be called asynchronously as functional endpoints are
+     * Set the listener class that will be called asynchronously as things are
      * discovered.
      *
      * <p>There can only be one listener registered at a time. If set with a non-null listener, the
-     * listener is guaranteed to be notified about every discovered functional endpoint, including
+     * listener is guaranteed to be notified about every discovered thing, including
      * those discovered before the listener was registered with this method.
      *
      * <p>If this discovery query has already completed by the time this method is called, the

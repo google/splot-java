@@ -852,7 +852,7 @@ class LocalTraitClassBuilder {
                     MethodSpec.methodBuilder("didAddChild")
                             .addModifiers(Modifier.PUBLIC)
                             .addModifiers(Modifier.FINAL)
-                            .addParameter(FunctionalEndpoint.class, "child")
+                            .addParameter(Thing.class, "child")
                             .addJavadoc("Call when a child is added to this trait.")
                             .beginControlFlow("if (mCallback != null)")
                             .addStatement("mCallback.onChildAdded(this, child)")
@@ -863,7 +863,7 @@ class LocalTraitClassBuilder {
                     MethodSpec.methodBuilder("didRemoveChild")
                             .addModifiers(Modifier.PUBLIC)
                             .addModifiers(Modifier.FINAL)
-                            .addParameter(FunctionalEndpoint.class, "child")
+                            .addParameter(Thing.class, "child")
                             .addJavadoc("Call when a child is added to this trait.")
                             .beginControlFlow("if (mCallback != null)")
                             .addStatement("mCallback.onChildRemoved(this, child)")
@@ -881,7 +881,7 @@ class LocalTraitClassBuilder {
                             .returns(
                                     ParameterizedTypeName.get(
                                             ClassName.get(Set.class),
-                                            ClassName.get(FunctionalEndpoint.class)))
+                                            ClassName.get(Thing.class)))
                             .addJavadoc(javadoc, "{@code null}")
                             .addStatement("return null", ClassName.get(HashSet.class))
                             .build());
@@ -892,7 +892,7 @@ class LocalTraitClassBuilder {
                             .addModifiers(Modifier.FINAL)
                             .addAnnotation(Override.class)
                             .addAnnotation(Nullable.class)
-                            .addParameter(FunctionalEndpoint.class, "child")
+                            .addParameter(Thing.class, "child")
                             .addJavadoc(javadoc, "{@code null}")
                             .returns(ClassName.get(String.class))
                             .addStatement("return null")
@@ -906,7 +906,7 @@ class LocalTraitClassBuilder {
                             .addAnnotation(Nullable.class)
                             .addParameter(String.class, "ignored")
                             .addJavadoc(javadoc, "{@code null}")
-                            .returns(TypeName.get(FunctionalEndpoint.class))
+                            .returns(TypeName.get(Thing.class))
                             .addStatement("return null")
                             .build());
         }

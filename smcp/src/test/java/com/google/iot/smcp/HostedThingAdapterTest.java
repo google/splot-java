@@ -29,10 +29,10 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("ConstantConditions")
-class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
+class HostedThingAdapterTest extends SmcpTestBase {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(HostedFunctionalEndpointAdapterTest.class.getCanonicalName());
+            Logger.getLogger(HostedThingAdapterTest.class.getCanonicalName());
 
     @Test
     void hostedAdapterCombinedTest() throws Exception {
@@ -49,8 +49,8 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         Client client =
                 new Client(
@@ -113,8 +113,8 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         Client client =
                 new Client(
@@ -137,7 +137,7 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
 
         // Verify that the resource was indeed created
         Set<String> childIdSet = new HashSet<>();
-        for (FunctionalEndpoint child : localFe.fetchChildrenForTrait(SceneTrait.TRAIT_ID).get()) {
+        for (Thing child : localFe.fetchChildrenForTrait(SceneTrait.TRAIT_ID).get()) {
             childIdSet.add(localFe.getIdForChild(child));
         }
         assertTrue(childIdSet.contains("test"));
@@ -158,14 +158,14 @@ class HostedFunctionalEndpointAdapterTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         Client client =
                 new Client(
                         techBacking.getLocalEndpointManager(), URI.create("loop://localhost/1/"));
 
-        FunctionalEndpoint testScene =
+        Thing testScene =
                 remoteFe.invokeMethod(
                                 SceneTrait.METHOD_SAVE,
                                 SceneTrait.PARAM_SCENE_ID.with("hostedAdapterChildTest"))

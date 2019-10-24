@@ -26,7 +26,7 @@ import java.net.URI;
 
 /**
  * Experimental trait representing an automation pairing. An automation pairing allows you to create
- * a relationship between two properties on two functional endpoints that are associated with the
+ * a relationship between two properties on two things that are associated with the
  * same {@link com.google.iot.m2m.base.Technology} instance.
  */
 @Trait
@@ -34,7 +34,7 @@ public final class AutomationPairingTrait {
     // Prevent instantiation
     private AutomationPairingTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalAutomationPairingTrait {}
 
     /** The name of this trait */

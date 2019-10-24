@@ -19,12 +19,12 @@ import com.google.iot.coap.ContentFormat;
 import com.google.iot.coap.LinkFormat;
 import com.google.iot.coap.Resource;
 import com.google.iot.m2m.base.ChildListener;
-import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Thing;
 import java.net.URI;
 import java.util.*;
 import java.util.logging.Logger;
 
-class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
+class TraitChildrenResource extends Resource<HostedThingAdapter>
         implements ChildListener {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
@@ -33,16 +33,16 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
     private final SmcpTechnology mTechnology;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final FunctionalEndpoint mFe;
+    private final Thing mFe;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final String mTrait;
 
-    private final Map<FunctionalEndpoint, String> mChildIdLookup = new HashMap<>();
+    private final Map<Thing, String> mChildIdLookup = new HashMap<>();
 
-    private final Set<FunctionalEndpoint> mIndependentChildren = new HashSet<>();
+    private final Set<Thing> mIndependentChildren = new HashSet<>();
 
-    TraitChildrenResource(SmcpTechnology technology, FunctionalEndpoint fe, String trait) {
+    TraitChildrenResource(SmcpTechnology technology, Thing fe, String trait) {
         mTechnology = technology;
         mFe = fe;
         mTrait = trait;
@@ -54,8 +54,8 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
     public void onBuildLinkFormat(LinkFormat.Builder builder) {
         super.onBuildLinkFormat(builder);
 
-        for (FunctionalEndpoint childFe : mIndependentChildren) {
-            final URI uri = mTechnology.getNativeUriForFunctionalEndpoint(childFe);
+        for (Thing childFe : mIndependentChildren) {
+            final URI uri = mTechnology.getNativeUriForThing(childFe);
 
             if (uri == null) {
                 continue;
@@ -69,7 +69,7 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
 
     @Override
     public void onChildAdded(
-            FunctionalEndpoint parent, String traitShortName, FunctionalEndpoint child) {
+            Thing parent, String traitShortName, Thing child) {
         String childId = parent.getIdForChild(child);
 
         if (DEBUG)
@@ -77,7 +77,7 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
 
         if (childId != null) {
             mChildIdLookup.put(child, childId);
-            addChild(childId, new HostedFunctionalEndpointAdapter(mTechnology, child));
+            addChild(childId, new HostedThingAdapter(mTechnology, child));
         } else {
             LOGGER.warning("onChildAdded was called, but the FE wasn't a child: " + child);
             if (mIndependentChildren.add(child)) {
@@ -88,7 +88,7 @@ class TraitChildrenResource extends Resource<HostedFunctionalEndpointAdapter>
 
     @Override
     public void onChildRemoved(
-            FunctionalEndpoint parent, String traitShortName, FunctionalEndpoint child) {
+            Thing parent, String traitShortName, Thing child) {
         String childId = mChildIdLookup.get(child);
 
         if (DEBUG)

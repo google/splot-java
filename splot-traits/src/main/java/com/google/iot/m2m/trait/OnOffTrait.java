@@ -31,7 +31,7 @@ public final class OnOffTrait {
     // Prevent instantiation
     private OnOffTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalOnOffTrait {}
 
     /** The name of this trait */
@@ -64,7 +64,7 @@ public final class OnOffTrait {
 
     /**
      * Default off duration. Indicates the default duration (in seconds) when transitioning from the
-     * on state to the off state. This property is only present on functional endpoints which also
+     * on state to the off state. This property is only present on things which also
      * have the {@link TransitionTrait}.
      */
     @Property
@@ -73,7 +73,7 @@ public final class OnOffTrait {
 
     /**
      * Default on duration. Indicates the default duration (in seconds) when transitioning from the
-     * off state to the on state. This property is only present on functional endpoints which also
+     * off state to the on state. This property is only present on things which also
      * have the {@link TransitionTrait}.
      */
     @Property
@@ -90,10 +90,10 @@ public final class OnOffTrait {
             new PropertyKey<>(Section.CONFIG, TRAIT_ID, "scon", java.lang.String.class);
 
     /**
-     * Functional-endpoint-is-a-light flag. This property allows a functional endpoint that controls
+     * Functional-endpoint-is-a-light flag. This property allows a thing that controls
      * a generic load (Like a smart power switch) to be explicitly identified as controlling a
-     * light. If this is set to true, this functional endpoint will be included in the “lights”
-     * group. If this functional endpoint contains the light trait, then this FE is already assumed
+     * light. If this is set to true, this thing will be included in the “lights”
+     * group. If this thing contains the light trait, then this FE is already assumed
      * to be a light and this property MUST NOT be present.
      */
     @Property

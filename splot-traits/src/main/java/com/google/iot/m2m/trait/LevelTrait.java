@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class LevelTrait {
     private LevelTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     @SuppressWarnings("RedundantThrows")
     public abstract static class AbstractLocalTrait extends LocalLevelTrait {
         @Override
@@ -67,7 +67,7 @@ public final class LevelTrait {
             new PropertyKey<>(Section.METADATA, TRAIT_ID, "turi", String.class);
 
     /**
-     * Describes the "level" of a functional endpoint. The level is encoded as a floating-point
+     * Describes the "level" of a thing. The level is encoded as a floating-point
      * value between 0.0 and 1.0. The exact meaning of this value is dependent on the type of
      * device, but in general the value 0.0 represents one extreme state, the value 1.0 represents
      * the opposite extreme state, and the values between those two represent a perceptually uniform

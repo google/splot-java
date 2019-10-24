@@ -32,7 +32,7 @@ import static com.google.iot.m2m.trait.AutomationRuleTrait.MATCH_ALL;
 import static com.google.iot.m2m.trait.AutomationRuleTrait.MATCH_ANY;
 
 /**
- * {@link LocalFunctionalEndpoint} that implements {@link AutomationRuleTrait} and
+ * {@link LocalThing} that implements {@link AutomationRuleTrait} and
  * {@link ActionsTrait}. These are typically created automatically by
  * {@link LocalAutomationManager}/{@link LocalRuleManagerTrait}, but can be created
  * individually if needed.

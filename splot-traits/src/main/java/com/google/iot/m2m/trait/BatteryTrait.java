@@ -24,17 +24,17 @@ import com.google.iot.m2m.base.PropertyKey;
 import com.google.iot.m2m.base.Section;
 
 /**
- * The Battery trait is used on Functional Endpoints which are backed by a battery.
+ * The Battery trait is used on Things which are backed by a battery.
  *
  * <p>All of the properties in this trait are optional, but some properties have defined
  * relationships with other properties that, if present, should be maintained.
  *
- * <p>Some functional endpoints may simply adopt this trait and implement none of the properties,
- * simply to indicate that the functional endpoint is battery-powered. Others might only want to
+ * <p>Some things may simply adopt this trait and implement none of the properties,
+ * simply to indicate that the thing is battery-powered. Others might only want to
  * indicate if the battery is low, but offer no additional information about the charge level or
  * capacity.
  *
- * <p>On the other hand, some functional endpoints might implement most of these properties,
+ * <p>On the other hand, some things might implement most of these properties,
  * providing a rich amount of detail on the overall state and health of the battery.
  */
 @Trait
@@ -42,7 +42,7 @@ public final class BatteryTrait {
     // Prevent instantiation
     private BatteryTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalBatteryTrait {}
 
     /** The name of this trait */

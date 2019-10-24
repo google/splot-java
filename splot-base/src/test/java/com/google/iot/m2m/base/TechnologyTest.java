@@ -37,7 +37,7 @@ public class TechnologyTest {
     volatile URI nativeUri;
     volatile boolean isHosted;
 
-    FunctionalEndpoint fe = new FunctionalEndpoint() {
+    Thing fe = new Thing() {
         @Override
         public boolean isLocal() {
             return false;
@@ -109,27 +109,27 @@ public class TechnologyTest {
         }
 
         @Override
-        public ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(String traitShortId) {
+        public ListenableFuture<Collection<Thing>> fetchChildrenForTrait(String traitShortId) {
             return null;
         }
 
         @Override
-        public @Nullable String getTraitForChild(FunctionalEndpoint child) {
+        public @Nullable String getTraitForChild(Thing child) {
             return null;
         }
 
         @Override
-        public @Nullable String getIdForChild(FunctionalEndpoint child) {
+        public @Nullable String getIdForChild(Thing child) {
             return null;
         }
 
         @Override
-        public @Nullable FunctionalEndpoint getChild(String traitShortId, String childId) {
+        public @Nullable Thing getChild(String traitShortId, String childId) {
             return null;
         }
 
         @Override
-        public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
+        public @Nullable Thing getParentThing() {
             return null;
         }
 
@@ -176,22 +176,22 @@ public class TechnologyTest {
         }
 
         @Override
-        public void host(FunctionalEndpoint fe) throws UnacceptableFunctionalEndpointException, TechnologyCannotHostException {
+        public void host(Thing fe) throws UnacceptableThingException, TechnologyCannotHostException {
 
         }
 
         @Override
-        public void unhost(FunctionalEndpoint fe) {
+        public void unhost(Thing fe) {
 
         }
 
         @Override
-        public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier... modifiers) throws UnassociatedResourceException {
+        public URI getNativeUriForProperty(Thing fe, PropertyKey<?> propertyKey, Operation op, Modifier... modifiers) throws UnassociatedResourceException {
             return null;
         }
 
         @Override
-        public URI getNativeUriForSection(FunctionalEndpoint fe, Section section, Modifier... modifiers) throws UnassociatedResourceException {
+        public URI getNativeUriForSection(Thing fe, Section section, Modifier... modifiers) throws UnassociatedResourceException {
             return null;
         }
 
@@ -201,63 +201,63 @@ public class TechnologyTest {
         }
 
         @Override
-        public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException {
+        public Thing getThingForNativeUri(URI uri) throws UnknownResourceException {
             return null;
         }
 
         @Override
-        public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException {
+        public URI getNativeUriForThing(Thing fe) throws UnassociatedResourceException {
             return nativeUri;
         }
 
         @Override
-        public boolean isHosted(FunctionalEndpoint fe) {
+        public boolean isHosted(Thing fe) {
             return isHosted;
         }
     };
 
     @Test
-    public void getRelativeUriForFunctionalEndpoint() throws Exception {
+    public void getRelativeUriForThing() throws Exception {
 
         nativeUri = URI.create("coap://1.2.3.4/1/");
         isHosted = false;
         assertEquals(
                 URI.create("/2/?blah#frag"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://1.2.3.4/2/?blah#frag"))
         );
 
         assertEquals(
                 URI.create("coap://4.5.6.7/2/?blah#frag"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://4.5.6.7/2/?blah#frag"))
         );
 
         assertEquals(
                 URI.create("uid://abcdefg/10/"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("uid://abcdefg/10/"))
         );
 
         assertThrows(UnassociatedResourceException.class,
-                ()->technology.getRelativeUriForFunctionalEndpoint(fe,
+                ()->technology.getRelativeUriForThing(fe,
                         URI.create("/2/?blah#frag")));
 
         assertEquals(
                 URI.create("/"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://1.2.3.4/"))
         );
 
         assertEquals(
                 URI.create(""),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://1.2.3.4"))
         );
 
         assertEquals(
                 URI.create("coap://4.5.6.7"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://4.5.6.7"))
         );
 
@@ -265,19 +265,19 @@ public class TechnologyTest {
         isHosted = true;
         assertEquals(
                 URI.create("coap://1.2.3.4/2/?blah#frag"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("coap://1.2.3.4/2/?blah#frag"))
         );
 
         assertEquals(
                 URI.create("uid://abcdefg/10/"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("uid://abcdefg/10/"))
         );
 
         assertEquals(
                 URI.create("/2/?blah#frag"),
-                technology.getRelativeUriForFunctionalEndpoint(fe,
+                technology.getRelativeUriForThing(fe,
                         URI.create("/2/?blah#frag"))
         );
     }

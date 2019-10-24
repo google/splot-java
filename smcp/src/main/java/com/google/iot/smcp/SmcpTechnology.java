@@ -37,8 +37,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * M2M Technology class for the Simple Monitoring and Control Protocol (SMCP).
  *
- * <p>This class is used to obtain {@link FunctionalEndpoint} instances for functional endpoints
- * which are remotely hosted using SMCP. It can also be used for hosting other functional endpoints
+ * <p>This class is used to obtain {@link Thing} instances for things
+ * which are remotely hosted using SMCP. It can also be used for hosting other things
  * (Local or otherwise) to allow them to be used by other devices which support SMCP or CoAP.
  */
 public final class SmcpTechnology implements Technology, PersistentStateInterface, ResourceLinkManager {
@@ -59,13 +59,13 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     // Handler for .well-known/core
     private final WellKnownCoreHandler mWellKnownCoreResource = new WellKnownCoreHandler();
 
-    private final Map<FunctionalEndpoint, HostedFunctionalEndpointAdapter> mHostedAdapterLookup =
+    private final Map<Thing, HostedThingAdapter> mHostedAdapterLookup =
             new HashMap<>();
 
     private final NestedPersistentStateManager mNestedPersistentStateManager =
             new NestedPersistentStateManager();
 
-    private final Map<URI, WeakReference<SmcpFunctionalEndpoint>> mNativeFunctionalEndpoints =
+    private final Map<URI, WeakReference<SmcpThing>> mNativeThings =
             Collections.synchronizedMap(new WeakHashMap<>());
 
     final LocalTechnology mLocalTechnology;
@@ -77,7 +77,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     private final Map<URI, WeakReference<ResourceLink<Object>>> mResourceLinkCache
             = new WeakHashMap<>();
 
-    /** Gets the CoAP {@link Server} object used to host functional endpoints. */
+    /** Gets the CoAP {@link Server} object used to host things. */
     public Server getServer() {
         return mServer;
     }
@@ -168,12 +168,12 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public Set<FunctionalEndpoint> copyHostedFunctionalEndpointSet() {
+    public Set<Thing> copyHostedThingSet() {
         return new HashSet<>(mHostedAdapterLookup.keySet());
     }
 
     @Override
-    public void host(FunctionalEndpoint fe) throws UnacceptableFunctionalEndpointException {
+    public void host(Thing fe) throws UnacceptableThingException {
         synchronized (mHostedAdapterLookup) {
             if (mHostedAdapterLookup.containsKey(fe)) {
                 return;
@@ -188,9 +188,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
                 // We use the LocalGroup for the adapter here because we want
                 // commands received from over the network to only apply to the
-                // hosted functional endpoints, not native ones.
-                HostedFunctionalEndpointAdapter adapter =
-                        new HostedFunctionalEndpointAdapter(this, group.mLocalGroup) {
+                // hosted things, not native ones.
+                HostedThingAdapter adapter =
+                        new HostedThingAdapter(this, group.mLocalGroup) {
                             @Override
                             public void onChildMethodDelete(
                                     InboundRequest inboundRequest, InboundRequestHandler child) {
@@ -222,11 +222,11 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 mLocalTechnology.host(fe);
 
                 try {
-                    HostedFunctionalEndpointAdapter adapter =
-                            new HostedFunctionalEndpointAdapter(this, fe);
+                    HostedThingAdapter adapter =
+                            new HostedThingAdapter(this, fe);
                     mHostedAdapterLookup.put(fe, adapter);
 
-                    URI uri = mLocalTechnology.getNativeUriForFunctionalEndpoint(fe);
+                    URI uri = mLocalTechnology.getNativeUriForThing(fe);
 
                     String path = uri.getRawPath();
 
@@ -259,9 +259,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public void unhost(FunctionalEndpoint fe) {
+    public void unhost(Thing fe) {
         synchronized (mHostedAdapterLookup) {
-            HostedFunctionalEndpointAdapter adapter = mHostedAdapterLookup.get(fe);
+            HostedThingAdapter adapter = mHostedAdapterLookup.get(fe);
 
             if (adapter == null) {
                 return;
@@ -296,9 +296,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public boolean isHosted(FunctionalEndpoint fe) {
+    public boolean isHosted(Thing fe) {
         synchronized (mHostedAdapterLookup) {
-            FunctionalEndpoint parent;
+            Thing parent;
             int parentLimit = 4;
 
             do {
@@ -306,7 +306,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                     return true;
                 }
 
-                parent = fe.getParentFunctionalEndpoint();
+                parent = fe.getParentThing();
 
                 if (parent == null) {
                     break;
@@ -320,23 +320,23 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public boolean isNative(FunctionalEndpoint fe) {
+    public boolean isNative(Thing fe) {
         if (fe instanceof SmcpGroup && ((SmcpGroup) fe).getTechnology() == this) {
             return true;
         }
 
         synchronized (mHostedAdapterLookup) {
-            FunctionalEndpoint parent;
+            Thing parent;
             int parentLimit = 4;
 
             do {
-                if ((fe instanceof SmcpFunctionalEndpoint)
-                        && mNativeFunctionalEndpoints.containsKey(
-                                ((SmcpFunctionalEndpoint) fe).getUri())) {
+                if ((fe instanceof SmcpThing)
+                        && mNativeThings.containsKey(
+                                ((SmcpThing) fe).getUri())) {
                     return true;
                 }
 
-                parent = fe.getParentFunctionalEndpoint();
+                parent = fe.getParentThing();
 
                 if (parent == null) {
                     break;
@@ -345,9 +345,9 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                 }
             } while (parentLimit-- != 0);
 
-            if (fe instanceof SmcpFunctionalEndpoint) {
-                return mNativeFunctionalEndpoints.containsKey(
-                        ((SmcpFunctionalEndpoint) fe).getUri());
+            if (fe instanceof SmcpThing) {
+                return mNativeThings.containsKey(
+                        ((SmcpThing) fe).getUri());
             }
         }
 
@@ -355,17 +355,17 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException {
+    public Thing getThingForNativeUri(URI uri) throws UnknownResourceException {
         if (uri.getQuery() != null) {
-            // No query parts are allowed in the functional endpoint URI.
+            // No query parts are allowed in the thing URI.
             return null;
 
         } else if (uri.getScheme() == null) {
-            return mLocalTechnology.getFunctionalEndpointForNativeUri(uri);
+            return mLocalTechnology.getThingForNativeUri(uri);
         } else {
-            FunctionalEndpoint ret = null;
-            synchronized (mNativeFunctionalEndpoints) {
-                WeakReference<SmcpFunctionalEndpoint> ref = mNativeFunctionalEndpoints.get(uri);
+            Thing ret = null;
+            synchronized (mNativeThings) {
+                WeakReference<SmcpThing> ref = mNativeThings.get(uri);
 
                 if (ref != null) {
                     ret = ref.get();
@@ -373,12 +373,12 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
 
                 if (ret == null) {
                     try {
-                        ret = new SmcpFunctionalEndpoint(new Client(mLocalEndpointManager, uri), this);
+                        ret = new SmcpThing(new Client(mLocalEndpointManager, uri), this);
                     } catch (UnsupportedSchemeException e) {
                         throw new UnknownResourceException(e);
                     }
-                    mNativeFunctionalEndpoints.put(
-                            uri, new WeakReference<>((SmcpFunctionalEndpoint) ret));
+                    mNativeThings.put(
+                            uri, new WeakReference<>((SmcpThing) ret));
                 }
             }
             return ret;
@@ -386,12 +386,12 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException {
+    public URI getNativeUriForThing(Thing fe) throws UnassociatedResourceException {
         if (isNative(fe)) {
-            return ((SmcpFunctionalEndpoint) fe).getUri();
+            return ((SmcpThing) fe).getUri();
         }
 
-        return mLocalTechnology.getNativeUriForFunctionalEndpoint(fe);
+        return mLocalTechnology.getNativeUriForThing(fe);
     }
 
     @Override
@@ -429,7 +429,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForProperty(Thing fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
         StringBuilder query = new StringBuilder();
 
         query.append(op.id);
@@ -442,19 +442,19 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
         }
 
         if (query.length() == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+            return getNativeUriForThing(fe).resolve(propertyKey.getName());
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
+            return getNativeUriForThing(fe).resolve(propertyKey.getName()
                     + "?" + query);
         }
     }
 
     @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForSection(Thing fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
         if (modifiers.length == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/");
+            return getNativeUriForThing(fe).resolve(section.id + "/");
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
+            return getNativeUriForThing(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
         }
     }
 
@@ -532,7 +532,7 @@ public final class SmcpTechnology implements Technology, PersistentStateInterfac
                     // Create the hosted group.
                     try {
                         host(findOrCreateGroupWithId(key.substring(GROUP_PREFIX.length())));
-                    } catch (UnacceptableFunctionalEndpointException e) {
+                    } catch (UnacceptableThingException e) {
                         // This should never happen
                         throw new SmcpRuntimeException("Unable to host group '" + key + "'", e);
                     }

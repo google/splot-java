@@ -14,19 +14,19 @@ import java.util.Map;
  * {@hide} ResourceLink implementation for sections.
  */
 public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<String,Object>>> implements SectionListener {
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Section section, URI uri) {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(Thing fe, Section section, URI uri) {
         return new SectionResourceLink(fe, section, uri);
     }
 
-    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(FunctionalEndpoint fe, Section section) {
+    public static ResourceLink<Map<String,Map<String,Object>>> createForSection(Thing fe, Section section) {
         return new SectionResourceLink(fe, section, null);
     }
 
-    private final FunctionalEndpoint mFe;
+    private final Thing mFe;
     private final Section mSection;
     @Nullable private final URI mUri;
 
-    private SectionResourceLink(FunctionalEndpoint fe, Section section, @Nullable URI uri) {
+    private SectionResourceLink(Thing fe, Section section, @Nullable URI uri) {
         mFe = fe;
         mSection = section;
         mUri = uri;
@@ -80,7 +80,7 @@ public class SectionResourceLink extends AbstractResourceLink<Map<String,Map<Str
     }
 
     @Override
-    public void onSectionChanged(FunctionalEndpoint fe, Map<String, Object> state) {
+    public void onSectionChanged(Thing fe, Map<String, Object> state) {
         try {
             didChangeValue(uncollapseSectionFromOneLevelMap(state, mSection.id));
         } catch (InvalidValueException e) {

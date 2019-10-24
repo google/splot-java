@@ -19,11 +19,11 @@ import java.util.Map;
 
 /**
  * Checked exception that indicates that a given method could not be found on this {@link
- * FunctionalEndpoint}.
+ * Thing}.
  *
- * @see FunctionalEndpoint#invokeMethod(MethodKey, Map)
- * @see FunctionalEndpoint#invokeMethod(MethodKey)
- * @see FunctionalEndpoint#invokeMethod(MethodKey, ParamKey, Object...)
+ * @see Thing#invokeMethod(MethodKey, Map)
+ * @see Thing#invokeMethod(MethodKey)
+ * @see Thing#invokeMethod(MethodKey, ParamKey, Object...)
  */
 public class MethodNotFoundException extends MethodException {
     public MethodNotFoundException() {}

@@ -22,14 +22,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Map;
 
 /**
- * FunctionalEndpoint which manages automation primitives, such as {@link LocalPairing pairings},
+ * Thing which manages automation primitives, such as {@link LocalPairing pairings},
  * {@link LocalTimer timers}, and {@link LocalRule rules}.
  *
  * @see LocalPairingManagerTrait
  * @see LocalTimerManagerTrait
  * @see LocalRuleManagerTrait
  */
-public class LocalAutomationManager extends LocalFunctionalEndpoint {
+public class LocalAutomationManager extends LocalThing {
     private final LocalPairingManagerTrait mPairingManagerTrait;
     private final LocalTimerManagerTrait mTimerManagerTrait;
     private final LocalRuleManagerTrait mRuleManagerTrait;

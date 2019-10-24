@@ -28,7 +28,7 @@ public final class TextDisplayTrait {
     // Prevent instantiation
     private TextDisplayTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalTextDisplayTrait {}
 
     /** The name of this trait */

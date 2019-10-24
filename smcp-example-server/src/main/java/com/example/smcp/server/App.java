@@ -51,17 +51,17 @@ public class App
     // case the underlying transport is SMCP, a CoAP-based M2M protocol.
     private final SmcpTechnology mTechnology = new SmcpTechnology(mLocalEndpointManager);
 
-    // The automation manager is a functional endpoint that we will
+    // The automation manager is a thing that we will
     // register (host) with the technology. It provides automation
     // primitives that can be used to set up automation relationships
-    // between functional endpoints, local or remote. Unlike most functional
+    // between things, local or remote. Unlike most functional
     // endpoints, it needs a reference to the technology.
     private final LocalAutomationManager mAutomationManager = new LocalAutomationManager(mTechnology);
 
-    // Functional endpoint which exposes things like load average and CPU count.
+    // Thing which exposes things like load average and CPU count.
     private final SystemInfo mSystemInfo = new SystemInfo();
 
-    // Demo light-bulb functional endpoint instance.
+    // Demo light-bulb thing instance.
     private final MyLightBulb mLightBulb = new MyLightBulb();
 
     public App() throws IOException, CorruptPersistentStateException, TechnologyException {

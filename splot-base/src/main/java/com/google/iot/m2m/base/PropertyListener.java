@@ -20,11 +20,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Interface for receiving asynchronous notifications for changes to individual properties on a
- * {@link FunctionalEndpoint}.
+ * {@link Thing}.
  *
- * @see FunctionalEndpoint#registerPropertyListener(Executor, PropertyKey, PropertyListener)
- * @see FunctionalEndpoint#unregisterPropertyListener(PropertyKey, PropertyListener)
+ * @see Thing#registerPropertyListener(Executor, PropertyKey, PropertyListener)
+ * @see Thing#unregisterPropertyListener(PropertyKey, PropertyListener)
  */
 public interface PropertyListener<T> {
-    void onPropertyChanged(FunctionalEndpoint fe, PropertyKey<T> key, @Nullable T value);
+    void onPropertyChanged(Thing fe, PropertyKey<T> key, @Nullable T value);
 }

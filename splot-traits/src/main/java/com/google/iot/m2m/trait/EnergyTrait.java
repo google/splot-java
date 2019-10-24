@@ -32,7 +32,7 @@ public final class EnergyTrait {
     // Prevent instantiation
     private EnergyTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalEnergyTrait {}
 
     /** The name of this trait */
@@ -89,7 +89,7 @@ public final class EnergyTrait {
 
     /**
      * The accumulated power (energy) used over time by the FE, measured in watt-hours. If this
-     * functional endpoint allows this value to be reset, it can be reset by setting its value to
+     * thing allows this value to be reset, it can be reset by setting its value to
      * zero or null. Setting to any other value MUST fail.
      */
     @Property(READ_ONLY | RESET)

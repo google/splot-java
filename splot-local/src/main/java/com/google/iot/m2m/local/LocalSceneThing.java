@@ -27,34 +27,34 @@ import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Abstract class for more easily implementing local {@link FunctionalEndpoint}s that support
+ * Abstract class for more easily implementing local {@link Thing}s that support
  * scenes.
  *
- * <p>By subclassing this class instead of {@link LocalFunctionalEndpoint}, scene support will be
- * largely implemented for you automatically. Like {@link LocalFunctionalEndpoint}, Subclasses of
- * this class should <em>NOT</em> be used to implement non-local FunctionalEndpoints: in those cases
- * a class directly implementing the methods of {@link FunctionalEndpoint} should be used.
+ * <p>By subclassing this class instead of {@link LocalThing}, scene support will be
+ * largely implemented for you automatically. Like {@link LocalThing}, Subclasses of
+ * this class should <em>NOT</em> be used to implement non-local Things: in those cases
+ * a class directly implementing the methods of {@link Thing} should be used.
  *
- * <p>If scene support doesn't make sense for your functional endpoint (for example, if it is an
- * input rather than an output), then you should subclass {@link LocalFunctionalEndpoint} instead.
+ * <p>If scene support doesn't make sense for your thing (for example, if it is an
+ * input rather than an output), then you should subclass {@link LocalThing} instead.
  *
  * <p>If you need transition support in addition to scenes, use {@link
- * LocalTransitioningFunctionalEndpoint} instead.
+ * LocalTransitioningThing} instead.
  *
- * @see LocalFunctionalEndpoint
- * @see LocalTransitioningFunctionalEndpoint
+ * @see LocalThing
+ * @see LocalTransitioningThing
  */
-public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoint {
+public abstract class LocalSceneThing extends LocalThing {
     private static final String SCENES_KEY = "scenes";
 
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(LocalSceneFunctionalEndpoint.class.getCanonicalName());
+            Logger.getLogger(LocalSceneThing.class.getCanonicalName());
 
     private Scene mCurrentScene = null;
     private String mCurrentGroupId = null;
 
-    private class Scene implements FunctionalEndpoint {
+    private class Scene implements Thing {
         private final String mSceneId;
         private final HashMap<String, Object> mState = new HashMap<>();
 
@@ -151,7 +151,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
 
         @Override
         public ListenableFuture<Set<PropertyKey<?>>> fetchSupportedPropertyKeys() {
-            return LocalSceneFunctionalEndpoint.this.fetchSupportedPropertyKeys();
+            return LocalSceneThing.this.fetchSupportedPropertyKeys();
         }
 
         @Override
@@ -260,33 +260,33 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
         }
 
         @Override
-        public ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(
+        public ListenableFuture<Collection<Thing>> fetchChildrenForTrait(
                 String traitShortId) {
             return Futures.immediateFuture(null);
         }
 
         @Nullable
         @Override
-        public String getTraitForChild(FunctionalEndpoint child) {
+        public String getTraitForChild(Thing child) {
             return null;
         }
 
         @Nullable
         @Override
-        public String getIdForChild(FunctionalEndpoint child) {
+        public String getIdForChild(Thing child) {
             return null;
         }
 
         @Nullable
         @Override
-        public FunctionalEndpoint getChild(String traitShortId, String childId) {
+        public Thing getChild(String traitShortId, String childId) {
             return null;
         }
 
         @Nullable
         @Override
-        public FunctionalEndpoint getParentFunctionalEndpoint() {
-            return LocalSceneFunctionalEndpoint.this;
+        public Thing getParentThing() {
+            return LocalSceneThing.this;
         }
     }
 
@@ -315,7 +315,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
                 }
 
                 @Override
-                public FunctionalEndpoint onInvokeSave(Map<String, Object> args)
+                public Thing onInvokeSave(Map<String, Object> args)
                         throws InvalidMethodArgumentsException {
                     if (!SceneTrait.PARAM_SCENE_ID.isInMap(args)) {
                         throw new InvalidMethodArgumentsException(
@@ -345,7 +345,7 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
                 }
 
                 @Override
-                public String onGetIdForChild(FunctionalEndpoint child) {
+                public String onGetIdForChild(Thing child) {
                     if (child instanceof Scene) {
                         return ((Scene) child).mSceneId;
                     }
@@ -353,19 +353,19 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
                 }
 
                 @Override
-                public FunctionalEndpoint onGetChild(String childId) {
+                public Thing onGetChild(String childId) {
                     return mSceneMap.get(childId);
                 }
 
                 @Override
-                public Set<FunctionalEndpoint> onCopyChildrenSet() {
+                public Set<Thing> onCopyChildrenSet() {
                     synchronized (mSceneMap) {
                         return new HashSet<>(mSceneMap.values());
                     }
                 }
             };
 
-    protected LocalSceneFunctionalEndpoint() {
+    protected LocalSceneThing() {
         registerTrait(mSceneTrait);
     }
 
@@ -388,26 +388,26 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
     }
 
     /**
-     * Returns a the set of scene IDs that this functional endpoint currently has.
+     * Returns a the set of scene IDs that this thing currently has.
      *
-     * <p>Note that this method is only present in {@link LocalSceneFunctionalEndpoint}, but you can
-     * get the same information with any other FunctionalEndpoint that supports {@link SceneTrait}
+     * <p>Note that this method is only present in {@link LocalSceneThing}, but you can
+     * get the same information with any other Thing that supports {@link SceneTrait}
      * by instead using the following more generic code:
      *
      * <pre>{@code
-     * Collection<FunctionalEndpoint> sceneFeList = fetchChildrenForTrait(SceneTrait.PARAM_SCENE_ID).get();
+     * Collection<Thing> sceneFeList = fetchChildrenForTrait(SceneTrait.PARAM_SCENE_ID).get();
      * HashSet<String> sceneIdSet = new HashSet<>();
-     * for (FunctionalEndpoint sceneFe : sceneFeList) {
+     * for (Thing sceneFe : sceneFeList) {
      *     sceneIdSet.add(getIdForChild(sceneFe));
      * }
      * }</pre>
      *
-     * The above code will work for any FunctionalEndpoint that implements support for the scene
+     * The above code will work for any Thing that implements support for the scene
      * trait, whereas this method will only be available for for subclasses of {@link
-     * LocalSceneFunctionalEndpoint}.
+     * LocalSceneThing}.
      *
      * @see #fetchChildrenForTrait(String)
-     * @see #getIdForChild(FunctionalEndpoint)
+     * @see #getIdForChild(Thing)
      */
     public final Set<String> getSceneIds() {
         synchronized (mSceneMap) {
@@ -418,17 +418,17 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
     /**
      * Saves the current state to the given scene id.
      *
-     * <p>Note that this method is only present in {@link LocalSceneFunctionalEndpoint}, but you can
-     * easily make the same call to other FunctionalEndpoints that support {@link SceneTrait} by
+     * <p>Note that this method is only present in {@link LocalSceneThing}, but you can
+     * easily make the same call to other Things that support {@link SceneTrait} by
      * instead using the following more generic code:
      *
      * <pre>{@code
      * invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID, sceneId).get();
      * }</pre>
      *
-     * The above code will work for any FunctionalEndpoint that implements support for the scene
+     * The above code will work for any Thing that implements support for the scene
      * trait, whereas this method will only be available for for subclasses of {@link
-     * LocalSceneFunctionalEndpoint}.
+     * LocalSceneThing}.
      *
      * @see #invokeMethod(MethodKey, TypedKeyValue[])
      */
@@ -460,22 +460,22 @@ public abstract class LocalSceneFunctionalEndpoint extends LocalFunctionalEndpoi
     }
 
     /**
-     * Removes the scene with the given {@code sceneId} from this functional endpoint.
+     * Removes the scene with the given {@code sceneId} from this thing.
      *
-     * <p>Note that this method is only present in {@link LocalSceneFunctionalEndpoint}, but you can
-     * easily make the same call to other FunctionalEndpoints that support {@link SceneTrait} by
+     * <p>Note that this method is only present in {@link LocalSceneThing}, but you can
+     * easily make the same call to other Things that support {@link SceneTrait} by
      * instead using the following more generic code:
      *
      * <pre>{@code
-     * FunctionalEndpoint sceneFe = this.getChild(SceneTrait.TRAIT_ID, sceneId);
+     * Thing sceneFe = this.getChild(SceneTrait.TRAIT_ID, sceneId);
      * if (sceneFe != null) {
      *     sceneFe.delete().get();
      * }
      * }</pre>
      *
-     * The above code will work for any FunctionalEndpoint that implements support for the scene
+     * The above code will work for any Thing that implements support for the scene
      * trait, whereas this method will only be available for for subclasses of {@link
-     * LocalSceneFunctionalEndpoint}.
+     * LocalSceneThing}.
      *
      * @see #getChild(String, String)
      * @see #delete()

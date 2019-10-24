@@ -17,7 +17,7 @@ package com.google.iot.m2m.base;
 
 /**
  * Unchecked exception thrown by {@link Technology} instances (and their native {@link
- * FunctionalEndpoint} instances) indicating a serious technology-specific runtime error has
+ * Thing} instances) indicating a serious technology-specific runtime error has
  * occurred.
  */
 public class TechnologyRuntimeException extends RuntimeException {

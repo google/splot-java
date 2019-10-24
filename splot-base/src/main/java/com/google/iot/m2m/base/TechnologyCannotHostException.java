@@ -17,12 +17,12 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception thrown when a given {@link Technology} instance rejects a {@link
- * FunctionalEndpoint} argument because it is somehow unacceptable. For example, if you attempt to
- * call {@link Group#addMember(FunctionalEndpoint)} with a {@link FunctionalEndpoint} that is
+ * Thing} argument because it is somehow unacceptable. For example, if you attempt to
+ * call {@link Group#addMember(Thing)} with a {@link Thing} that is
  * unrelated to that group's {@link Technology} this exception will be thrown.
  *
- * @see Group#addMember(FunctionalEndpoint)
- * @see Technology#host(FunctionalEndpoint)
+ * @see Group#addMember(Thing)
+ * @see Technology#host(Thing)
  */
 public class TechnologyCannotHostException extends TechnologyRuntimeException {
     @SuppressWarnings("unused")

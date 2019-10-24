@@ -17,7 +17,7 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception thrown by {@link Technology} instances (and their native {@link
- * FunctionalEndpoint} instances) indicating a technology-specific error has occurred.
+ * Thing} instances) indicating a technology-specific error has occurred.
  */
 public class TechnologyException extends Exception {
     public TechnologyException() {}

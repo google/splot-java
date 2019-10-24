@@ -7,8 +7,8 @@ the following concepts:
 
  * How to set up a Technology instance
  * How to support non-volatile storage/retrieval of parameters using FilePersistentStateManager.
- * How to implement a Functional Endpoint (MyLightBulb, SystemInfo)
- * How to host functional endpoints on a Technology
+ * How to implement a Thing (MyLightBulb, SystemInfo)
+ * How to host things on a Technology
 
 ## Building and Running ##
 

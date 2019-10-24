@@ -20,9 +20,9 @@ import java.util.Map;
 /**
  * Checked exception thrown when the arguments to a Splot method are invalid.
  *
- * @see FunctionalEndpoint#invokeMethod(MethodKey, Map)
- * @see FunctionalEndpoint#invokeMethod(MethodKey)
- * @see FunctionalEndpoint#invokeMethod(MethodKey, ParamKey, Object...)
+ * @see Thing#invokeMethod(MethodKey, Map)
+ * @see Thing#invokeMethod(MethodKey)
+ * @see Thing#invokeMethod(MethodKey, ParamKey, Object...)
  */
 public class InvalidMethodArgumentsException extends MethodException {
     @SuppressWarnings("unused")

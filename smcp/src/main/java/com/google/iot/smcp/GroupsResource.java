@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-class GroupsResource extends Resource<HostedFunctionalEndpointAdapter> {
+class GroupsResource extends Resource<HostedThingAdapter> {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(GroupsResource.class.getCanonicalName());
     private final SmcpTechnology mTechnology;
@@ -33,8 +33,8 @@ class GroupsResource extends Resource<HostedFunctionalEndpointAdapter> {
 
     @Override
     public void onChildMethodDelete(
-            InboundRequest inboundRequest, HostedFunctionalEndpointAdapter child) {
-        FunctionalEndpoint fe = child.getFunctionalEndpoint();
+            InboundRequest inboundRequest, HostedThingAdapter child) {
+        Thing fe = child.getThing();
 
         if (!(fe instanceof Group)) {
             super.onChildMethodDelete(inboundRequest, child);
@@ -59,7 +59,7 @@ class GroupsResource extends Resource<HostedFunctionalEndpointAdapter> {
 
     @Override
     public void onChildMethodDeleteCheck(
-            InboundRequest inboundRequest, HostedFunctionalEndpointAdapter child) {
+            InboundRequest inboundRequest, HostedThingAdapter child) {
         // Do nothing.
     }
 
@@ -119,7 +119,7 @@ class GroupsResource extends Resource<HostedFunctionalEndpointAdapter> {
                     group.applyProperties(content);
                 }
 
-            } catch (UnacceptableFunctionalEndpointException e) {
+            } catch (UnacceptableThingException e) {
                 inboundRequest.sendSimpleResponse(
                         Code.RESPONSE_INTERNAL_SERVER_ERROR, e.getMessage());
                 e.printStackTrace();

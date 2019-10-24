@@ -32,7 +32,7 @@ public final class SceneTrait {
     // Prevent Instantiation
     private SceneTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalSceneTrait {}
 
     /** The name of this trait */
@@ -63,8 +63,8 @@ public final class SceneTrait {
      * @see #PARAM_GROUP_ID
      */
     @Method(REQUIRED | WANTS_GROUP_ID)
-    public static final MethodKey<FunctionalEndpoint> METHOD_SAVE =
-            new MethodKey<>(TRAIT_ID, "save", FunctionalEndpoint.class);
+    public static final MethodKey<Thing> METHOD_SAVE =
+            new MethodKey<>(TRAIT_ID, "save", Thing.class);
 
     /**
      * Current scene identifier. When written to, applies the scene to the state. When read, it will

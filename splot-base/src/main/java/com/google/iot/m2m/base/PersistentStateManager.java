@@ -25,7 +25,7 @@ import java.util.Map;
  * #startManaging(String, PersistentStateInterface)}. Each object managed must have a unique object
  * name that is long-lived. Typically, it consists of the RDNS domain of a project, followed by a
  * static string containing a short description of the object. For example, if we wanted to manager
- * a FunctionalEndpoint representing the third outlet on a smart power strip, the name might be
+ * a Thing representing the third outlet on a smart power strip, the name might be
  * <code>"com.example.smart-power-strip.outlet.1"</code>.
  */
 public interface PersistentStateManager extends Closeable {

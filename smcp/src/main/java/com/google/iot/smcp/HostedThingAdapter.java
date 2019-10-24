@@ -17,7 +17,7 @@ package com.google.iot.smcp;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iot.coap.*;
-import com.google.iot.m2m.base.FunctionalEndpoint;
+import com.google.iot.m2m.base.Thing;
 import com.google.iot.m2m.base.Section;
 import com.google.iot.m2m.base.Splot;
 import com.google.iot.m2m.trait.BaseTrait;
@@ -30,22 +30,22 @@ import java.util.concurrent.Executor;
 import java.util.logging.Logger;
 
 @SuppressWarnings("Convert2Lambda")
-class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
+class HostedThingAdapter extends Resource<InboundRequestHandler>
         implements LinkFormat.Provider {
     @SuppressWarnings("unused")
     private static final boolean DEBUG = false;
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER =
-            Logger.getLogger(HostedFunctionalEndpointAdapter.class.getCanonicalName());
+            Logger.getLogger(HostedThingAdapter.class.getCanonicalName());
 
     @SuppressWarnings("FieldCanBeLocal")
     private final SmcpTechnology mTechnology;
 
-    private final FunctionalEndpoint mFe;
+    private final Thing mFe;
     private final Executor mExecutor;
 
-    HostedFunctionalEndpointAdapter(SmcpTechnology technology, FunctionalEndpoint fe) {
+    HostedThingAdapter(SmcpTechnology technology, Thing fe) {
         mFe = fe;
         mTechnology = technology;
         mExecutor = mTechnology.getExecutor();
@@ -57,7 +57,7 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
         addChild(Splot.SECTION_FUNC, new FuncResource(mTechnology, mFe));
     }
 
-    FunctionalEndpoint getFunctionalEndpoint() {
+    Thing getThing() {
         return mFe;
     }
 
@@ -101,7 +101,7 @@ class HostedFunctionalEndpointAdapter extends Resource<InboundRequestHandler>
 
     @Override
     public void onBuildLinkFormat(LinkFormat.Builder builder) {
-        // The root of a functional endpoint is required
+        // The root of a thing is required
         // to include an entry for itself as the first item in
         // the link format.
         onBuildLinkParams(builder.addLink(URI.create(".")));

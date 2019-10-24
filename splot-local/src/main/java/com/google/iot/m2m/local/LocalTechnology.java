@@ -42,7 +42,7 @@ import static com.google.iot.m2m.base.Modifier.convertFromQuery;
  * <p>Note that any group created by calling {@link #createNewGroup()} will need to be hosted (using
  * {@link #host}) before it can be used.
  *
- * @see FunctionalEndpoint
+ * @see Thing
  * @see Group
  */
 public final class LocalTechnology
@@ -57,7 +57,7 @@ public final class LocalTechnology
     private final NestedPersistentStateManager mNestedPersistentStateManager =
             new NestedPersistentStateManager();
 
-    private final Map<FunctionalEndpoint, String> mHostedPathLookup = new WeakHashMap<>();
+    private final Map<Thing, String> mHostedPathLookup = new WeakHashMap<>();
     private final Map<String, WeakReference<LocalGroup>> mGroups = new WeakHashMap<>();
 
     private final List<WeakReference<LazyResourceLink<Object>>> mLazyResourceLinks
@@ -89,7 +89,7 @@ public final class LocalTechnology
     }
 
     @Override
-    public Set<FunctionalEndpoint> copyHostedFunctionalEndpointSet() {
+    public Set<Thing> copyHostedThingSet() {
         return new HashSet<>(mHostedPathLookup.keySet());
     }
 
@@ -111,7 +111,7 @@ public final class LocalTechnology
     public void prepareToHost() {}
 
     @Override
-    public void host(FunctionalEndpoint fe) throws UnacceptableFunctionalEndpointException {
+    public void host(Thing fe) throws UnacceptableThingException {
         synchronized (mHostedPathLookup) {
             if (!isHosted(fe)) {
                 if (fe instanceof LocalGroup && ((LocalGroup) fe).getTechnology() == this) {
@@ -138,7 +138,7 @@ public final class LocalTechnology
                                             (groupRef) -> {
                                                 LocalGroup group = groupRef.get();
                                                 if (group != null)
-                                                    group.checkIfWantsFunctionalEndpoint(fe);
+                                                    group.checkIfWantsThing(fe);
                                             });
                         }
                     }
@@ -146,14 +146,14 @@ public final class LocalTechnology
             }
         }
         if (!isHosted(fe)) {
-            throw new UnacceptableFunctionalEndpointException();
+            throw new UnacceptableThingException();
         } else {
             resolveLazyResourceLinks();
         }
     }
 
     @Override
-    public void unhost(FunctionalEndpoint fe) {
+    public void unhost(Thing fe) {
         synchronized (mHostedPathLookup) {
             if (!isHosted(fe)) {
                 return;
@@ -180,9 +180,9 @@ public final class LocalTechnology
     }
 
     @Override
-    public boolean isHosted(FunctionalEndpoint fe) {
+    public boolean isHosted(Thing fe) {
         synchronized (mHostedPathLookup) {
-            FunctionalEndpoint parent;
+            Thing parent;
             int parentLimit = 4;
 
             do {
@@ -190,7 +190,7 @@ public final class LocalTechnology
                     return true;
                 }
 
-                parent = fe.getParentFunctionalEndpoint();
+                parent = fe.getParentThing();
 
                 if (parent == null) {
                     break;
@@ -204,8 +204,8 @@ public final class LocalTechnology
     }
 
     @Override
-    public boolean isNative(FunctionalEndpoint fe) {
-        FunctionalEndpoint parent;
+    public boolean isNative(Thing fe) {
+        Thing parent;
         int parentLimit = 4;
 
         do {
@@ -213,7 +213,7 @@ public final class LocalTechnology
                 return true;
             }
 
-            parent = fe.getParentFunctionalEndpoint();
+            parent = fe.getParentThing();
 
             if (parent == null) {
                 break;
@@ -235,7 +235,7 @@ public final class LocalTechnology
     private class FEParser {
         String[] mComponents = null;
         int mComponentIndex = 0;
-        FunctionalEndpoint mFe = null;
+        Thing mFe = null;
 
         FEParser(URI uri) throws UnknownResourceException {
             if (uri.getScheme() != null) {
@@ -269,7 +269,7 @@ public final class LocalTechnology
             }
 
             synchronized (mHostedPathLookup) {
-                for (Map.Entry<FunctionalEndpoint,String> entry : mHostedPathLookup.entrySet()) {
+                for (Map.Entry<Thing,String> entry : mHostedPathLookup.entrySet()) {
                     if (path.equals(entry.getValue())) {
                         mFe = entry.getKey();
                     }
@@ -467,7 +467,7 @@ public final class LocalTechnology
     }
 
     @Override
-    public URI getNativeUriForProperty(FunctionalEndpoint fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForProperty(Thing fe, PropertyKey<?> propertyKey, Operation op, Modifier ... modifiers) throws UnassociatedResourceException {
         StringBuilder query = new StringBuilder();
 
         query.append(op.id);
@@ -480,30 +480,30 @@ public final class LocalTechnology
         }
 
         if (query.length() == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName());
+            return getNativeUriForThing(fe).resolve(propertyKey.getName());
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(propertyKey.getName()
+            return getNativeUriForThing(fe).resolve(propertyKey.getName()
                     + "?" + query);
         }
     }
 
     @Override
-    public URI getNativeUriForSection(FunctionalEndpoint fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
+    public URI getNativeUriForSection(Thing fe, Section section, Modifier ... modifiers) throws UnassociatedResourceException {
         if (modifiers.length == 0) {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/");
+            return getNativeUriForThing(fe).resolve(section.id + "/");
         } else {
-            return getNativeUriForFunctionalEndpoint(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
+            return getNativeUriForThing(fe).resolve(section.id + "/?" + Modifier.convertToQuery(modifiers));
         }
     }
 
     @Override
-    public FunctionalEndpoint getFunctionalEndpointForNativeUri(URI uri) throws UnknownResourceException {
+    public Thing getThingForNativeUri(URI uri) throws UnknownResourceException {
         return new FEParser(uri).mFe;
     }
 
     @Override
     @NonNull
-    public URI getNativeUriForFunctionalEndpoint(FunctionalEndpoint fe) throws UnassociatedResourceException {
+    public URI getNativeUriForThing(Thing fe) throws UnassociatedResourceException {
         if (!isAssociatedWith(fe)) {
             throw new UnassociatedResourceException("Unable to lookup URI for " + fe);
         }
@@ -511,14 +511,14 @@ public final class LocalTechnology
         String path = "/";
         int remaining_depth = MAX_CHILD_DEPTH;
 
-        FunctionalEndpoint parent = fe.getParentFunctionalEndpoint();
+        Thing parent = fe.getParentThing();
 
         while (parent != null) {
             String trait = parent.getTraitForChild(fe);
             String childId = parent.getIdForChild(fe);
             path = "/f/" + trait + "/" + childId + path;
             fe = parent;
-            parent = fe.getParentFunctionalEndpoint();
+            parent = fe.getParentThing();
 
             if (--remaining_depth == 0) {
                 throw new UnassociatedResourceException("Unable to lookup URI for " + fe);
@@ -536,7 +536,7 @@ public final class LocalTechnology
         }
 
         if (DEBUG)
-            LOGGER.info("LocalTechnology: getNativeUriForFunctionalEndpoint(" + fe
+            LOGGER.info("LocalTechnology: getNativeUriForThing(" + fe
                     + ") = " + hostedPath + path);
 
         try {
@@ -549,9 +549,9 @@ public final class LocalTechnology
     }
 
     @Nullable
-    FunctionalEndpoint getHostedFunctionalEndpointForUid(String uid) {
+    Thing getHostedThingForUid(String uid) {
         synchronized (mHostedPathLookup) {
-            for (FunctionalEndpoint fe : mHostedPathLookup.keySet()) {
+            for (Thing fe : mHostedPathLookup.keySet()) {
                 if (uid.equals(fe.getCachedProperty(BaseTrait.META_UID))) {
                     return fe;
                 }
@@ -564,7 +564,7 @@ public final class LocalTechnology
         private final Set<String> mRequiredTraits;
         private final String mRequiredUid;
         private final int mMaxResults;
-        private final HashSet<FunctionalEndpoint> mFunctionalEndpoints = new HashSet<>();
+        private final HashSet<Thing> mThings = new HashSet<>();
         private final boolean mIncludeGroups;
         private final boolean mIncludeNormal;
         private Listener mListener = null;
@@ -589,36 +589,36 @@ public final class LocalTechnology
         }
 
         @Override
-        public Set<FunctionalEndpoint> get() {
-            synchronized (mFunctionalEndpoints) {
-                return new HashSet<>(mFunctionalEndpoints);
+        public Set<Thing> get() {
+            synchronized (mThings) {
+                return new HashSet<>(mThings);
             }
         }
 
         @Override
         public void restart() {
-            synchronized (mFunctionalEndpoints) {
-                mFunctionalEndpoints.clear();
+            synchronized (mThings) {
+                mThings.clear();
 
-                Collection<FunctionalEndpoint> collection;
+                Collection<Thing> collection;
 
                 if (mRequiredUid != null) {
                     collection = new ArrayList<>();
-                    FunctionalEndpoint fe = getHostedFunctionalEndpointForUid(mRequiredUid);
+                    Thing fe = getHostedThingForUid(mRequiredUid);
                     if (fe != null) {
                         collection.add(fe);
                     }
                 } else {
-                    collection = copyHostedFunctionalEndpointSet();
+                    collection = copyHostedThingSet();
                 }
 
                 if (mRequiredTraits == null || mRequiredTraits.isEmpty()) {
-                    mFunctionalEndpoints.addAll(collection);
+                    mThings.addAll(collection);
                     return;
                 }
 
-                for (FunctionalEndpoint fe : collection) {
-                    if (mFunctionalEndpoints.size() >= mMaxResults) {
+                for (Thing fe : collection) {
+                    if (mThings.size() >= mMaxResults) {
                         break;
                     }
                     boolean isGroup =
@@ -649,7 +649,7 @@ public final class LocalTechnology
                         }
                     }
                     if (!missingTrait) {
-                        mFunctionalEndpoints.add(fe);
+                        mThings.add(fe);
                     }
                 }
             }
@@ -807,7 +807,7 @@ public final class LocalTechnology
                     // Create the group.
                     try {
                         host(findOrCreateGroupWithId(key.substring(GROUP_PREFIX.length())));
-                    } catch (UnacceptableFunctionalEndpointException e) {
+                    } catch (UnacceptableThingException e) {
                         // This should never happen
                         throw new TechnologyRuntimeException(
                                 "Unable to host group '" + key + "'", e);

@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
  * the underlying transport.
  *
  * <p>Users of the Splot API should not have any need to use {@code ResourceLink} objects
- * directly: they are usually only used by local functional endpoints that need to
+ * directly: they are usually only used by local things that need to
  * perform RESTful operations.
  *
  * <p>{@code ResourceLink}s are managed by {@link ResourceLinkManager} instances, which provides
@@ -26,10 +26,10 @@ import java.util.concurrent.Executor;
  * given {@code ResourceLink} instance is always tied to a specific {@link ResourceLinkManager}
  * instance (which is typically also a {@link Technology} instance).
  *
- * <p>Local functional endpoints which need to perform RESTful operations on arbitrary
+ * <p>Local things which need to perform RESTful operations on arbitrary
  * URIs should expose a property which takes a URI as an argument. That URI can then
  * be used to look up the {@code ResourceLink} object that allows RESTful operations to be performed
- * on it. Because of this, Local functional endpoints which use ResourceLinks need to
+ * on it. Because of this, Local things which use ResourceLinks need to
  * have a reference to the {@link Technology} that is hosting it.
  *
  * @see ResourceLinkManager#getResourceLinkForUri(URI)

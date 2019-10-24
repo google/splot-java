@@ -159,7 +159,7 @@ abstract class TestBase {
                 };
     }
 
-    class MyLightBulb extends LocalTransitioningFunctionalEndpoint {
+    class MyLightBulb extends LocalTransitioningThing {
         private final MyLightBulbImpl mImpl = new MyLightBulbImpl();
 
         MyLightBulb() {
@@ -174,7 +174,7 @@ abstract class TestBase {
         }
     }
 
-    class MyLightBulbNoTrans extends LocalSceneFunctionalEndpoint {
+    class MyLightBulbNoTrans extends LocalSceneThing {
         private final MyLightBulbImpl mImpl = new MyLightBulbImpl();
 
         MyLightBulbNoTrans() {

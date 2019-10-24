@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
  *
  * <pre><code>
  *     &#64;Method(REQUIRED | WANTS_GROUP_ID)
- *     public static final MethodKey<FunctionalEndpoint> METHOD_SAVE =
- *             new MethodKey<>(TRAIT_ID, "save", FunctionalEndpoint.class);
+ *     public static final MethodKey<Thing> METHOD_SAVE =
+ *             new MethodKey<>(TRAIT_ID, "save", Thing.class);
  * </code></pre>
  *
  * @see Trait

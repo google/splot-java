@@ -29,16 +29,16 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 
-public class LocalFunctionalEndpointTest extends TestBase {
+public class LocalThingTest extends TestBase {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(LocalFunctionalEndpointTest.class.getCanonicalName());
+            Logger.getLogger(LocalThingTest.class.getCanonicalName());
 
     @Mock ChildListener mChildListenerMock;
 
     @Test
-    public void functionalEndpointGetTest() throws Exception {
-        FunctionalEndpoint fe = new MyLightBulb();
+    public void thingGetTest() throws Exception {
+        Thing fe = new MyLightBulb();
 
         Set<PropertyKey<?>> propertyKeys = fe.fetchSupportedPropertyKeys().get();
 
@@ -67,14 +67,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointSetTest() throws Exception {
+    public void thingSetTest() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
 
@@ -87,14 +87,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointSetNoTransTest() throws Exception {
+    public void thingSetNoTransTest() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulbNoTrans();
+        Thing fe = new MyLightBulbNoTrans();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
 
@@ -107,14 +107,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointDefaultTransitionTest() throws Exception {
+    public void thingDefaultTransitionTest() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
         fe.registerPropertyListener(mExecutor, LevelTrait.STAT_VALUE, listener);
@@ -135,14 +135,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointTransitionTest() throws Exception {
+    public void thingTransitionTest() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
         fe.registerPropertyListener(mExecutor, LevelTrait.STAT_VALUE, listener);
@@ -180,14 +180,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointTransitionTest2() throws Exception {
+    public void thingTransitionTest2() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
         fe.registerPropertyListener(mExecutor, LevelTrait.STAT_VALUE, listener);
@@ -217,14 +217,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointTransitionOnOffLevel() throws Exception {
+    public void thingTransitionOnOffLevel() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
         fe.registerPropertyListener(mExecutor, LevelTrait.STAT_VALUE, listener);
@@ -283,14 +283,14 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void functionalEndpointTransitionIncrementTest() throws Exception {
+    public void thingTransitionIncrementTest() throws Exception {
         PropertyListener listener =
                 (fe, property, value) -> {
                     if (DEBUG)
                         LOGGER.info("Property changed! Key: " + property + " Value: " + value);
                 };
 
-        FunctionalEndpoint fe = new MyLightBulb();
+        Thing fe = new MyLightBulb();
 
         fe.registerPropertyListener(mExecutor, OnOffTrait.STAT_VALUE, listener);
         fe.registerPropertyListener(mExecutor, LevelTrait.STAT_VALUE, listener);
@@ -331,7 +331,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
     @SuppressWarnings("unchecked")
     @Test
     public void localSceneTest() throws Exception {
-        FunctionalEndpoint fe = new MyLightBulbNoTrans();
+        Thing fe = new MyLightBulbNoTrans();
 
         if (DEBUG) {
             PropertyListener listener =
@@ -351,7 +351,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
         fe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
         fe.setProperty(OnOffTrait.STAT_VALUE, false).get();
-        FunctionalEndpoint offScene =
+        Thing offScene =
                 fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off")).get();
 
         verify(mChildListenerMock, timeout(100).only())
@@ -365,7 +365,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
         verify(mChildListenerMock, never()).onChildAdded(any(), any(), any());
         verify(mChildListenerMock, never()).onChildRemoved(any(), any(), any());
 
-        FunctionalEndpoint onScene =
+        Thing onScene =
                 fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on")).get();
 
         verify(mChildListenerMock, timeout(100).only())
@@ -374,7 +374,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
         clearInvocations(mChildListenerMock);
 
         fe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
-        FunctionalEndpoint dimScene =
+        Thing dimScene =
                 fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim")).get();
 
         verify(mChildListenerMock, timeout(100).only())
@@ -427,7 +427,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
             LocalTechnology technology = new LocalTechnology(mExecutor);
 
-            LocalFunctionalEndpoint fe = new MyLightBulbNoTrans();
+            LocalThing fe = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulb1", fe);
@@ -437,16 +437,16 @@ public class LocalFunctionalEndpointTest extends TestBase {
 
             fe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
             fe.setProperty(OnOffTrait.STAT_VALUE, false).get();
-            FunctionalEndpoint offScene =
+            Thing offScene =
                     fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off")).get();
 
             fe.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
             fe.setProperty(OnOffTrait.STAT_VALUE, true).get();
-            FunctionalEndpoint onScene =
+            Thing onScene =
                     fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on")).get();
 
             fe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
-            FunctionalEndpoint dimScene =
+            Thing dimScene =
                     fe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim")).get();
 
             persistentState = psm.copyPersistentState();
@@ -462,7 +462,7 @@ public class LocalFunctionalEndpointTest extends TestBase {
             psm.initWithPersistentState(persistentState);
 
             LocalTechnology technology = new LocalTechnology(mExecutor);
-            LocalFunctionalEndpoint fe = new MyLightBulbNoTrans();
+            LocalThing fe = new MyLightBulbNoTrans();
 
             psm.startManaging("technology", technology);
             psm.startManaging("bulb1", fe);

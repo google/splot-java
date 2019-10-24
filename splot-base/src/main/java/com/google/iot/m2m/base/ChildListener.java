@@ -18,13 +18,13 @@ package com.google.iot.m2m.base;
 import java.util.concurrent.Executor;
 
 /**
- * Interface for handling changes to a {@link FunctionalEndpoint}'s children.
+ * Interface for handling changes to a {@link Thing}'s children.
  *
- * @see FunctionalEndpoint#registerChildListener(Executor, ChildListener, String)
- * @see FunctionalEndpoint#unregisterChildListener(ChildListener, String)
+ * @see Thing#registerChildListener(Executor, ChildListener, String)
+ * @see Thing#unregisterChildListener(ChildListener, String)
  */
 public interface ChildListener {
-    void onChildAdded(FunctionalEndpoint parent, String traitShortName, FunctionalEndpoint child);
+    void onChildAdded(Thing parent, String traitShortName, Thing child);
 
-    void onChildRemoved(FunctionalEndpoint parent, String traitShortName, FunctionalEndpoint child);
+    void onChildRemoved(Thing parent, String traitShortName, Thing child);
 }

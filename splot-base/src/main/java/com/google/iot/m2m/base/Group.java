@@ -20,10 +20,10 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Set;
 
 /**
- * Interface for managing a group. A group is a collection of {@link FunctionalEndpoint
- * FunctionalEndpoints} which can be controlled as a single FunctionalEndpoint.
+ * Interface for managing a group. A group is a collection of {@link Thing
+ * Things} which can be controlled as a single Thing.
  *
- * <p>The state section of a group functional endpoint is special in that any operation performed on
+ * <p>The state section of a group thing is special in that any operation performed on
  * properties in that section will be applied to those properties on all of the group's members.
  *
  * <p>By comparison, the configuration and metadata sections belong to the group object itself.
@@ -42,16 +42,16 @@ import java.util.Set;
  * </ul>
  *
  * <p>Groups are referenced by their {@link com.google.iot.m2m.trait.BaseTrait#META_UID UID}, which
- * for groups is called a GroupId (or GID). Unlike UIDs on other {@link FunctionalEndpoint
- * FunctionalEndpoints}, the GroupID is immutable and thus cannot be changed after group creation.
+ * for groups is called a GroupId (or GID). Unlike UIDs on other {@link Thing
+ * Things}, the GroupID is immutable and thus cannot be changed after group creation.
  * Use the {@link com.google.iot.m2m.trait.BaseTrait#META_NAME} property to associate a
  * human-readable name with a group.
  *
  * @see Technology
- * @see FunctionalEndpoint
+ * @see Thing
  */
 @SuppressWarnings("unused")
-public interface Group extends FunctionalEndpoint {
+public interface Group extends Thing {
     /**
      * The group identifier string. This is usually a randomly generated 10-12 character string.
      * This is defined to be identical to {@link com.google.iot.m2m.trait.BaseTrait#META_UID}.
@@ -62,7 +62,7 @@ public interface Group extends FunctionalEndpoint {
     Technology getTechnology();
 
     /**
-     * Indicates this device has local functional endpoints which are participating as members of
+     * Indicates this device has local things which are participating as members of
      * this group. In other words, it indicates if this device is in the group.
      *
      * @return true if this device has local funcitonal endpoints that are members of this group,
@@ -97,7 +97,7 @@ public interface Group extends FunctionalEndpoint {
     boolean isReliable();
 
     /**
-     * Fetches the member functional endpoints of the group. This is not always possible, in those
+     * Fetches the member things of the group. This is not always possible, in those
      * cases (assuming there was no underlying exception at play) the returned future may return
      * 'null' from {@link ListenableFuture#get()}.
      *
@@ -109,16 +109,16 @@ public interface Group extends FunctionalEndpoint {
      * successfully deleted (for example, by a call to {@link #delete()}). if this group has been
      * deleted or is otherwise no longer available.
      */
-    ListenableFuture<Set<FunctionalEndpoint>> fetchMembers();
+    ListenableFuture<Set<Thing>> fetchMembers();
 
     /**
      * Adds a member to the Group.
      *
      * <p>The added member must be associated (either hosted or native) with this group's
      * technology, otherwise the returned future will fail with {@link
-     * UnacceptableFunctionalEndpointException}. Some technologies cannot add arbitrary
-     * FunctionalEndpoints to a group. In those cases, this operation will also fail with {@link
-     * UnacceptableFunctionalEndpointException}.
+     * UnacceptableThingException}. Some technologies cannot add arbitrary
+     * Things to a group. In those cases, this operation will also fail with {@link
+     * UnacceptableThingException}.
      *
      * <p>The returned future will throw {@link GroupNotAvailableException} if this group has been
      * deleted or is otherwise no longer available.
@@ -128,31 +128,31 @@ public interface Group extends FunctionalEndpoint {
      * to groups hosted on different technologies is not prohibited per-se but may be restricted by
      * a particular technology.
      *
-     * @param fe the functional endpoint to add to this Group
+     * @param fe the thing to add to this Group
      * @return a {@link ListenableFuture} used to cancel, track completion, or retrieve an exception
      *     thrown while processing. The exact status of the membership addition will be undefined if
      *     canceled before complete.
      * @throws IllegalArgumentException if {@code fe} is a Group that is native to this Group's
      *     Technology
-     * @see #removeMember(FunctionalEndpoint)
+     * @see #removeMember(Thing)
      * @see #fetchMembers()
      */
     @CanIgnoreReturnValue
-    ListenableFuture<Void> addMember(FunctionalEndpoint fe);
+    ListenableFuture<Void> addMember(Thing fe);
 
     /**
-     * Removes a member of the Group. In the case where the given functional endpoint is not a
+     * Removes a member of the Group. In the case where the given thing is not a
      * member fo the group, this method does nothing.
      *
      * <p>The returned future will throw {@link GroupNotAvailableException} if this Group has been
      * deleted or is otherwise no longer available.
      *
-     * @param fe the functional endpoint to remove from the group.
+     * @param fe the thing to remove from the group.
      * @return a {@link ListenableFuture} used to cancel, track completion, or retrieve an exception
      *     thrown while processing. The exact status of the membership removal will be undefined if
      *     canceled before complete.
-     * @see #addMember(FunctionalEndpoint)
+     * @see #addMember(Thing)
      */
     @CanIgnoreReturnValue
-    ListenableFuture<Void> removeMember(FunctionalEndpoint fe);
+    ListenableFuture<Void> removeMember(Thing fe);
 }

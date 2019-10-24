@@ -17,12 +17,12 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception thrown after an attempt to set a property to a value that is not acceptable
- * for the current state of the functional endpoint.
+ * for the current state of the thing.
  *
- * @see FunctionalEndpoint#setProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#incrementProperty(PropertyKey, Number)
- * @see FunctionalEndpoint#addValueToProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#removeValueFromProperty(PropertyKey, Object)
+ * @see Thing#setProperty(PropertyKey, Object)
+ * @see Thing#incrementProperty(PropertyKey, Number)
+ * @see Thing#addValueToProperty(PropertyKey, Object)
+ * @see Thing#removeValueFromProperty(PropertyKey, Object)
  */
 public class BadStateForPropertyValueException extends PropertyException {
     @SuppressWarnings("unused")

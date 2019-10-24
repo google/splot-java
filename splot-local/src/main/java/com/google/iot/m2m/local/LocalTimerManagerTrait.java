@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 /**
  * Manager trait for enabling the in-band creation and management of {@link LocalTimer} instances.
  * This trait is implemented by the {@link LocalAutomationManager}, but is publicly defined to
- * allow it to be integrated into custom {@link LocalFunctionalEndpoint} implementations.
+ * allow it to be integrated into custom {@link LocalThing} implementations.
  */
 public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.AbstractLocalTrait implements PersistentStateInterface {
     private static final boolean DEBUG = false;
@@ -42,12 +42,12 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     private final ResourceLinkManager mResourceLinkManager;
 
     Map<String, LocalTimer> mTimerLookup = new HashMap<>();
-    Map<FunctionalEndpoint, String> mTimerReverseLookup = new HashMap<>();
+    Map<Thing, String> mTimerReverseLookup = new HashMap<>();
     int mNextChildId = 1;
-    FunctionalEndpoint mParent;
+    Thing mParent;
     NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalTimerManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+    public LocalTimerManagerTrait(ResourceLinkManager resourceLinkManager, Thing parent) {
         mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
@@ -63,22 +63,22 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     }
 
     @Override
-    public Set<FunctionalEndpoint> onCopyChildrenSet() {
+    public Set<Thing> onCopyChildrenSet() {
         return new HashSet<>(mTimerReverseLookup.keySet());
     }
 
     @Override
-    public @Nullable String onGetIdForChild(FunctionalEndpoint child) {
+    public @Nullable String onGetIdForChild(Thing child) {
         return mTimerReverseLookup.get(child);
     }
 
     @Override
-    public @Nullable FunctionalEndpoint onGetChild(String childId) {
+    public @Nullable Thing onGetChild(String childId) {
         return mTimerLookup.get(childId);
     }
 
     @CanIgnoreReturnValue
-    private boolean onDeleteChild(FunctionalEndpoint child) {
+    private boolean onDeleteChild(Thing child) {
         String childId = mTimerReverseLookup.get(child);
 
         if (childId == null || !mTimerLookup.containsKey(childId)) {
@@ -111,7 +111,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
             }
 
             @Override
-            public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
+            public @Nullable Thing getParentThing() {
                 return mParent;
             }
 
@@ -130,7 +130,7 @@ public class LocalTimerManagerTrait extends AutomationTimerManagerTrait.Abstract
     }
 
     @Override
-    public FunctionalEndpoint onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
+    public Thing onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
         LocalTimer ret = newLocalTimer(getNewChildId());
         String param = null;
         try {

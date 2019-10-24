@@ -23,9 +23,9 @@ import java.util.concurrent.Executor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Interface for a <i>Functional Endpoint.</i>
+ * Interface for a <i>Thing.</i>
  *
- * <p>A Functional Endpoint (FE) can be thought of as an object that represents a set of
+ * <p>A Thing (FE) can be thought of as an object that represents a set of
  * functionally related properties and methods. A physical device hosts one or more FEs.
  *
  * <p>Examples of the relationship between physical devices and FEs:
@@ -43,32 +43,32 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <h2>Implementation Guidance</h2>
  *
- * <p>If you need to implement a functional endpoint, you have two options:
+ * <p>If you need to implement a thing, you have two options:
  *
  * <ul>
- *   <li><b>Subclass {@link com.google.iot.m2m.local.LocalFunctionalEndpoint} (of one of {@link
- *       com.google.iot.m2m.local.LocalSceneFunctionalEndpoint its} {@link
- *       com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint subclasses}).</b> This is
+ *   <li><b>Subclass {@link com.google.iot.m2m.local.LocalThing} (of one of {@link
+ *       com.google.iot.m2m.local.LocalSceneThing its} {@link
+ *       com.google.iot.m2m.local.LocalTransitioningThing subclasses}).</b> This is
  *       useful if you need to control something local. It is straightforward to use and can give
  *       you a lot of additional functionality (like scenes and transitions) for free. However, it
  *       is (usually) not appropriate to use these abstract classes to implement non-local
  *       functionality, such as for a wireless sensor — for that consider the next option.
- *   <li><b>Implement the {@link FunctionalEndpoint} interface directly.</b> This might be
- *       reasonable if your functional endpoint is very simple, or if you want to expose
+ *   <li><b>Implement the {@link Thing} interface directly.</b> This might be
+ *       reasonable if your thing is very simple, or if you want to expose
  *       functionality provided off device such as a wireless sensor or a Zigbee light. This option
  *       gives you the most implementation flexibility but is significantly more work to implement
- *       and test than the previous option: so if you are implementing a functional endpoint which
+ *       and test than the previous option: so if you are implementing a thing which
  *       controls local behaviors, consider the previous option instead.
  * </ul>
  *
- * <p>Once an instance of a functional endpoint is available, you can then host that functional
+ * <p>Once an instance of a thing is available, you can then host that functional
  * endpoint using a {@link Technology}, allowing other devices to use it.
  *
  * <h2>Example Usage</h2>
  *
  * <h3>Fetching a property value</h3>
  *
- * <p>To fetch the value of a property on a FunctionalEndpoint instance, you use the {@link
+ * <p>To fetch the value of a property on a Thing instance, you use the {@link
  * #fetchProperty} method. The most simple case would look like this:
  *
  * <pre>{@code
@@ -166,18 +166,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </code></pre>
  *
  * @see Technology
- * @see com.google.iot.m2m.local.LocalFunctionalEndpoint
- * @see com.google.iot.m2m.local.LocalSceneFunctionalEndpoint
- * @see com.google.iot.m2m.local.LocalTransitioningFunctionalEndpoint
+ * @see com.google.iot.m2m.local.LocalThing
+ * @see com.google.iot.m2m.local.LocalSceneThing
+ * @see com.google.iot.m2m.local.LocalTransitioningThing
  * @see com.google.iot.m2m.trait.BaseTrait
  */
 @SuppressWarnings("unused")
-public interface FunctionalEndpoint {
+public interface Thing {
 
     /**
-     * Indicates if this functional endpoint is local or not.
+     * Indicates if this thing is local or not.
      *
-     * @return true if this FunctionalEndpoint is hosted locally, false otherwise.
+     * @return true if this Thing is hosted locally, false otherwise.
      */
     boolean isLocal();
 
@@ -383,7 +383,7 @@ public interface FunctionalEndpoint {
     /**
      * Synchronously return the most recent cached value of a specific property.
      *
-     * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
+     * <p>Note that if this is a "local" Thing ({@link #isLocal()} returns <code>true
      * </code>), then the returned values are the actual values of the properties instead of cached
      * values.
      *
@@ -392,7 +392,7 @@ public interface FunctionalEndpoint {
      *
      * <ul>
      *   <li>The property hasn't been cached yet.
-     *   <li>The property isn't supported by this functional endpoint.
+     *   <li>The property isn't supported by this thing.
      *   <li>The value of the property is actually {@code null}.
      * </ul>
      *
@@ -407,7 +407,7 @@ public interface FunctionalEndpoint {
     <T> T getCachedProperty(PropertyKey<T> key);
 
     /**
-     * Asynchronously fetch the set property keys that are supported by this functional endpoint.
+     * Asynchronously fetch the set property keys that are supported by this thing.
      * Note that this method will only work reliably if {@link #isLocal()} returns {@code true}.
      * Otherwise, it makes a best-effort but may not list all supported properties.
      *
@@ -426,7 +426,7 @@ public interface FunctionalEndpoint {
 
     /**
      * Asynchronously fetch a Map containing the values of all of the properties in the given
-     * section on this functional endpoint.
+     * section on this thing.
      *
      * <p>The key for the returned {@link Map} is the name of the property as returned by {@link
      * PropertyKey#getName()}. To fetch individual properties from the map in a type-safe way, use
@@ -449,9 +449,9 @@ public interface FunctionalEndpoint {
 
     /**
      * Synchronously return a {@link Map} containing the cached values of all of the properties
-     * in the given section on this functional endpoint.
+     * in the given section on this thing.
      *
-     * <p>Note that if this is a "local" Functional Endpoint ({@link #isLocal()} returns <code>true
+     * <p>Note that if this is a "local" Thing ({@link #isLocal()} returns <code>true
      * </code>), then the returned values are the actual values of the properties instead of cached
      * values.
      *
@@ -491,7 +491,7 @@ public interface FunctionalEndpoint {
      *   <li>{@link TechnologyException} if there was a technology-specific problem
      * </ul>
      *
-     * However, it this functional endpoint is a group, then this method's future will generally not
+     * However, it this thing is a group, then this method's future will generally not
      * throw {@link PropertyException} for state section properties.
      *
      * <p>
@@ -505,9 +505,9 @@ public interface FunctionalEndpoint {
     ListenableFuture<?> applyProperties(Map<String, Object> properties);
 
     /**
-     * Deletes this Functional Endpoint, if possible. Note that not all functional endpoints can be
+     * Deletes this Thing, if possible. Note that not all things can be
      * deleted. If the delete operation cannot be performed, the future will indicate an exception.
-     * If this operation completes successfully, this {@link FunctionalEndpoint} interface becomes
+     * If this operation completes successfully, this {@link Thing} interface becomes
      * invalid and should be discarded.
      *
      * <p>The returned future may throw one of the following checked exceptions (as the cause to a
@@ -583,7 +583,7 @@ public interface FunctionalEndpoint {
     }
 
     /**
-     * Fetches the list of child FunctionalEndpoints associated with a specific trait, identified by
+     * Fetches the list of child Things associated with a specific trait, identified by
      * its short id.
      *
      * <p>The returned future may throw one of the following checked exceptions (as the cause to a
@@ -596,44 +596,44 @@ public interface FunctionalEndpoint {
      * <p>
      *
      * @param traitShortId The short id of the trait
-     * @return A future returning a collection of functional endpoints. The future will return null
+     * @return A future returning a collection of things. The future will return null
      *     if the trait doesn't exist or doesn't support children.
      */
-    ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(String traitShortId);
+    ListenableFuture<Collection<Thing>> fetchChildrenForTrait(String traitShortId);
 
     /**
      * Returns the short name of the trait that is providing the given child. Will return null if
-     * this functional endpoint is not the parent of child.
+     * this thing is not the parent of child.
      *
-     * @see #getIdForChild(FunctionalEndpoint)
+     * @see #getIdForChild(Thing)
      */
     @Nullable
-    String getTraitForChild(FunctionalEndpoint child);
+    String getTraitForChild(Thing child);
 
     /**
-     * Returns the identifier of the given child functional endpoint. Will return null if this
-     * functional endpoint is not the parent of child.
+     * Returns the identifier of the given child thing. Will return null if this
+     * thing is not the parent of child.
      *
-     * @see #getTraitForChild(FunctionalEndpoint)
+     * @see #getTraitForChild(Thing)
      */
     @Nullable
-    String getIdForChild(FunctionalEndpoint child);
+    String getIdForChild(Thing child);
 
     /**
-     * Returns the functional endpoint for a child identified by a trait short name and child id.
+     * Returns the thing for a child identified by a trait short name and child id.
      *
-     * @see #getTraitForChild(FunctionalEndpoint)
-     * @see #getIdForChild(FunctionalEndpoint)
+     * @see #getTraitForChild(Thing)
+     * @see #getIdForChild(Thing)
      */
     @Nullable
-    FunctionalEndpoint getChild(String traitShortId, String childId);
+    Thing getChild(String traitShortId, String childId);
 
     /**
-     * Returns the parent functional endpoint, if any. Will return null if this functional endpoint
+     * Returns the parent thing, if any. Will return null if this thing
      * has no parent.
      */
     @Nullable
-    FunctionalEndpoint getParentFunctionalEndpoint();
+    Thing getParentThing();
 
     /**
      * Registers a {@link PropertyListener} to receive asynchronous notifications when the value of
@@ -713,7 +713,7 @@ public interface FunctionalEndpoint {
     void unregisterChildListener(ChildListener listener, String traitId);
 
     /**
-     * Unregisters all listeners from this functional endpoint.
+     * Unregisters all listeners from this thing.
      *
      * @see #registerChildListener(Executor, ChildListener, String)
      * @see #registerPropertyListener(Executor, PropertyKey, PropertyListener)

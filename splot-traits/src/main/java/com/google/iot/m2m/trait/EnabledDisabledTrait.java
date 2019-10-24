@@ -28,7 +28,7 @@ public final class EnabledDisabledTrait {
     // Prevent instantiation
     private EnabledDisabledTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalEnabledDisabledTrait {}
 
     /** The name of this trait */

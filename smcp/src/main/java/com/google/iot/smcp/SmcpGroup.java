@@ -22,18 +22,18 @@ import com.google.iot.coap.Client;
 import com.google.iot.coap.Coap;
 import com.google.iot.coap.UnsupportedSchemeException;
 import com.google.iot.m2m.base.*;
-import com.google.iot.m2m.local.LocalFunctionalEndpoint;
+import com.google.iot.m2m.local.LocalThing;
 import com.google.iot.m2m.trait.BaseTrait;
 import java.util.*;
 import java.util.concurrent.Executor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, PersistentStateInterface {
+final class SmcpGroup extends SmcpThing implements Group, PersistentStateInterface {
 
     private final String mGroupId;
 
     /* Sync to `this` */
-    private final HashSet<SmcpFunctionalEndpoint> mNativeMembers = new HashSet<>();
+    private final HashSet<SmcpThing> mNativeMembers = new HashSet<>();
 
     @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal"})
     private boolean mCanAdministerGroup = true;
@@ -42,9 +42,9 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     private boolean mCanUseGroup = true;
 
     /**
-     * Group containing all of the hosted functional endpoints. Note that these functional endpoints
+     * Group containing all of the hosted things. Note that these things
      * aren't necessarily "local", just that they are not native to this technology instance (which
-     * usually means they are subclasses of {@link LocalFunctionalEndpoint}).
+     * usually means they are subclasses of {@link LocalThing}).
      */
     final Group mLocalGroup;
 
@@ -79,7 +79,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     void onHosted() {
         try {
             mLocalGroup.getTechnology().host(mLocalGroup);
-        } catch (UnacceptableFunctionalEndpointException e) {
+        } catch (UnacceptableThingException e) {
             throw new SmcpRuntimeException(e);
         }
     }
@@ -115,15 +115,15 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public ListenableFuture<Set<FunctionalEndpoint>> fetchMembers() {
+    public ListenableFuture<Set<Thing>> fetchMembers() {
         if (mTechnology.isHosted(this)) {
-            ListenableFuture<Set<FunctionalEndpoint>> localFuture = mLocalGroup.fetchMembers();
+            ListenableFuture<Set<Thing>> localFuture = mLocalGroup.fetchMembers();
 
-            ListenableFutureTask<Set<FunctionalEndpoint>> future =
+            ListenableFutureTask<Set<Thing>> future =
                     ListenableFutureTask.create(
                             () -> {
                                 synchronized (SmcpGroup.this) {
-                                    Set<FunctionalEndpoint> ret = new HashSet<>(mNativeMembers);
+                                    Set<Thing> ret = new HashSet<>(mNativeMembers);
                                     ret.addAll(localFuture.get());
                                     return ret;
                                 }
@@ -145,24 +145,24 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public ListenableFuture<Void> addMember(FunctionalEndpoint fe) {
+    public ListenableFuture<Void> addMember(Thing fe) {
         if (fe instanceof SmcpGroup && ((SmcpGroup) fe).getTechnology() == mTechnology) {
             return Futures.immediateFailedFuture(
-                    new UnacceptableFunctionalEndpointException(
+                    new UnacceptableThingException(
                             "Cannot add a native group as a member"));
         }
 
         if (!mTechnology.isAssociatedWith(fe)) {
             return Futures.immediateFailedFuture(
-                    new UnacceptableFunctionalEndpointException(
-                            "Functional endpoint is not yet associated with this technology"));
+                    new UnacceptableThingException(
+                            "Thing is not yet associated with this technology"));
         }
 
         if (mTechnology.isHosted(fe)) {
             return mLocalGroup.addMember(fe);
         }
 
-        if (mTechnology.isNative(fe) && fe instanceof SmcpFunctionalEndpoint) {
+        if (mTechnology.isNative(fe) && fe instanceof SmcpThing) {
             /* This is a native member, we need to interact with this FE to add it to the group */
 
             ListenableFutureTask<Void> future =
@@ -171,7 +171,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
                                 // TODO: We must manually add the remote FE to this group,
                                 //       adding the group to that device if necessary!
                                 synchronized (SmcpGroup.this) {
-                                    mNativeMembers.add((SmcpFunctionalEndpoint) fe);
+                                    mNativeMembers.add((SmcpThing) fe);
                                 }
                             },
                             null);
@@ -182,15 +182,15 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
         }
 
         return Futures.immediateFailedFuture(
-                new UnacceptableFunctionalEndpointException(
-                        "This group must itself be hosted before adding hosted functional endpoints"));
+                new UnacceptableThingException(
+                        "This group must itself be hosted before adding hosted things"));
     }
 
     @Override
-    public ListenableFuture<Void> removeMember(FunctionalEndpoint fe) {
+    public ListenableFuture<Void> removeMember(Thing fe) {
         synchronized (SmcpGroup.this) {
             @SuppressWarnings("unchecked")
-            SmcpFunctionalEndpoint smcpFe = (SmcpFunctionalEndpoint) fe;
+            SmcpThing smcpFe = (SmcpThing) fe;
             mNativeMembers.remove(smcpFe);
         }
         return mLocalGroup.removeMember(fe);
@@ -368,7 +368,7 @@ final class SmcpGroup extends SmcpFunctionalEndpoint implements Group, Persisten
     }
 
     @Override
-    public ListenableFuture<Collection<FunctionalEndpoint>> fetchChildrenForTrait(
+    public ListenableFuture<Collection<Thing>> fetchChildrenForTrait(
             String traitShortId) {
         if (mTechnology.isHosted(this) && mLocalGroup.hasLocalMembers()) {
             return mLocalGroup.fetchChildrenForTrait(traitShortId);

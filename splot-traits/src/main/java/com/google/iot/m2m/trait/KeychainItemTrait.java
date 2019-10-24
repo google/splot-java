@@ -28,7 +28,7 @@ public final class KeychainItemTrait {
     // Prevent Instantiation
     private KeychainItemTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalKeychainItemTrait {}
 
     /** The name of this trait */

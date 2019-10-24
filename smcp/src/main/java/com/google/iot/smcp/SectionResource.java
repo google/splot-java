@@ -45,13 +45,13 @@ class SectionResource extends Resource<InboundRequestHandler> {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER = Logger.getLogger(SectionResource.class.getCanonicalName());
 
-    private final FunctionalEndpoint mFe;
+    private final Thing mFe;
     private final Section mSection;
     private final ResourceLink<Map<String,Map<String,Object>>> mResourceLink;
     private final Executor mExecutor;
     private int mMaxAge;
 
-    SectionResource(FunctionalEndpoint fe, Section section, Executor executor) {
+    SectionResource(Thing fe, Section section, Executor executor) {
         mFe = fe;
         mSection = section;
         mExecutor = executor;

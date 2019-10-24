@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 @SuppressWarnings("ConstantConditions")
-class SmcpFunctionalEndpointTest extends SmcpTestBase {
+class SmcpThingTest extends SmcpTestBase {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(SmcpFunctionalEndpointTest.class.getCanonicalName());
+            Logger.getLogger(SmcpThingTest.class.getCanonicalName());
 
     @Mock ChildListener mChildListenerMock;
 
@@ -63,7 +63,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             techHosting.getServer().start();
 
-            FunctionalEndpoint remoteFe = techBacking.getFunctionalEndpointForNativeUri(new URI(
+            Thing remoteFe = techBacking.getThingForNativeUri(new URI(
                     Coap.SCHEME_UDP, null, host, port,
                     "/1/", null, null
             ));
@@ -102,8 +102,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             techHosting.getServer().start();
 
-            FunctionalEndpoint remoteFe =
-                    techBacking.getFunctionalEndpointForNativeUri(
+            Thing remoteFe =
+                    techBacking.getThingForNativeUri(
                             URI.create("loop://localhost/1/"));
 
             assertNotNull(remoteFe);
@@ -140,8 +140,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             techHosting.getServer().start();
 
-            FunctionalEndpoint remoteFe =
-                    techBacking.getFunctionalEndpointForNativeUri(
+            Thing remoteFe =
+                    techBacking.getThingForNativeUri(
                             URI.create("loop://localhost/1/"));
 
             assertEquals(
@@ -194,8 +194,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertEquals(
                 false,
@@ -250,8 +250,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         Map<String, Object> targetState = new HashMap<>();
 
@@ -291,7 +291,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             techHosting.getServer().start();
 
-            FunctionalEndpoint testScene =
+            Thing testScene =
                     localFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
                                     SceneTrait.PARAM_SCENE_ID.with("childFetchTest"))
@@ -300,21 +300,21 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             tick(10);
 
-            FunctionalEndpoint remoteFe =
-                    techBacking.getFunctionalEndpointForNativeUri(
+            Thing remoteFe =
+                    techBacking.getThingForNativeUri(
                             URI.create("loop://localhost/1/"));
 
             assertNotNull(remoteFe);
 
             Set<String> childIdSet = new HashSet<>();
-            Collection<FunctionalEndpoint> children =
+            Collection<Thing> children =
                     remoteFe.fetchChildrenForTrait(SceneTrait.TRAIT_ID).get();
 
             assertNotNull(children);
 
             assertNotEquals(0, children.size());
 
-            for (FunctionalEndpoint child : children) {
+            for (Thing child : children) {
                 String childId = remoteFe.getIdForChild(child);
                 if (DEBUG) {
                     LOGGER.info(child.toString() + " -> " + childId);
@@ -348,11 +348,11 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
             techHosting.getServer().start();
 
-            FunctionalEndpoint remoteFe = techBacking.getFunctionalEndpointForNativeUri(uri);
+            Thing remoteFe = techBacking.getThingForNativeUri(uri);
 
             assertNotNull(remoteFe);
 
-            Collection<FunctionalEndpoint> children;
+            Collection<Thing> children;
 
             remoteFe.registerChildListener(mExecutor, mChildListenerMock, SceneTrait.TRAIT_ID);
 
@@ -363,7 +363,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             verify(mChildListenerMock, never()).onChildAdded(any(), any(), any());
             verify(mChildListenerMock, never()).onChildRemoved(any(), any(), any());
 
-            FunctionalEndpoint testScene1 =
+            Thing testScene1 =
                     localFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
                                     SceneTrait.PARAM_SCENE_ID.with("childAddedTest-1"))
@@ -386,7 +386,7 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
             verify(mChildListenerMock, timeout(100).times(0)).onChildAdded(any(), any(), any());
             verify(mChildListenerMock, never()).onChildRemoved(any(), any(), any());
 
-            FunctionalEndpoint testScene2 =
+            Thing testScene2 =
                     remoteFe.invokeMethod(
                                     SceneTrait.METHOD_SAVE,
                                     SceneTrait.PARAM_SCENE_ID.with("childAddedTest-2"))
@@ -434,27 +434,27 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 0.0f).get();
         remoteFe.setProperty(OnOffTrait.STAT_VALUE, false).get();
-        FunctionalEndpoint offScene =
+        Thing offScene =
                 remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("off"))
                         .get();
         assertNotNull(offScene);
 
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 1.0f).get();
         remoteFe.setProperty(OnOffTrait.STAT_VALUE, true).get();
-        FunctionalEndpoint onScene =
+        Thing onScene =
                 remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("on"))
                         .get();
         assertNotNull(onScene);
 
         remoteFe.setProperty(LevelTrait.STAT_VALUE, 0.25f).get();
-        FunctionalEndpoint dimScene =
+        Thing dimScene =
                 remoteFe.invokeMethod(SceneTrait.METHOD_SAVE, SceneTrait.PARAM_SCENE_ID.with("dim"))
                         .get();
         assertNotNull(dimScene);
@@ -505,8 +505,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
@@ -544,8 +544,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
@@ -591,8 +591,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
@@ -645,8 +645,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
@@ -697,8 +697,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 
@@ -750,8 +750,8 @@ class SmcpFunctionalEndpointTest extends SmcpTestBase {
 
         techHosting.getServer().start();
 
-        FunctionalEndpoint remoteFe =
-                techBacking.getFunctionalEndpointForNativeUri(URI.create("loop://localhost/1/"));
+        Thing remoteFe =
+                techBacking.getThingForNativeUri(URI.create("loop://localhost/1/"));
 
         assertNotNull(remoteFe);
 

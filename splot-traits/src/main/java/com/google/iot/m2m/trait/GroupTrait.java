@@ -23,13 +23,13 @@ import com.google.iot.m2m.base.ParamKey;
 import com.google.iot.m2m.base.PropertyKey;
 import com.google.iot.m2m.base.Section;
 
-/** Trait used by group functional endpoints. */
+/** Trait used by group things. */
 @Trait
 public final class GroupTrait {
     // Prevent instantiation
     private GroupTrait() {}
 
-    /** Abstract class for implementing trait behavior on a local functional endpoint. */
+    /** Abstract class for implementing trait behavior on a local thing. */
     public abstract static class AbstractLocalTrait extends LocalGroupTrait {}
 
     /** The name of this trait */

@@ -17,14 +17,14 @@ package com.google.iot.m2m.base;
 
 /**
  * Checked exception that indicates that a given property could not be found on this {@link
- * FunctionalEndpoint}.
+ * Thing}.
  *
- * @see FunctionalEndpoint#fetchProperty(PropertyKey)
- * @see FunctionalEndpoint#setProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#incrementProperty(PropertyKey, Number)
- * @see FunctionalEndpoint#toggleProperty(PropertyKey)
- * @see FunctionalEndpoint#addValueToProperty(PropertyKey, Object)
- * @see FunctionalEndpoint#removeValueFromProperty(PropertyKey, Object)
+ * @see Thing#fetchProperty(PropertyKey)
+ * @see Thing#setProperty(PropertyKey, Object)
+ * @see Thing#incrementProperty(PropertyKey, Number)
+ * @see Thing#toggleProperty(PropertyKey)
+ * @see Thing#addValueToProperty(PropertyKey, Object)
+ * @see Thing#removeValueFromProperty(PropertyKey, Object)
  */
 public class PropertyNotFoundException extends PropertyException {
     public PropertyNotFoundException() {}

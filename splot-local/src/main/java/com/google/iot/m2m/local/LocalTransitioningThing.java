@@ -31,26 +31,26 @@ import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Abstract class for more easily implementing local {@link FunctionalEndpoint}s that support smooth
+ * Abstract class for more easily implementing local {@link Thing}s that support smooth
  * transitions between property values, as well as scenes.
  *
- * <p>By subclassing this class instead of {@link LocalSceneFunctionalEndpoint}, transition support
- * will be largely implemented for you automatically. Like {@link LocalFunctionalEndpoint},
- * Subclasses of this class should <em>NOT</em> be used to implement non-local FunctionalEndpoints:
- * in those cases a class directly implementing the methods of {@link FunctionalEndpoint} should be
+ * <p>By subclassing this class instead of {@link LocalSceneThing}, transition support
+ * will be largely implemented for you automatically. Like {@link LocalThing},
+ * Subclasses of this class should <em>NOT</em> be used to implement non-local Things:
+ * in those cases a class directly implementing the methods of {@link Thing} should be
  * used.
  *
- * <p>If transitions don't make sense for your functional endpoint (for example, if it is an input
- * rather than an output), then you should subclass {@link LocalFunctionalEndpoint} (or {@link
- * LocalFunctionalEndpoint} if you still need scenes) instead.
+ * <p>If transitions don't make sense for your thing (for example, if it is an input
+ * rather than an output), then you should subclass {@link LocalThing} (or {@link
+ * LocalThing} if you still need scenes) instead.
  *
- * @see LocalTransitioningFunctionalEndpoint
- * @see LocalFunctionalEndpoint
+ * @see LocalTransitioningThing
+ * @see LocalThing
  */
-public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFunctionalEndpoint {
+public abstract class LocalTransitioningThing extends LocalSceneThing {
     private static final boolean DEBUG = false;
     private static final Logger LOGGER =
-            Logger.getLogger(LocalTransitioningFunctionalEndpoint.class.getCanonicalName());
+            Logger.getLogger(LocalTransitioningThing.class.getCanonicalName());
 
     private static final long NSEC_PER_SEC
             = TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS);
@@ -147,7 +147,7 @@ public abstract class LocalTransitioningFunctionalEndpoint extends LocalSceneFun
         return System.nanoTime();
     }
 
-    protected LocalTransitioningFunctionalEndpoint() {
+    protected LocalTransitioningThing() {
         registerTrait(mTransitionTrait);
     }
 

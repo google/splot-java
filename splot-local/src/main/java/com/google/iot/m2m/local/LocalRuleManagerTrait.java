@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 /**
  * Manager trait for enabling the in-band creation and management of {@link LocalRule} instances.
  * This trait is implemented by the {@link LocalAutomationManager}, but is publicly defined to
- * allow it to be integrated into custom {@link LocalFunctionalEndpoint} implementations.
+ * allow it to be integrated into custom {@link LocalThing} implementations.
  */
 public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLocalTrait implements PersistentStateInterface {
     private static final boolean DEBUG = false;
@@ -42,12 +42,12 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
     private final ResourceLinkManager mResourceLinkManager;
 
     private Map<String, LocalRule> mRuleLookup = new HashMap<>();
-    private Map<FunctionalEndpoint, String> mRuleReverseLookup = new HashMap<>();
+    private Map<Thing, String> mRuleReverseLookup = new HashMap<>();
     private int mNextChildId = 1;
-    private FunctionalEndpoint mParent;
+    private Thing mParent;
     private NestedPersistentStateManager mNestedPersistentStateManager = new NestedPersistentStateManager();
 
-    public LocalRuleManagerTrait(ResourceLinkManager resourceLinkManager, FunctionalEndpoint parent) {
+    public LocalRuleManagerTrait(ResourceLinkManager resourceLinkManager, Thing parent) {
         mResourceLinkManager = resourceLinkManager;
         mParent = parent;
     }
@@ -63,22 +63,22 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
     }
 
     @Override
-    public Set<FunctionalEndpoint> onCopyChildrenSet() {
+    public Set<Thing> onCopyChildrenSet() {
         return new HashSet<>(mRuleReverseLookup.keySet());
     }
 
     @Override
-    public @Nullable String onGetIdForChild(FunctionalEndpoint child) {
+    public @Nullable String onGetIdForChild(Thing child) {
         return mRuleReverseLookup.get(child);
     }
 
     @Override
-    public @Nullable FunctionalEndpoint onGetChild(String childId) {
+    public @Nullable Thing onGetChild(String childId) {
         return mRuleLookup.get(childId);
     }
 
     @CanIgnoreReturnValue
-    private boolean onDeleteChild(FunctionalEndpoint child) {
+    private boolean onDeleteChild(Thing child) {
         String childId = mRuleReverseLookup.get(child);
 
         if (childId == null || !mRuleLookup.containsKey(childId)) {
@@ -110,7 +110,7 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
             }
 
             @Override
-            public @Nullable FunctionalEndpoint getParentFunctionalEndpoint() {
+            public @Nullable Thing getParentThing() {
                 return mParent;
             }
 
@@ -129,7 +129,7 @@ public class LocalRuleManagerTrait extends AutomationRuleManagerTrait.AbstractLo
     }
 
     @Override
-    public FunctionalEndpoint onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
+    public Thing onInvokeCreate(Map<String, Object> args) throws InvalidMethodArgumentsException {
         LocalRule ret = newLocalRule(getNewChildId());
         String param = null;
         try {

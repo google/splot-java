@@ -10,12 +10,12 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 class PropertyResourceLink<T> extends AbstractResourceLink<T> implements PropertyListener<T> {
-    final FunctionalEndpoint mFe;
+    final Thing mFe;
     final PropertyKey<T> mKey;
     final URI mUri;
     final Modifier[] mModifiers;
 
-    PropertyResourceLink(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
+    PropertyResourceLink(Thing fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
         mFe = fe;
         mKey = key;
         mUri = uri;
@@ -31,11 +31,11 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         return mFe.setProperty(mKey, value, mModifiers);
     }
 
-    public static <T> ResourceLink<T> create(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
+    public static <T> ResourceLink<T> create(Thing fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
         return new PropertyResourceLink<>(fe, key, uri, modifiers);
     }
 
-    public static <T extends Number> ResourceLink<T> createIncrement(FunctionalEndpoint fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
+    public static <T extends Number> ResourceLink<T> createIncrement(Thing fe, PropertyKey<T> key, URI uri, Modifier ... modifiers) {
         return new PropertyResourceLink<T>(fe, key, uri, modifiers) {
             @Override
             public ListenableFuture<?> invoke(@Nullable T value) {
@@ -60,7 +60,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static ResourceLink<Boolean> createToggle(FunctionalEndpoint fe, PropertyKey<Boolean> key, URI uri, Modifier ... modifiers) {
+    public static ResourceLink<Boolean> createToggle(Thing fe, PropertyKey<Boolean> key, URI uri, Modifier ... modifiers) {
         return new PropertyResourceLink<Boolean>(fe, key, uri, modifiers) {
             @Override
             public ListenableFuture<?> invoke(@Nullable Boolean value) {
@@ -69,7 +69,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static <T> ResourceLink<T> createInsert(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
+    public static <T> ResourceLink<T> createInsert(Thing fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
@@ -104,7 +104,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
         };
     }
 
-    public static <T> ResourceLink<T> createRemove(FunctionalEndpoint fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
+    public static <T> ResourceLink<T> createRemove(Thing fe, PropertyKey<T[]> key, URI uri, Modifier ... modifiers) {
         return new ResourceLink<T>() {
             @Override
             public ListenableFuture<T> fetchValue() {
@@ -154,7 +154,7 @@ class PropertyResourceLink<T> extends AbstractResourceLink<T> implements Propert
     }
 
     @Override
-    public void onPropertyChanged(FunctionalEndpoint fe, PropertyKey<T> key, @Nullable T value) {
+    public void onPropertyChanged(Thing fe, PropertyKey<T> key, @Nullable T value) {
         didChangeValue(value);
     }
 

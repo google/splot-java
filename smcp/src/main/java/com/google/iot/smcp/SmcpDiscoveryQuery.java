@@ -38,7 +38,7 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
     private final SmcpTechnology mTechnology;
     private final Transaction mTransaction;
     private final long mTimeoutInMs;
-    private final HashSet<FunctionalEndpoint> mFunctionalEndpoints = new HashSet<>();
+    private final HashSet<Thing> mThings = new HashSet<>();
     private Future<?> mTimeout;
     private Exception mException = null;
     private Listener mListener = null;
@@ -91,8 +91,8 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
                 mTimeout.cancel(false);
             }
             mException = null;
-            synchronized (mFunctionalEndpoints) {
-                mFunctionalEndpoints.clear();
+            synchronized (mThings) {
+                mThings.clear();
             }
             mTransaction.restart();
             mTimeout = getExecutor().schedule(this::stop, mTimeoutInMs, TimeUnit.MILLISECONDS);
@@ -155,18 +155,18 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
 
                 if (DEBUG) LOGGER.info("Found " + resolvedUri);
 
-                final FunctionalEndpoint fe;
+                final Thing fe;
 
                 try {
-                    fe = mTechnology.getFunctionalEndpointForNativeUri(resolvedUri);
+                    fe = mTechnology.getThingForNativeUri(resolvedUri);
 
                 } catch (UnknownResourceException e) {
                     LOGGER.warning("Skipping " + resolvedUri + " : " + e);
                     continue;
                 }
 
-                if (fe instanceof SmcpFunctionalEndpoint) {
-                    SmcpFunctionalEndpoint sfe = ((SmcpFunctionalEndpoint) fe);
+                if (fe instanceof SmcpThing) {
+                    SmcpThing sfe = ((SmcpThing) fe);
                     if (params.containsKey(LinkFormat.PARAM_ENDPOINT_NAME)) {
                         sfe.updateCachedPropertyValue(
                                 BaseTrait.META_UID, params.get(LinkFormat.PARAM_ENDPOINT_NAME));
@@ -177,15 +177,15 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
                     }
                 }
 
-                synchronized (mFunctionalEndpoints) {
-                    mFunctionalEndpoints.add(fe);
+                synchronized (mThings) {
+                    mThings.add(fe);
 
                     if (mListener != null) {
                         final Listener listener = mListener;
                         mListenerExecutor.execute(
-                                () -> listener.onDiscoveryQueryFoundFunctionalEndpoint(fe));
+                                () -> listener.onDiscoveryQueryFoundThing(fe));
                     }
-                    if (mMaxResults > 0 && mFunctionalEndpoints.size() >= mMaxResults) {
+                    if (mMaxResults > 0 && mThings.size() >= mMaxResults) {
                         if (DEBUG) LOGGER.warning("Got maximum result count " + mMaxResults);
                         stop();
                         break;
@@ -198,7 +198,7 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
     }
 
     @Override
-    public Set<FunctionalEndpoint> get() throws InterruptedException, TechnologyException {
+    public Set<Thing> get() throws InterruptedException, TechnologyException {
         if (!mTimeout.isCancelled()) {
             try {
                 mTimeout.get(mTimeoutInMs, TimeUnit.MILLISECONDS);
@@ -222,15 +222,15 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
             throw new TechnologyException(mException);
         }
 
-        synchronized (mFunctionalEndpoints) {
-            return new HashSet<>(mFunctionalEndpoints);
+        synchronized (mThings) {
+            return new HashSet<>(mThings);
         }
     }
 
     @Override
     public void stop() {
         mTimeout.cancel(false);
-        synchronized (mFunctionalEndpoints) {
+        synchronized (mThings) {
             if (mListener != null) {
                 final Listener listener = mListener;
                 mListenerExecutor.execute(listener::onDiscoveryQueryIsDone);
@@ -246,15 +246,15 @@ class SmcpDiscoveryQuery extends DiscoveryQuery {
     @Override
     public void setListener(Executor executor, @Nullable Listener listener) {
         boolean isDone = isDone();
-        synchronized (mFunctionalEndpoints) {
+        synchronized (mThings) {
             mListenerExecutor = executor;
             mListener = listener;
             if (listener != null) {
-                mFunctionalEndpoints.forEach(
+                mThings.forEach(
                         (fe) ->
                                 mListenerExecutor.execute(
                                         () ->
-                                                listener.onDiscoveryQueryFoundFunctionalEndpoint(
+                                                listener.onDiscoveryQueryFoundThing(
                                                         fe)));
                 if (isDone) {
                     mListenerExecutor.execute(listener::onDiscoveryQueryIsDone);
